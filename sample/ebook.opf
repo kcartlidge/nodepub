@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?> 
+<?xml version='1.0' encoding='utf-8'?>
 <package xmlns='http://www.idpf.org/2007/opf' version='2.0' unique-identifier='BookId'>
 	<metadata xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:opf='http://www.idpf.org/2007/opf'>
 		<dc:title>Unnamed Document</dc:title>
@@ -12,11 +12,11 @@
 		<dc:date opf:event='publication'>2000-12-31</dc:date>
 		<dc:rights>Anonymous, 1980</dc:rights>
 		<dc:subject>Non-Fiction</dc:subject>
-		<dc:subject>Sample</dc:subject> 
-		<dc:subject>Example</dc:subject> 
-		<dc:subject>Test</dc:subject> 
-		<meta name='calibre:series' content='My Series'/> 
-		<meta name='calibre:series_index' content='2'/> 
+		<dc:subject>Sample</dc:subject>
+		<dc:subject>Example</dc:subject>
+		<dc:subject>Test</dc:subject>
+		<meta name='calibre:series' content='My Series'/>
+		<meta name='calibre:series_index' content='2'/>
 		<meta name='cover' content='cover-image'/>
 	</metadata>
 	<manifest>

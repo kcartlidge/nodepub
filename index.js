@@ -172,7 +172,7 @@ function getContainer(document) {
 // Private. Provide the contents of the OPL (spine) file.
 function getOPF(document) {
 	var opf = '';
-	opf += "<?xml version='1.0' encoding='utf-8'?> [[EOL]]";
+	opf += "<?xml version='1.0' encoding='utf-8'?>[[EOL]]";
 	opf += "<package xmlns='http://www.idpf.org/2007/opf' version='2.0' unique-identifier='BookId'>[[EOL]]";
 	opf += "	<metadata xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:opf='http://www.idpf.org/2007/opf'>[[EOL]]";
 	opf += "		<dc:title>[[TITLE]]</dc:title>[[EOL]]";
@@ -190,13 +190,13 @@ function getOPF(document) {
 	if (document.metadata.tags) {
 	  var tags = document.metadata.tags.split(',');
 	  for(var i = 0; i < tags.length; i++) {
-			opf += "		<dc:subject>" + tags[i] + "</dc:subject> [[EOL]]";
+			opf += "		<dc:subject>" + tags[i] + "</dc:subject>[[EOL]]";
 		}
 	}
 
 	if (document.metadata.series && document.metadata.sequence) {
-		opf += "		<meta name='calibre:series' content='[[SERIES]]'/> [[EOL]]"
-		opf += "		<meta name='calibre:series_index' content='[[SEQUENCE]]'/> [[EOL]]"
+		opf += "		<meta name='calibre:series' content='[[SERIES]]'/>[[EOL]]"
+		opf += "		<meta name='calibre:series_index' content='[[SEQUENCE]]'/>[[EOL]]"
 	}
 
 	opf += "		<meta name='cover' content='cover-image'/>[[EOL]]";
@@ -290,143 +290,143 @@ function getNCX(document) {
 // Private. Provide the contents of the TOC file.
 function getTOC(document) {
 	var toc = '';
-	toc += "<?xml version='1.0' encoding='utf-8'?> [[EOL]]";
-	toc += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN' 'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd' > [[EOL]]";
-	toc += "<html xmlns='http://www.w3.org/1999/xhtml'> [[EOL]]";
-	toc += "  <head> [[EOL]]";
-	toc += "    <title>Contents</title> [[EOL]]";
-	toc += "    <link rel='stylesheet' type='text/css' href='ebook.css' /> [[EOL]]";
-	toc += "  </head> [[EOL]]";
-	toc += "  <body> [[EOL]]";
-	toc += "    <div class='titles'> [[EOL]]";
-	toc += "        <div id='toc'></div> [[EOL]]";
-	toc += "        <h1>Contents</h1> [[EOL]]";
-	toc += "        <div class='toc'> [[EOL]]";
+	toc += "<?xml version='1.0' encoding='utf-8'?>[[EOL]]";
+	toc += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN' 'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd' >[[EOL]]";
+	toc += "<html xmlns='http://www.w3.org/1999/xhtml'>[[EOL]]";
+	toc += "  <head>[[EOL]]";
+	toc += "    <title>Contents</title>[[EOL]]";
+	toc += "    <link rel='stylesheet' type='text/css' href='ebook.css' />[[EOL]]";
+	toc += "  </head>[[EOL]]";
+	toc += "  <body>[[EOL]]";
+	toc += "    <div class='contents'>[[EOL]]";
+	toc += "        <div id='toc'></div>[[EOL]]";
+	toc += "        <h1>Contents</h1>[[EOL]]";
+	toc += "        <div class='toc'>[[EOL]]";
 
 	for(var i=1; i <= document.chapters.length; i++) {
 		var title = document.chapters[i-1].title;
-		toc += "          <a href='ch" + i + ".xhtml'>" + title + "</a><br/> [[EOL]]";
+		toc += "          <a href='ch" + i + ".xhtml'>" + title + "</a><br/>[[EOL]]";
 	}
 
-	toc += "        </div> [[EOL]]";
-	toc += "    </div> [[EOL]]";
-	toc += "  </body> [[EOL]]";
-	toc += "</html> [[EOL]]";
+	toc += "        </div>[[EOL]]";
+	toc += "    </div>[[EOL]]";
+	toc += "  </body>[[EOL]]";
+	toc += "</html>[[EOL]]";
 	return replacements(document, replacements(document, toc));
 };
 
 // Private. Provide the contents of the cover HTML enclosure.
 function getCover(document) {
 	var cover = '';
-	cover += "<?xml version='1.0' encoding='UTF-8' ?> [[EOL]]";
-	cover += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN'  'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'> [[EOL]]";
-	cover += "<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'> [[EOL]]";
-	cover += "<head> [[EOL]]";
-	cover += "  <title>[[TITLE]]</title> [[EOL]]";
-	cover += "  <style type='text/css'> [[EOL]]";
-	cover += "    .cover { margin: 0; padding: 0; font-size: 1px; } [[EOL]]";
-	cover += "  </style> [[EOL]]";
-	cover += "</head> [[EOL]]";
-	cover += "<body style='margin: 0; text-align: center; background-color: #ffffff;'> [[EOL]]";
-	cover += "  <p class='cover'><img style='height: 100%;' src='Cover.png' alt='Cover' /></p> [[EOL]]";
-	cover += "</body> [[EOL]]";
-	cover += "</html> [[EOL]]";
+	cover += "<?xml version='1.0' encoding='UTF-8' ?>[[EOL]]";
+	cover += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN'  'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'>[[EOL]]";
+	cover += "<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'>[[EOL]]";
+	cover += "<head>[[EOL]]";
+	cover += "  <title>[[TITLE]]</title>[[EOL]]";
+	cover += "  <style type='text/css'>[[EOL]]";
+	cover += "    .cover { margin: 0; padding: 0; font-size: 1px; }[[EOL]]";
+	cover += "  </style>[[EOL]]";
+	cover += "</head>[[EOL]]";
+	cover += "<body style='margin: 0; text-align: center; background-color: #ffffff;'>[[EOL]]";
+	cover += "  <p class='cover'><img style='height: 100%;' src='Cover.png' alt='Cover' /></p>[[EOL]]";
+	cover += "</body>[[EOL]]";
+	cover += "</html>[[EOL]]";
 	return replacements(document, replacements(document, cover));
 };
 
 // Private. Provide the contents of the copyright page.
 function getCopyright(document) {
 	var copyright = '';
-	copyright += "<?xml version='1.0' encoding='UTF-8' ?> [[EOL]]";
-	copyright += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN'  'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'> [[EOL]]";
-	copyright += "<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'> [[EOL]]";
-	copyright += "<head> [[EOL]]";
-	copyright += "  <title>[[TITLE]]</title> [[EOL]]";
-	copyright += "  <link rel='stylesheet' type='text/css' href='ebook.css' /> [[EOL]]";
-	copyright += "</head> [[EOL]]";
-	copyright += "<body> [[EOL]]";
-	copyright += "  <div class='titles'> [[EOL]]";
-	copyright += "    <p class='skipdownb'> &nbsp;</p> [[EOL]]";
-	copyright += "    <h1>[[TITLE]]</h1> [[EOL]]";
+	copyright += "<?xml version='1.0' encoding='UTF-8' ?>[[EOL]]";
+	copyright += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN'  'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'>[[EOL]]";
+	copyright += "<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'>[[EOL]]";
+	copyright += "<head>[[EOL]]";
+	copyright += "  <title>[[TITLE]]</title>[[EOL]]";
+	copyright += "  <link rel='stylesheet' type='text/css' href='ebook.css' />[[EOL]]";
+	copyright += "</head>[[EOL]]";
+	copyright += "<body>[[EOL]]";
+	copyright += "  <div class='titles'>[[EOL]]";
+	copyright += "    <p class='skipdownb'> &nbsp;</p>[[EOL]]";
+	copyright += "    <h1>[[TITLE]]</h1>[[EOL]]";
 
 	if (document.metadata.series && document.metadata.sequence) {
-		copyright += "    <h2>Book [[SEQUENCE]] of [[SERIES]]</h2> [[EOL]]";
+		copyright += "    <h2>Book [[SEQUENCE]] of [[SERIES]]</h2>[[EOL]]";
 	}
 
-	copyright += "    <p class='skipdowns'> &nbsp;</p> [[EOL]]";
+	copyright += "    <p class='skipdowns'> &nbsp;</p>[[EOL]]";
 
 	if (document.metadata.copyright) {
-		copyright += "    <h2>&copy; [[COPYRIGHT]]</h2> [[EOL]]";
+		copyright += "    <h2>&copy; [[COPYRIGHT]]</h2>[[EOL]]";
 	} else {
-		copyright += "    <h2>&copy; [[AUTHOR]]</h2> [[EOL]]";
+		copyright += "    <h2>&copy; [[AUTHOR]]</h2>[[EOL]]";
 	}
 
   var year = parseInt(document.metadata.published);
-	copyright += "    <h3>Published by [[PUBLISHER]], " + year + ".</h3> [[EOL]]";
-	copyright += "  </div> [[EOL]]";
-	copyright += "</body> [[EOL]]";
-	copyright += "</html> [[EOL]]";
+	copyright += "    <h3>Published by [[PUBLISHER]], " + year + ".</h3>[[EOL]]";
+	copyright += "  </div>[[EOL]]";
+	copyright += "</body>[[EOL]]";
+	copyright += "</html>[[EOL]]";
 	return replacements(document, replacements(document, copyright));
 };
 
 // Private. Provide the contents of the copyright page.
 function getBackMatter(document) {
 	var back = '';
-	back += "<?xml version='1.0' encoding='UTF-8' ?> [[EOL]]";
-	back += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN'  'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'> [[EOL]]";
-	back += "<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'> [[EOL]]";
-	back += "<head> [[EOL]]";
-	back += "  <title>[[TITLE]]</title> [[EOL]]";
-	back += "  <link rel='stylesheet' type='text/css' href='ebook.css' /> [[EOL]]";
-	back += "</head> [[EOL]]";
-	back += "<body> [[EOL]]";
-	back += "  <div class='titles'> [[EOL]]";
-	back += "    <p class='skipdownb'> &nbsp;</p> [[EOL]]";
-	back += "    <h1>[[TITLE]]</h1> [[EOL]]";
+	back += "<?xml version='1.0' encoding='UTF-8' ?>[[EOL]]";
+	back += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN'  'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'>[[EOL]]";
+	back += "<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'>[[EOL]]";
+	back += "<head>[[EOL]]";
+	back += "  <title>[[TITLE]]</title>[[EOL]]";
+	back += "  <link rel='stylesheet' type='text/css' href='ebook.css' />[[EOL]]";
+	back += "</head>[[EOL]]";
+	back += "<body>[[EOL]]";
+	back += "  <div class='titles'>[[EOL]]";
+	back += "    <p class='skipdownb'> &nbsp;</p>[[EOL]]";
+	back += "    <h1>[[TITLE]]</h1>[[EOL]]";
 
 	if (document.metadata.series && document.metadata.sequence) {
-		back += "    <h2>Book [[SEQUENCE]] of [[SERIES]]</h2> [[EOL]]";
+		back += "    <h2>Book [[SEQUENCE]] of [[SERIES]]</h2>[[EOL]]";
 	}
 
-	back += "    <p class='skipdowns'> &nbsp;</p> [[EOL]]";
+	back += "    <p class='skipdowns'> &nbsp;</p>[[EOL]]";
 
 	if (document.metadata.thanks) {
-		back += "    <p>[[THANKS]]</p> [[EOL]]";
+		back += "    <p>[[THANKS]]</p>[[EOL]]";
 	}
 
 	if (document.metadata.linkText && document.metadata.bookPage) {
-		back += "    <p><a href='[[BOOKPAGE]]'>[[LINKTEXT]]</a></p> [[EOL]]"
+		back += "    <p><a href='[[BOOKPAGE]]'>[[LINKTEXT]]</a></p>[[EOL]]"
 	}
 
-	back += "  </div> [[EOL]]";
-	back += "</body> [[EOL]]";
-	back += "</html> [[EOL]]";
+	back += "  </div>[[EOL]]";
+	back += "</body>[[EOL]]";
+	back += "</html>[[EOL]]";
 	return replacements(document, replacements(document, back));
 };
 
 // Private. Provide the contents of the CSS file.
 function getCSS(document) {
 	var css = '';
-	css += " body                           { font-family: 'Open Sans', 'Mono Sans', 'Roboto Sans', Verdana, 'Sans-Serif'; font-size: 14pt; padding: 0px; margin: 10px; color: #000000; } [[EOL]]";
-	css += " h1, h2, h3                     { font-size: 12pt; line-height: 1.25em; font-weight: normal; font-style: normal; } [[EOL]]";
-	css += " a, a:link, a:active, a:visited { text-decoration: underline; } [[EOL]]";
-	css += " img                            { border: none; } [[EOL]]";
-	css += " p                              { margin-top: 20px; text-indent: 0.5em; text-align: left; font-size: 14pt; line-height: 1.5em; } [[EOL]]";
-	css += " ul                             { margin-left: 2em; } [[EOL]]";
-	css += " li                             { display: block; } [[EOL]]";
-	css += " h1, h2, h3                     { color: #000033; font-weight: bold; } [[EOL]]";
-	css += " h1                             { font-size: 20pt; margin-bottom: 32px; } [[EOL]]";
-	css += " h1.chapter                     { margin-top: 5em; } [[EOL]]";
-	css += " h1 .big                        { font-size: 3em; display: block; padding-bottom: 0.3em; color: #cccccc; } [[EOL]]";
-	css += " h2                             { font-size: 12pt; } [[EOL]]";
-	css += " h3                             { font-size: 10pt; } [[EOL]]";
-	css += ".titles, .titles p              { padding: 0; text-align: center; } [[EOL]]";
-	css += ".toc                            { padding-top: 12px; padding-left: 0; } [[EOL]]";
-	css += ".toc a                          { line-height: 1.5em; text-decoration: none; } [[EOL]]";
-	css += ".skipdownb                      { padding-top: 60px; } [[EOL]]";
-	css += ".skipdowns                      { padding-top: 40px; } [[EOL]]";
-	css += ".centred                        { text-align: center; } [[EOL]]";
-	css += ".scene                          { text-align: center; padding: 10px 0 10px 0; } [[EOL]]";
+	css += " body                           { font-family: 'Open Sans', 'Mono Sans', 'Roboto Sans', Verdana, 'Sans-Serif'; font-size: 14pt; padding: 0px; margin: 10px; color: #000000; }[[EOL]]";
+	css += " h1, h2, h3                     { font-size: 12pt; line-height: 1.25em; font-weight: normal; font-style: normal; }[[EOL]]";
+	css += " a, a:link, a:active, a:visited { text-decoration: underline; }[[EOL]]";
+	css += " img                            { border: none; }[[EOL]]";
+	css += " p                              { margin-top: 20px; text-indent: 0.5em; text-align: left; font-size: 14pt; line-height: 1.5em; }[[EOL]]";
+	css += " ul                             { margin-left: 2em; }[[EOL]]";
+	css += " li                             { display: block; }[[EOL]]";
+	css += " h1, h2, h3                     { color: #000033; font-weight: bold; }[[EOL]]";
+	css += " h1                             { font-size: 20pt; margin-bottom: 32px; }[[EOL]]";
+	css += " h1.chapter                     { margin-top: 5em; }[[EOL]]";
+	css += " h1 .big                        { font-size: 3em; display: block; padding-bottom: 0.3em; color: #cccccc; }[[EOL]]";
+	css += " h2                             { font-size: 12pt; }[[EOL]]";
+	css += " h3                             { font-size: 10pt; }[[EOL]]";
+	css += ".titles, .titles p              { padding: 0; text-align: center; }[[EOL]]";
+	css += ".toc                            { padding-top: 12px; padding-left: 0; }[[EOL]]";
+	css += ".toc a                          { line-height: 1.5em; text-decoration: none; }[[EOL]]";
+	css += ".skipdownb                      { padding-top: 60px; }[[EOL]]";
+	css += ".skipdowns                      { padding-top: 40px; }[[EOL]]";
+	css += ".centred                        { text-align: center; }[[EOL]]";
+	css += ".scene                          { text-align: center; padding: 10px 0 10px 0; }[[EOL]]";
 	return replacements(document, replacements(document, css));
 };
 
@@ -438,36 +438,36 @@ function getChapter(document, chapterNumber) {
 	var showChapterNumbers = document.metadata.showChapterNumbers
 
 	html = '';
-	html += "<?xml version='1.0' encoding='utf-8'?> [[EOL]]";
-	html += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN' 'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'> [[EOL]]";
-	html += "<html xmlns='http://www.w3.org/1999/xhtml'> [[EOL]]";
-	html += "  <head profile='http://dublincore.org/documents/dcmi-terms/'> [[EOL]]";
-	html += "    <meta http-equiv='Content-Type' content='text/html;' /> [[EOL]]";
-	html += "    <title>[[TITLE]] - " + title + "</title> [[EOL]]";
-	html += "    <meta name='DCTERMS.title' content='[[TITLE]]' /> [[EOL]]";
-	html += "    <meta name='DCTERMS.language' content='[[LANGUAGE]]' scheme='DCTERMS.RFC4646' /> [[EOL]]";
-	html += "    <meta name='DCTERMS.source' content='MFW' /> [[EOL]]";
-	html += "    <meta name='DCTERMS.issued' content='{$issued}' scheme='DCTERMS.W3CDTF'/> [[EOL]]";
-	html += "    <meta name='DCTERMS.creator' content='[[AUTHOR]]'/> [[EOL]]";
-	html += "    <meta name='DCTERMS.contributor' content='' /> [[EOL]]";
-	html += "    <meta name='DCTERMS.modified' content='{$issued}' scheme='DCTERMS.W3CDTF'/> [[EOL]]";
-	html += "    <meta name='DCTERMS.provenance' content='' /> [[EOL]]";
-	html += "    <meta name='DCTERMS.subject' content='[[GENRE]]' /> [[EOL]]";
-	html += "    <link rel='schema.DC' href='http://purl.org/dc/elements/1.1/' hreflang='en' /> [[EOL]]";
-	html += "    <link rel='schema.DCTERMS' href='http://purl.org/dc/terms/' hreflang='en' /> [[EOL]]";
-	html += "    <link rel='schema.DCTYPE' href='http://purl.org/dc/dcmitype/' hreflang='en' /> [[EOL]]";
-	html += "    <link rel='schema.DCAM' href='http://purl.org/dc/dcam/' hreflang='en' /> [[EOL]]";
-	html += "    <link rel='stylesheet' type='text/css' href='ebook.css' /> [[EOL]]";
-	html += "    <base href='.' /> [[EOL]]";
-	html += "  </head> [[EOL]]";
-	html += "  <body> [[EOL]]";
-	html += "    <div id='start_reading'></div> [[EOL]]";
-	html += "    <div id='ch" + chapterNumber + "'></div> [[EOL]]";
+	html += "<?xml version='1.0' encoding='utf-8'?>[[EOL]]";
+	html += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN' 'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'>[[EOL]]";
+	html += "<html xmlns='http://www.w3.org/1999/xhtml'>[[EOL]]";
+	html += "  <head profile='http://dublincore.org/documents/dcmi-terms/'>[[EOL]]";
+	html += "    <meta http-equiv='Content-Type' content='text/html;' />[[EOL]]";
+	html += "    <title>[[TITLE]] - " + title + "</title>[[EOL]]";
+	html += "    <meta name='DCTERMS.title' content='[[TITLE]]' />[[EOL]]";
+	html += "    <meta name='DCTERMS.language' content='[[LANGUAGE]]' scheme='DCTERMS.RFC4646' />[[EOL]]";
+	html += "    <meta name='DCTERMS.source' content='MFW' />[[EOL]]";
+	html += "    <meta name='DCTERMS.issued' content='{$issued}' scheme='DCTERMS.W3CDTF'/>[[EOL]]";
+	html += "    <meta name='DCTERMS.creator' content='[[AUTHOR]]'/>[[EOL]]";
+	html += "    <meta name='DCTERMS.contributor' content='' />[[EOL]]";
+	html += "    <meta name='DCTERMS.modified' content='{$issued}' scheme='DCTERMS.W3CDTF'/>[[EOL]]";
+	html += "    <meta name='DCTERMS.provenance' content='' />[[EOL]]";
+	html += "    <meta name='DCTERMS.subject' content='[[GENRE]]' />[[EOL]]";
+	html += "    <link rel='schema.DC' href='http://purl.org/dc/elements/1.1/' hreflang='en' />[[EOL]]";
+	html += "    <link rel='schema.DCTERMS' href='http://purl.org/dc/terms/' hreflang='en' />[[EOL]]";
+	html += "    <link rel='schema.DCTYPE' href='http://purl.org/dc/dcmitype/' hreflang='en' />[[EOL]]";
+	html += "    <link rel='schema.DCAM' href='http://purl.org/dc/dcam/' hreflang='en' />[[EOL]]";
+	html += "    <link rel='stylesheet' type='text/css' href='ebook.css' />[[EOL]]";
+	html += "    <base href='.' />[[EOL]]";
+	html += "  </head>[[EOL]]";
+	html += "  <body>[[EOL]]";
+	html += "    <div id='start_reading'></div>[[EOL]]";
+	html += "    <div id='ch" + chapterNumber + "'></div>[[EOL]]";
 
   if (showChapterNumbers) {
-    html += "    <h1 class='big-chapter'><span class='big'>" + chapterNumber + "</span>" + title + "</h1> [[EOL]]";
+    html += "    <h1 class='big-chapter'><span class='big'>" + chapterNumber + "</span>" + title + "</h1>[[EOL]]";
   } else {
-    html += "    <h1 class='chapter'>" + title + "</h1> [[EOL]]";
+    html += "    <h1 class='chapter'>" + title + "</h1>[[EOL]]";
   }
 
 	var lines = content.split('\n');
@@ -475,12 +475,12 @@ function getChapter(document, chapterNumber) {
 	for(var lineIdx in lines) {
 		var line = lines[lineIdx];
 		if (line.length > 0) {
-			html += "    " + line + " [[EOL]]";
+			html += "    " + line + "[[EOL]]";
 		}
 	}
 
-	html += "  </body> [[EOL]]";
-	html += "</html> [[EOL]]";
+	html += "  </body>[[EOL]]";
+	html += "</html>[[EOL]]";
 	return replacements(document, replacements(document, html));
 };
 

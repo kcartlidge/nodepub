@@ -26,7 +26,6 @@ Note that ALL functions of the module are synchronous EXCEPT if you choose to us
 
 *Upcoming Changes*
 
-* Splitting of the HTML templates into loadable template files.
 * Allow CSS overriding; the current EPUBs are simple yet attractive, but I appreciate you may want to add your own styles.
 * Inline images; you can already have a cover image so the base functionality is there, but I will be adding an option to insert an image at any point in the text. As each chapter's HTML is provided in advance by the caller, the links will already be in the markup so all that should be required is to copy the images themselves into a suitable place in the file and ensure they appear in the relevant EPUB structural files.
 * Possible nested contents. This may not happen as it is extra work to support a feature that isn't really in scope. Chapters are understood and are added to the contents and the spine for navigation, and this works fine for fiction. There may however be a wish for sections within chapters (especially for non-fiction). As the chapter contents are pure HTML this could just be left to the caller to embed, perhaps via a MarkDown converter.
