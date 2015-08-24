@@ -1,0 +1,26 @@
+{
+  "name": "node-makepub",
+  "version": "0.6.0",
+  "description": "Create valid EPUB ebooks from chapters, scenes and metadata.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kcartlidge/node-makepub"
+  },
+  "keywords": [
+    "epub",
+    "ebook"
+  ],
+  "author": "Karl Cartlidge <kcartlidge@users.noreply.github.com> (http://www.kcartlidge.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kcartlidge/node-makepub/issues"
+  },
+  "homepage": "https://github.com/kcartlidge/node-makepub",
+  "dependencies": {
+    "archiver": "^0.14.2"
+  }
+}

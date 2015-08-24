@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='utf-8'?> 
+<package xmlns='http://www.idpf.org/2007/opf' version='2.0' unique-identifier='BookId'>
+	<metadata xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:opf='http://www.idpf.org/2007/opf'>
+		<dc:title>Unnamed Document</dc:title>
+		<dc:identifier id='BookId' opf:scheme='URI'>12345678</dc:identifier>
+		<dc:language>en</dc:language>
+		<dc:creator opf:role='aut' opf:file-as='Anonymous'>Anonymous</dc:creator>
+		<dc:publisher>My Fake Publisher</dc:publisher>
+		<dc:description>A sample book.</dc:description>
+		<dc:coverage></dc:coverage>
+		<dc:source></dc:source>
+		<dc:date opf:event='publication'>2000-12-31</dc:date>
+		<dc:rights>2000-12-31 Anonymous</dc:rights>
+		<dc:subject>Non-Fiction</dc:subject>
+		<meta name='cover' content='cover-image'/>
+	</metadata>
+	<manifest>
+		<item id='cover-image' media-type='image/png' href='Cover.png'/>
+		<item id='cover' media-type='application/xhtml+xml' href='cover.xhtml'/>
+		<item id='navigation' media-type='application/x-dtbncx+xml' href='navigation.ncx'/>
+		<item id='ch1' media-type='application/xhtml+xml' href='ch1.xhtml'/>
+		<item id='ch2' media-type='application/xhtml+xml' href='ch2.xhtml'/>
+		<item id='ch3' media-type='application/xhtml+xml' href='ch3.xhtml'/>
+		<item id='ch4' media-type='application/xhtml+xml' href='ch4.xhtml'/>
+		<item id='ch5' media-type='application/xhtml+xml' href='ch5.xhtml'/>
+		<item id='ch6' media-type='application/xhtml+xml' href='ch6.xhtml'/>
+		<item id='ch7' media-type='application/xhtml+xml' href='ch7.xhtml'/>
+		<item id='ch8' media-type='application/xhtml+xml' href='ch8.xhtml'/>
+		<item id='ch9' media-type='application/xhtml+xml' href='ch9.xhtml'/>
+		<item id='ch10' media-type='application/xhtml+xml' href='ch10.xhtml'/>
+		<item id='ch11' media-type='application/xhtml+xml' href='ch11.xhtml'/>
+		<item id='toc' media-type='application/xhtml+xml' href='toc.xhtml'/>
+		<item id='css' media-type='text/css' href='ebook.css'/>
+	</manifest>
+	<spine toc='navigation'>
+		<itemref idref='cover' linear='yes' />
+		<itemref idref='copyright'/>
+		<itemref idref='toc'/>
+		<itemref idref='ch1' />
+		<itemref idref='ch2' />
+		<itemref idref='ch3' />
+		<itemref idref='ch4' />
+		<itemref idref='ch5' />
+		<itemref idref='ch6' />
+		<itemref idref='ch7' />
+		<itemref idref='ch8' />
+		<itemref idref='ch9' />
+		<itemref idref='ch10' />
+		<itemref idref='ch11' />
+	</spine>
+	<guide>
+		<reference type='toc' title='Contents' href='toc.xhtml'></reference>
+	</guide>
+</package>
