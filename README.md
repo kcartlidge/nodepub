@@ -26,11 +26,8 @@ Note that ALL functions of the module are synchronous EXCEPT if you choose to us
 
 *Upcoming Changes*
 
-* Styling changes to make the default Ebook presentation look more attractive.
 * Splitting of the HTML templates into loadable template files.
 * Tags, series and sequence in the metadata.
-* Automatically generated copyright page as a frontispiece.
-* Closing page with recommended reading, links etc.
 * Optional inclusion of scene names as subheaders.
 * Allow CSS overriding; the current EPUBs are simple yet attractive, but I appreciate you may want to add your own styles.
 * Inline images; you can already have a cover image so the base functionality is there, but I will be adding an option to insert an image at any point in the text. As each chapter's HTML is provided in advance by the caller, the links will already be in the markup so all that should be required is to copy the images themselves into a suitable place in the file and ensure they appear in the relevant EPUB structural files.

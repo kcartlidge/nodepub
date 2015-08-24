@@ -8,7 +8,7 @@
  h1, h2, h3                     { color: #000033; font-weight: bold; } 
  h1                             { font-size: 20pt; margin-bottom: 32px; } 
  h1.chapter                     { margin-top: 5em; } 
- h1 .big                        { font-size: 3em; padding-bottom: 0.3em; color: #cccccc; } 
+ h1 .big                        { font-size: 3em; display: block; padding-bottom: 0.3em; color: #cccccc; } 
  h2                             { font-size: 12pt; } 
  h3                             { font-size: 10pt; } 
 .titles, .titles p              { padding: 0; text-align: center; } 

@@ -11,6 +11,7 @@ var epub = require('./index').document({
 	author: 'Anonymous',
 	fileAs: 'Anonymous',
 	genre: 'Non-Fiction',
+	tags: 'Sample,Example,Test',
 	copyright: 'Anonymous, 1980',
 	publisher: 'My Fake Publisher',
 	published: '2000-12-31',

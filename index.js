@@ -7,6 +7,7 @@ var sampleMetadata = {
 	author: 'Anonymous',
 	fileAs: 'Anonymous',
 	genre: 'Non-Fiction',
+	tags: 'Sample,Example,Test',
 	copyright: 'Anonymous, 1980',
 	publisher: 'My Fake Publisher',
 	published: '2000-12-31',
@@ -144,6 +145,7 @@ function replacements(document, original) {
 	result = tagReplace(result, 'DESCRIPTION', document.metadata.description);
 	result = tagReplace(result, 'PUBLISHED', document.metadata.published);
 	result = tagReplace(result, 'GENRE', document.metadata.genre);
+	result = tagReplace(result, 'TAGS', document.metadata.tags);
 	result = tagReplace(result, 'THANKS', document.metadata.thanks);
 	result = tagReplace(result, 'BOOKPAGE', document.metadata.bookPage);
 	result = tagReplace(result, 'LINKTEXT', document.metadata.linkText);
@@ -184,6 +186,19 @@ function getOPF(document) {
 	opf += "		<dc:date opf:event='publication'>[[PUBLISHED]]</dc:date>[[EOL]]";
 	opf += "		<dc:rights>[[COPYRIGHT]]</dc:rights>[[EOL]]";
 	opf += "		<dc:subject>[[GENRE]]</dc:subject>[[EOL]]";
+
+	if (document.metadata.tags) {
+	  var tags = document.metadata.tags.split(',');
+	  for(var i = 0; i < tags.length; i++) {
+			opf += "		<dc:subject>" + tags[i] + "</dc:subject> [[EOL]]";
+		}
+	}
+
+	if (document.metadata.series && document.metadata.sequence) {
+		opf += "		<meta name='calibre:series' content='[[SERIES]]'/> [[EOL]]"
+		opf += "		<meta name='calibre:series_index' content='[[SEQUENCE]]'/> [[EOL]]"
+	}
+
 	opf += "		<meta name='cover' content='cover-image'/>[[EOL]]";
 	opf += "	</metadata>[[EOL]]";
 	opf += "	<manifest>[[EOL]]";
@@ -267,10 +282,6 @@ function getNCX(document) {
 		ncx +=  "  </navPoint>[[EOL]]";
 	}
 
-	ncx +=  "  <navPoint id='back' playOrder='" + (playOrder++) + "'>[[EOL]]";
-	ncx +=  "    <navLabel><text>Thanks</text></navLabel>[[EOL]]";
-	ncx +=  "    <content src='back.xhtml'/>[[EOL]]";
-	ncx +=  "  </navPoint>[[EOL]]";
 	ncx +=  "</navMap>[[EOL]]";
 	ncx +=  "</ncx>[[EOL]]";
 	return replacements(document, replacements(document, ncx));
@@ -287,7 +298,7 @@ function getTOC(document) {
 	toc += "    <link rel='stylesheet' type='text/css' href='ebook.css' /> [[EOL]]";
 	toc += "  </head> [[EOL]]";
 	toc += "  <body> [[EOL]]";
-	toc += "    <div class='titles'></div> [[EOL]]";
+	toc += "    <div class='titles'> [[EOL]]";
 	toc += "        <div id='toc'></div> [[EOL]]";
 	toc += "        <h1>Contents</h1> [[EOL]]";
 	toc += "        <div class='toc'> [[EOL]]";
@@ -406,7 +417,7 @@ function getCSS(document) {
 	css += " h1, h2, h3                     { color: #000033; font-weight: bold; } [[EOL]]";
 	css += " h1                             { font-size: 20pt; margin-bottom: 32px; } [[EOL]]";
 	css += " h1.chapter                     { margin-top: 5em; } [[EOL]]";
-	css += " h1 .big                        { font-size: 3em; padding-bottom: 0.3em; color: #cccccc; } [[EOL]]";
+	css += " h1 .big                        { font-size: 3em; display: block; padding-bottom: 0.3em; color: #cccccc; } [[EOL]]";
 	css += " h2                             { font-size: 12pt; } [[EOL]]";
 	css += " h3                             { font-size: 10pt; } [[EOL]]";
 	css += ".titles, .titles p              { padding: 0; text-align: center; } [[EOL]]";
@@ -454,7 +465,7 @@ function getChapter(document, chapterNumber) {
 	html += "    <div id='ch" + chapterNumber + "'></div> [[EOL]]";
 
   if (showChapterNumbers) {
-    html += "    <h1 class='big-chapter'><div class='big'>" + chapterNumber + "</div>" + title + "</h1> [[EOL]]";
+    html += "    <h1 class='big-chapter'><span class='big'>" + chapterNumber + "</span>" + title + "</h1> [[EOL]]";
   } else {
     html += "    <h1 class='chapter'>" + title + "</h1> [[EOL]]";
   }
