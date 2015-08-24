@@ -65,6 +65,7 @@ var epub = require('./index').document({
 });
 
 // Add some content.
+var lipsum = "<p>Lorem ipsum dolor sit amet adipiscing.</p>";
 epub.addChapter('In the Beginning', lipsum);
 epub.addChapter('Setting the Scene', lipsum);
 epub.addChapter('A Moment of Conflict', lipsum);
@@ -93,6 +94,7 @@ var epub = require('./index').document({
 });
 
 // Add some content.
+var lipsum = "<p>Lorem ipsum dolor sit amet adipiscing.</p>";
 epub.addChapter('In the Beginning', lipsum);
 epub.addChapter('Setting the Scene', lipsum);
 epub.addChapter('A Moment of Conflict', lipsum);
