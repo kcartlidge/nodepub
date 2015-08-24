@@ -65,10 +65,10 @@ var epub = require('./index').document({
 });
 
 // Add some content.
-epub.addChapter('Introduction','<p>This is an introduction.</p>');
-for(var n=1; n<=10; n++) {
-	epub.addChapter('Chapter ' + n, '<p>This is sample content for chapter ' + n + '.</p>');
-}
+epub.addChapter('In the Beginning', lipsum);
+epub.addChapter('Setting the Scene', lipsum);
+epub.addChapter('A Moment of Conflict', lipsum);
+epub.addChapter('The Conclusion of Things', lipsum);
 
 // Write a complete EPUB.
 epub.writeEPUB('.', 'sample', function() { console.log('\nFinished.\n'); });
@@ -93,10 +93,10 @@ var epub = require('./index').document({
 });
 
 // Add some content.
-epub.addChapter('Introduction','<p>This is an introduction.</p>');
-for(var n=1; n<=10; n++) {
-	epub.addChapter('Chapter ' + n, '<p>This is sample content for chapter ' + n + '.</p>');
-}
+epub.addChapter('In the Beginning', lipsum);
+epub.addChapter('Setting the Scene', lipsum);
+epub.addChapter('A Moment of Conflict', lipsum);
+epub.addChapter('The Conclusion of Things', lipsum);
 
 // List the files generated.
 console.log('\nFiles created:\n');
