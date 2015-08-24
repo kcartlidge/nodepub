@@ -22,13 +22,7 @@
 		<item id='ch2' media-type='application/xhtml+xml' href='ch2.xhtml'/>
 		<item id='ch3' media-type='application/xhtml+xml' href='ch3.xhtml'/>
 		<item id='ch4' media-type='application/xhtml+xml' href='ch4.xhtml'/>
-		<item id='ch5' media-type='application/xhtml+xml' href='ch5.xhtml'/>
-		<item id='ch6' media-type='application/xhtml+xml' href='ch6.xhtml'/>
-		<item id='ch7' media-type='application/xhtml+xml' href='ch7.xhtml'/>
-		<item id='ch8' media-type='application/xhtml+xml' href='ch8.xhtml'/>
-		<item id='ch9' media-type='application/xhtml+xml' href='ch9.xhtml'/>
-		<item id='ch10' media-type='application/xhtml+xml' href='ch10.xhtml'/>
-		<item id='ch11' media-type='application/xhtml+xml' href='ch11.xhtml'/>
+		<item id='copyright' media-type='application/xhtml+xml' href='copyright.xhtml'/>
 		<item id='toc' media-type='application/xhtml+xml' href='toc.xhtml'/>
 		<item id='css' media-type='text/css' href='ebook.css'/>
 	</manifest>
@@ -40,13 +34,6 @@
 		<itemref idref='ch2' />
 		<itemref idref='ch3' />
 		<itemref idref='ch4' />
-		<itemref idref='ch5' />
-		<itemref idref='ch6' />
-		<itemref idref='ch7' />
-		<itemref idref='ch8' />
-		<itemref idref='ch9' />
-		<itemref idref='ch10' />
-		<itemref idref='ch11' />
 	</spine>
 	<guide>
 		<reference type='toc' title='Contents' href='toc.xhtml'></reference>

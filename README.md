@@ -2,7 +2,7 @@
 
 Makepub is a **Node** module which can be used to create **EPUB** documents. The resultant files are designed to pass the [IDPF online validator](http://validator.idpf.org) and Sigil's preflight checks. They should also open correctly in iBooks (as this is the most picky mainstream reader) and be suited for upload into the Amazon KDP and Kobo Writing Life sites. For those using KDP who wish to do a conversion locally, it should also satisfy KindleGen.
 
-*This module has only been tested via the require statement in the sample-usage.js file - this should be sufficient but further testing will follow shortly. Files have not yet been verified against KDP/Kobo, although the same generation methodology has been used successfully in the past so this should occur shortly.*
+*This module has only been tested via the require statement in the sample-usage.js file - this should be sufficient but further testing will follow shortly. Files have not yet been verified against KDP/Kobo, although the same generation methodology has been used successfully in the past so this also should occur shortly.*
 
 Resultant EPUBs can be generated to one of three levels of completeness:
 
@@ -11,15 +11,6 @@ Resultant EPUBs can be generated to one of three levels of completeness:
 3. A Javascript object containing all the filenames and content needed for the final EPUB
 
 The module has no concept of how the original content is obtained; it is passed a metadata object at creation after which content is added sequentially by the caller. There is no automatic pre-processing of content files such as Markdown as the module expects to be given *HTML* to work with and it is trivial for the caller to pre-process in advance by requiring a Markdown module, the Jade rendering engine or similar.
-
-One exception to this ignorance principle is the provision of a plain text transformer, which can be given unadorned text and will convert this into HTML and automatically add the result to the EPUB being built. This facility will apply the following logic in order:
-
-1. Lines of text will be stripped of leading/trailing whitespace.
-2. Optionally certain non-ASCII characters will be replaced with ASCII equivalents (e.g. an em-dash becomes a hyphen and 'smart-quotes' become double-quotes). If this option is not chosen, non-ASCII characters will be replaced with their unicode values in HTML notation as EPUB readers/converters often have issues with these. 
-3. Multiple sequential blank lines will be compressed to a single one, whilst existing single ones are removed.
-4. Lines of text will become *paragraphs* and where a blank line exists a gap will be incorporated.
-
-The result is that the input text will become HTML that consists of a flow of paragraphs, with a vertical gap where a multi-line space existed originally.
 
 ###Progress###
 
@@ -31,11 +22,9 @@ Cover images are included and must be in PNG format; I recommend 600x800 or an a
 
 If you use the raw generated files to write the EPUB yourself, bear in mind that the **mimetype** file MUST be the first file in the archive and also MUST NOT be compressed. In simple terms, an EPUB is a renamed ZIP file where compression is optional apart from the mimetype file which should be added first using the 'store' option.
 
-The plain text transformer code is not yet complete and has not been pushed. A Markdown variety is being considered, but that will add another dependency which may not be needed by many so a mini-markdown built-in edition may be added instead.
-
 Note that ALL functions of the module are synchronous EXCEPT if you choose to use the option to create the complete EPUB (*writeEPUB*), which is internally synchronous whilst generating the file contents but for external purposes is asynchronous with a callback due to the nature of the *archiver* dependency used to create the final output. This is definitely an anti-pattern and will be fixed.
 
-*Other Upcoming Changes*
+*Upcoming Changes*
 
 * Styling changes to make the default Ebook presentation look more attractive.
 * Splitting of the HTML templates into loadable template files.

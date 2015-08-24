@@ -11,7 +11,8 @@ var sampleMetadata = {
 	language: 'en',
 	cover: 'sample-cover.png',
 	description: 'A sample book.',
-	includeCopyrightPage: false
+	showChapterNumbers: true,
+	includeCopyrightPage: true
 };
 
 /*
@@ -270,7 +271,7 @@ function getTOC(document) {
 	toc += "  <body> [[EOL]]";
 	toc += "    <div id='toc'></div> [[EOL]]";
 	toc += "    <h1>Contents</h1> [[EOL]]";
-	toc += "    <div class='indented'> [[EOL]]";
+	toc += "    <div class='toc'> [[EOL]]";
 
 	for(var i=1; i <= document.chapters.length; i++) {
 		var title = document.chapters[i-1].title;
@@ -327,20 +328,22 @@ function getCopyright(document) {
 // Private. Provide the contents of the CSS file.
 function getCSS(document) {
 	var css = '';
-	css += " body                           { padding: 0px; margin: 10px; color: #000000; } [[EOL]]";
+	css += " body                           { font-family: 'Open Sans', 'Mono Sans', 'Roboto Sans', Verdana, 'Sans-Serif'; font-size: 14pt; padding: 0px; margin: 10px; color: #000000; } [[EOL]]";
 	css += " h1, h2, h3                     { font-size: 12pt; line-height: 1.25em; font-weight: normal; font-style: normal; text-align: left; } [[EOL]]";
 	css += " a, a:link, a:active, a:visited { text-decoration: underline; } [[EOL]]";
 	css += " img                            { border: none; } [[EOL]]";
-	css += " p                              { margin-top: 20px; text-indent: 0.5em; text-align: left; font-size: 14pt; } [[EOL]]";
+	css += " p                              { margin-top: 20px; text-indent: 0.5em; text-align: left; font-size: 14pt; line-height: 1.5em; } [[EOL]]";
 	css += " ul                             { margin-left: 2em; } [[EOL]]";
 	css += " li                             { display: block; } [[EOL]]";
 	css += " h1, h2, h3                     { color: #000033; font-weight: bold; } [[EOL]]";
 	css += " h1                             { font-size: 20pt; margin-bottom: 32px; } [[EOL]]";
 	css += " h1.chapter                     { margin-top: 5em; } [[EOL]]";
+	css += " h1 .big                        { font-size: 3em; padding-bottom: 0.3em; color: #cccccc; } [[EOL]]";
 	css += " h2                             { font-size: 12pt; } [[EOL]]";
 	css += " h3                             { font-size: 10pt; } [[EOL]]";
 	css += ".titles                         { padding-left: 32px; } [[EOL]]";
-	css += ".indented                       { padding-top: 12px; padding-left: 24px; } [[EOL]]";
+	css += ".toc                            { padding-top: 12px; padding-left: 0; } [[EOL]]";
+	css += ".toc a                          { line-height: 1.5em; text-decoration: none; } [[EOL]]";
 	css += ".skipdownb                      { padding-top: 60px; } [[EOL]]";
 	css += ".skipdowns                      { padding-top: 40px; } [[EOL]]";
 	css += ".centred                        { text-align: center; } [[EOL]]";
@@ -353,6 +356,7 @@ function getChapter(document, chapterNumber) {
 	var chapter = document.chapters[chapterNumber - 1];
 	var title = chapter.title;
 	var content = chapter.content;
+	var showChapterNumbers = document.metadata.showChapterNumbers
 
 	html = '';
 	html += "<?xml version='1.0' encoding='utf-8'?> [[EOL]]";
@@ -380,7 +384,12 @@ function getChapter(document, chapterNumber) {
 	html += "  <body> [[EOL]]";
 	html += "    <div id='start_reading'></div> [[EOL]]";
 	html += "    <div id='ch" + chapterNumber + "'></div> [[EOL]]";
-	html += "    <h1 class='chapter'>" + title + "</h1> [[EOL]]";
+
+  if (showChapterNumbers) {
+    html += "    <h1 class='big-chapter'><div class='big'>" + chapterNumber + "</div>" + title + "</h1> [[EOL]]";
+  } else {
+    html += "    <h1 class='chapter'>" + title + "</h1> [[EOL]]";
+  }
 
 	var lines = content.split('\n');
 	var emptyRun = 0;

@@ -14,57 +14,33 @@
     <navLabel><text>Cover</text></navLabel>
     <content src='cover.xhtml'/>
   </navPoint>
-  <navPoint class='toc' id='toc' playOrder='2'>
+  <navPoint id='copyright' playOrder='2'>
+    <navLabel><text>Copyright</text></navLabel>
+    <content src='copyright.xhtml'/>
+  </navPoint>
+  <navPoint class='toc' id='toc' playOrder='3'>
     <navLabel><text>Contents</text></navLabel>
     <content src='toc.xhtml'/>
   </navPoint>
-  <navPoint id='start' playOrder='3'>
+  <navPoint id='start' playOrder='4'>
     <navLabel><text>Start Reading</text></navLabel>
     <content src='ch1.xhtml#start_reading'/>
   </navPoint>
-  <navPoint class='chapter' id='ch1' playOrder='4'>
-    <navLabel><text>Introduction</text></navLabel>
+  <navPoint class='chapter' id='ch1' playOrder='5'>
+    <navLabel><text>In the Beginning</text></navLabel>
     <content src='ch1.xhtml'/>
   </navPoint>
-  <navPoint class='chapter' id='ch2' playOrder='5'>
-    <navLabel><text>Chapter 1</text></navLabel>
+  <navPoint class='chapter' id='ch2' playOrder='6'>
+    <navLabel><text>Setting the Scene</text></navLabel>
     <content src='ch2.xhtml'/>
   </navPoint>
-  <navPoint class='chapter' id='ch3' playOrder='6'>
-    <navLabel><text>Chapter 2</text></navLabel>
+  <navPoint class='chapter' id='ch3' playOrder='7'>
+    <navLabel><text>A Moment of Conflict</text></navLabel>
     <content src='ch3.xhtml'/>
   </navPoint>
-  <navPoint class='chapter' id='ch4' playOrder='7'>
-    <navLabel><text>Chapter 3</text></navLabel>
+  <navPoint class='chapter' id='ch4' playOrder='8'>
+    <navLabel><text>The Conclusion of Things</text></navLabel>
     <content src='ch4.xhtml'/>
-  </navPoint>
-  <navPoint class='chapter' id='ch5' playOrder='8'>
-    <navLabel><text>Chapter 4</text></navLabel>
-    <content src='ch5.xhtml'/>
-  </navPoint>
-  <navPoint class='chapter' id='ch6' playOrder='9'>
-    <navLabel><text>Chapter 5</text></navLabel>
-    <content src='ch6.xhtml'/>
-  </navPoint>
-  <navPoint class='chapter' id='ch7' playOrder='10'>
-    <navLabel><text>Chapter 6</text></navLabel>
-    <content src='ch7.xhtml'/>
-  </navPoint>
-  <navPoint class='chapter' id='ch8' playOrder='11'>
-    <navLabel><text>Chapter 7</text></navLabel>
-    <content src='ch8.xhtml'/>
-  </navPoint>
-  <navPoint class='chapter' id='ch9' playOrder='12'>
-    <navLabel><text>Chapter 8</text></navLabel>
-    <content src='ch9.xhtml'/>
-  </navPoint>
-  <navPoint class='chapter' id='ch10' playOrder='13'>
-    <navLabel><text>Chapter 9</text></navLabel>
-    <content src='ch10.xhtml'/>
-  </navPoint>
-  <navPoint class='chapter' id='ch11' playOrder='14'>
-    <navLabel><text>Chapter 10</text></navLabel>
-    <content src='ch11.xhtml'/>
   </navPoint>
 </navMap>
 </ncx>
