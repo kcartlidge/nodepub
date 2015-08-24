@@ -6,6 +6,8 @@ var lipsum = '' + fs.readFileSync('lorem-ipsum.txt');
 var epub = require('./index').document({
 	id: '12345678',
 	title: 'Unnamed Document',
+	series: 'My Series',
+	sequence: 2,
 	author: 'Anonymous',
 	fileAs: 'Anonymous',
 	genre: 'Non-Fiction',
@@ -15,6 +17,9 @@ var epub = require('./index').document({
 	language: 'en',
 	cover: 'sample-cover.png',
 	description: 'A sample book.',
+	thanks: "Thanks for reading <em>[[TITLE]]</em>. If you enjoyed it please consider leaving a review where you purchased it.",
+	linkText: "See more books and register for special offers here.",
+	bookPage: "https://github.com/kcartlidge/node-makepub",
 	showChapterNumbers: true,
 	includeCopyrightPage: true
 });

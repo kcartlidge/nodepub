@@ -42,5 +42,9 @@
     <navLabel><text>The Conclusion of Things</text></navLabel>
     <content src='ch4.xhtml'/>
   </navPoint>
+  <navPoint id='back' playOrder='5'>
+    <navLabel><text>Thanks</text></navLabel>
+    <content src='back.xhtml'/>
+  </navPoint>
 </navMap>
 </ncx>

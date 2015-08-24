@@ -10,7 +10,7 @@
 		<dc:coverage></dc:coverage>
 		<dc:source></dc:source>
 		<dc:date opf:event='publication'>2000-12-31</dc:date>
-		<dc:rights>2000-12-31 Anonymous</dc:rights>
+		<dc:rights>Anonymous, 1980</dc:rights>
 		<dc:subject>Non-Fiction</dc:subject>
 		<meta name='cover' content='cover-image'/>
 	</metadata>
@@ -25,6 +25,7 @@
 		<item id='copyright' media-type='application/xhtml+xml' href='copyright.xhtml'/>
 		<item id='toc' media-type='application/xhtml+xml' href='toc.xhtml'/>
 		<item id='css' media-type='text/css' href='ebook.css'/>
+		<item id='back' media-type='application/xhtml+xml' href='back.xhtml'/>
 	</manifest>
 	<spine toc='navigation'>
 		<itemref idref='cover' linear='yes' />
@@ -34,6 +35,7 @@
 		<itemref idref='ch2' />
 		<itemref idref='ch3' />
 		<itemref idref='ch4' />
+		<itemref idref='back'/>
 	</spine>
 	<guide>
 		<reference type='toc' title='Contents' href='toc.xhtml'></reference>
