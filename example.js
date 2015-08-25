@@ -1,3 +1,4 @@
+#!/usr/bin/nodejs
 
 var fs = require('fs');
 var lipsum = '' + fs.readFileSync('lorem-ipsum.txt');
