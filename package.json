@@ -4,7 +4,7 @@
   "description": "Create valid EPUB ebooks from chapters, scenes and metadata.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nodejs ./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
