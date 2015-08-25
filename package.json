@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/kcartlidge/node-makepub",
   "dependencies": {
-    "archiver": "^0.14.2"
+    "archiver": "^0.14.2",
+    "mocha": "2.2.x",
+    "chai": "3.2.x"
   }
 }
