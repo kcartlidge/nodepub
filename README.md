@@ -24,6 +24,8 @@ If you use the raw generated files to write the EPUB yourself, bear in mind that
 
 Note that ALL functions of the module are synchronous EXCEPT if you choose to use the option to create the complete EPUB (*writeEPUB*), which is internally synchronous whilst generating the file contents but for external purposes is asynchronous with a callback due to the nature of the *archiver* dependency used to create the final output. This is definitely an anti-pattern and will be fixed.
 
+*Test writing has begun, with full coverage to be completed before further development work*. Initially omitted as code was extracted from a private sandbox codebase started when learning Node!
+
 *Upcoming Changes*
 
 * Allow CSS overriding; the current EPUBs are simple yet attractive, but I appreciate you may want to add your own styles.

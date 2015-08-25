@@ -1,7 +1,7 @@
 {
   "name": "node-makepub",
   "version": "0.6.0",
-  "description": "Create valid EPUB ebooks from chapters, scenes and metadata.",
+  "description": "Create valid EPUB ebooks from chapters and metadata.",
   "main": "index.js",
   "scripts": {
     "test": "nodejs ./node_modules/.bin/mocha"
