@@ -22,6 +22,7 @@
   "homepage": "https://github.com/kcartlidge/node-makepub",
   "dependencies": {
     "archiver": "^0.14.2",
+    "underscore": "1.8.x",
     "mocha": "2.2.x",
     "chai": "3.2.x"
   }

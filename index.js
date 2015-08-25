@@ -27,13 +27,28 @@ var sampleMetadata = {
 	Included under that licence with no endorsement implied on behalf of the creator.
 */
 
-var fs = require('fs'), zip = require('archiver');
+var fs = require('fs'), zip = require('archiver'), _ = require('underscore');
 
 exports.document = document;
 
 // Main entry point.
 function document(metadata) {
 	var self = this;
+
+  // Basic validation.
+  var required = ["ID", "Title", "Author", "Cover"];
+  if (metadata == null) throw "Missing metadata";
+  _.each(required, function(field) {
+    var lowerField = field.toLowerCase();
+    var prop = metadata[lowerField];
+    if (prop == null || typeof(prop) == "undefined" || prop.toString().trim() == "")
+      throw "Missing metadata: " + field;
+  });
+  try {
+    fs.statSync(metadata.cover).isFile();
+  } catch (e) {
+    throw "Missing or invalid metadata: Cover"
+  }
 
 	// Add a new chapter with the given title and (HTML) body content.
 	self.addChapter = function(title,content) {
