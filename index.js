@@ -488,6 +488,7 @@ function getChapter(document, chapterNumber) {
   } else {
     html += "    <h1 class='chapter'>" + title + "</h1>[[EOL]]";
   }
+  html += "<div>[[EOL]]";
 
 	var lines = content.split('\n');
 	var emptyRun = 0;
@@ -498,6 +499,7 @@ function getChapter(document, chapterNumber) {
 		}
 	}
 
+  html += "</div>[[EOL]]";
 	html += "  </body>[[EOL]]";
 	html += "</html>[[EOL]]";
 	return replacements(document, replacements(document, html));

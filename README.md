@@ -40,7 +40,7 @@ npm test
 
 To just see an example usage, *cd* into the *example* folder, run the following and check the inner example subfolder for both a resulting final EPUB and a subfolder of constituent files:
 ``` javascript
-./example
+./example.js
 ```
 
 ### Usage ###
