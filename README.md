@@ -24,15 +24,28 @@ If you use the raw generated files to write the EPUB yourself, bear in mind that
 
 Note that ALL functions of the module are synchronous EXCEPT if you choose to use the option to create the complete EPUB (*writeEPUB*), which is internally synchronous whilst generating the file contents but for external purposes is asynchronous with a callback due to the nature of the *archiver* dependency used to create the final output. This is definitely an anti-pattern and will be fixed.
 
-*Test writing has begun, with full coverage to be completed before further development work*. Initially omitted as code was extracted from a private sandbox codebase started when learning Node!
-
 *Upcoming Changes*
 
 * Allow CSS overriding; the current EPUBs are simple yet attractive, but I appreciate you may want to add your own styles.
 * Inline images; you can already have a cover image so the base functionality is there, but I will be adding an option to insert an image at any point in the text. As each chapter's HTML is provided in advance by the caller, the links will already be in the markup so all that should be required is to copy the images themselves into a suitable place in the file and ensure they appear in the relevant EPUB structural files.
-* Possible nested contents. This may not happen as it is extra work to support a feature that isn't really in scope. Chapters are understood and are added to the contents and the spine for navigation, and this works fine for fiction. There may however be a wish for sections within chapters (especially for non-fiction). As the chapter contents are pure HTML this could just be left to the caller to embed, perhaps via a MarkDown converter.
 
-### Sample Usage ###
+### Tests and Example ###
+
+There are both tests and an example generator.
+
+To run the tests, in the top folder (containing the *package.json* file) run the following and check the inner test subfolder for both a resulting final EPUB and a subfolder of constituent files:
+``` javascript
+npm test
+```
+
+To just see an example usage, *cd* into the *example* folder, run the following and check the inner example subfolder for both a resulting final EPUB and a subfolder of constituent files:
+``` javascript
+./example
+```
+
+### Usage ###
+
+**Note that this is not yet published as an NPM module (is imminent though).**
 
 Using **makepub** is straightforward. Note that the HTML you provide for chapter contents should be for the body contents only (typically a sequence of *&lt;p>one paragraph of text&lt;/p>* lines). You can use header tags, but I recommend no higher than *h3* be used. This may mean that if you produce HTML from a Markdown file you need to demote headers with a search and replace (*h1* becomes *h3*, *h2* becomes *h4* and so on - remember to demote the closing tags too, as incorrect content markup confuses some ereader software [eg iBooks]).
 

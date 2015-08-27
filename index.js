@@ -98,7 +98,7 @@ function document(metadata) {
 	};
 
 	// Writes the EPUB. The filename should not have an extention.
-	self.writeEPUB = function(folder, filename, onSuccess, onError) {
+	self.writeEPUB = function(onError, folder, filename, onSuccess) {
 		try {
 			var files = self.getFilesForEPUB();
 			makeFolder(folder);
@@ -109,7 +109,9 @@ function document(metadata) {
 
 			// Some end-state handlers.
 			output.on('close', function () {
-				onSuccess();
+			  if (typeof(onSuccess) == 'function') {
+				  onSuccess(null);
+				};
 			});
 			archive.on('error', function(err) {
 				throw err;
@@ -129,7 +131,9 @@ function document(metadata) {
 			// Done.
 			archive.finalize();
 		} catch (err) {
-			onError(err);
+			  if (typeof(onError) == 'function') {
+			    onError(err);
+				};
 		};
 	};
 

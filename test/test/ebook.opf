@@ -6,7 +6,7 @@
 		<dc:language>en</dc:language>
 		<dc:creator opf:role='aut' opf:file-as='Anonymous'>Anonymous</dc:creator>
 		<dc:publisher>My Fake Publisher</dc:publisher>
-		<dc:description>A sample book.</dc:description>
+		<dc:description>A test book.</dc:description>
 		<dc:coverage></dc:coverage>
 		<dc:source></dc:source>
 		<dc:date opf:event='publication'>2000-12-31</dc:date>

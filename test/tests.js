@@ -1,5 +1,6 @@
 
-var expect = require("chai").expect, makepub = require('../index');
+var fs = require('fs'), expect = require("chai").expect,
+    makepub = require('../index'), _ = require('underscore');
 
 var validMetadata = {
 	id: '12345678',
@@ -14,8 +15,8 @@ var validMetadata = {
 	publisher: 'My Fake Publisher',
 	published: '2000-12-31',
 	language: 'en',
-	cover: 'sample-cover.png',
-	description: 'A sample book.',
+	cover: 'test/test-cover.png',
+	description: 'A test book.',
 	thanks: "Thanks for reading <em>[[TITLE]]</em>. If you enjoyed it please consider leaving a review where you purchased it.",
 	linkText: "See more books and register for special offers here.",
 	bookPage: "https://github.com/kcartlidge/node-makepub",
@@ -36,17 +37,17 @@ describe("Create EPUB with invalid document metadata", function() {
   });
 
   it("should throw an exception if no ID", function() {
-    expect( function() { epub = makepub.document({title:"T",author:"A",cover:'sample-cover.png'}) } )
+    expect( function() { epub = makepub.document({title:"T",author:"A",cover:'test-cover.png'}) } )
     .to.throw(": ID");
   });
 
   it("should throw an exception if no Title", function() {
-    expect( function() { epub = makepub.document({id:"1",author:"A",cover:'sample-cover.png'}) } )
+    expect( function() { epub = makepub.document({id:"1",author:"A",cover:'test-cover.png'}) } )
     .to.throw(": Title");
   });
 
   it("should throw an exception if no Author", function() {
-    expect( function() { epub = makepub.document({id:"1",title:"T",cover:'sample-cover.png'}) } )
+    expect( function() { epub = makepub.document({id:"1",title:"T",cover:'test-cover.png'}) } )
     .to.throw(": Author");
   });
 
@@ -56,7 +57,7 @@ describe("Create EPUB with invalid document metadata", function() {
   });
 
   it("should throw an exception if a missing/invalid Cover is specified", function() {
-    expect( function() { epub = makepub.document({id:"1",title:"T",author:"A",cover:"sample-cover"}) } )
+    expect( function() { epub = makepub.document({id:"1",title:"T",author:"A",cover:"test-cover"}) } )
     .to.throw(": Cover");
   });
 
@@ -92,12 +93,64 @@ describe("Create EPUB with valid document metadata and cover image", function() 
 
   it("should not error if EPUB constituent files write requested", function() {
     epub.addChapter('title', 'content');
-    expect( function() { epub.writeFilesForEPUB("test/sample") } ).not.to.throw();
+    expect( function() { epub.writeFilesForEPUB("test/test") } ).not.to.throw();
   });
 
   it("should not error if EPUB final file write requested", function() {
     epub.addChapter('title', 'content');
-    expect( function() { epub.writeEPUB("test/sample","filename", {}, {}) } ).not.to.throw();
+    expect( function() { epub.writeEPUB({}, "test","test-book", {}) } ).not.to.throw();
   });
+
+  describe("When the constituent files are requested", function() {
+
+    var files = [];
+
+    beforeEach(function() {
+      epub = makepub.document( validMetadata );
+      epub.addChapter('title', 'content');
+      files = epub.getFilesForEPUB();
+    });
+
+    it("should return the correct number of files", function() {
+      expect(files.length).to.equal(11);
+    });
+
+    it("should have a mimetype file", function() {
+      var metadata = _.find(files, function(f) { return f.name == 'mimetype' });
+      expect(metadata).not.to.be.null;
+    });
+
+    it("should have an uncompressed mimetype file", function() {
+      var metadata = _.find(files, function(f) { return f.name == 'mimetype' });
+      expect(metadata.compress).to.equal(false);
+    });
+
+    it("should have all other files compressed", function() {
+      var metadata = _.find(files, function(f) { return f.name != 'mimetype' && f.compress == false });
+      expect(metadata).to.be.undefined;
+    });
+
+  });
+
+  describe("When a final EPUB is requested", function() {
+
+    var files = [];
+
+    beforeEach(function(done) {
+      epub = makepub.document( validMetadata );
+      epub.addChapter('title', 'content');
+      epub.writeEPUB({}, 'test','test-book', function(){ done(); });
+    });
+
+    it("the file should now exist", function() {
+      try {
+        fs.statSync('test/test-book.epub').isFile();
+      } catch (e) {
+        throw new Error("Failed write: " + e);
+      }
+    });
+
+  });
+
 });
 

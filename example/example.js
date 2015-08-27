@@ -4,7 +4,7 @@ var fs = require('fs');
 var lipsum = '' + fs.readFileSync('lorem-ipsum.txt');
 
 // Create a book.
-var epub = require('./index').document({
+var epub = require('../index').document({
 	id: '12345678',
 	title: 'Unnamed Document',
 	series: 'My Series',
@@ -17,8 +17,8 @@ var epub = require('./index').document({
 	publisher: 'My Fake Publisher',
 	published: '2000-12-31',
 	language: 'en',
-	cover: 'sample-cover.png',
-	description: 'A sample book.',
+	cover: 'example-cover.png',
+	description: 'An example book.',
 	thanks: "Thanks for reading <em>[[TITLE]]</em>. If you enjoyed it please consider leaving a review where you purchased it.",
 	linkText: "See more books and register for special offers here.",
 	bookPage: "https://github.com/kcartlidge/node-makepub",
@@ -40,8 +40,8 @@ for(var i in files) {
 };
 
 // Write the contents of the EPUB file into a folder (as an FYI or if you wish to modify it).
-epub.writeFilesForEPUB('./sample');
+epub.writeFilesForEPUB('./example');
 
 // Write a complete EPUB.
-epub.writeEPUB('.', 'sample', function() { console.log('\nFinished.\n'); });
+epub.writeEPUB({}, '.', 'example', function() { console.log('\nFinished.\n'); });
 
