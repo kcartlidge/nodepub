@@ -96,12 +96,12 @@ describe("Create EPUB with valid document metadata and cover image", function() 
     expect( function() { epub.writeFilesForEPUB("test/test") } ).not.to.throw();
   });
 
-  it("should not error if EPUB final file write requested", function() {
+  it("should not error if EPUB final file write requested", function(done) {
     epub.addChapter('title', 'content');
-    expect( function() { epub.writeEPUB({}, "test","test-book", {}) } ).not.to.throw();
+    expect( function() { epub.writeEPUB({}, "test","test-book", function(){ done(); }) } ).not.to.throw();
   });
 
-  describe("When the constituent files are requested", function() {
+  describe("With added content", function() {
 
     var files = [];
 
@@ -111,43 +111,49 @@ describe("Create EPUB with valid document metadata and cover image", function() 
       files = epub.getFilesForEPUB();
     });
 
-    it("should return the correct number of files", function() {
-      expect(files.length).to.equal(11);
+    describe("When the constituent files are requested", function() {
+
+      it("should return the correct number of files", function() {
+        expect(files.length).to.equal(11);
+      });
+
+      it("should have a mimetype file", function() {
+        var metadata = _.find(files, function(f) { return f.name == 'mimetype' });
+        expect(metadata).not.to.be.null;
+      });
+
+      it("should have an uncompressed mimetype file", function() {
+        var metadata = _.find(files, function(f) { return f.name == 'mimetype' });
+        expect(metadata.compress).to.equal(false);
+      });
+
+      it("should have all other files compressed", function() {
+        var metadata = _.find(files, function(f) { return f.name != 'mimetype' && f.compress == false });
+        expect(metadata).to.be.undefined;
+      });
+
     });
 
-    it("should have a mimetype file", function() {
-      var metadata = _.find(files, function(f) { return f.name == 'mimetype' });
-      expect(metadata).not.to.be.null;
-    });
+    describe("When a final EPUB is requested", function() {
 
-    it("should have an uncompressed mimetype file", function() {
-      var metadata = _.find(files, function(f) { return f.name == 'mimetype' });
-      expect(metadata.compress).to.equal(false);
-    });
+      beforeEach(function() {
+        try {
+          fs.unlink('test/test-book.epub');
+        } catch (e) { }
+      });
 
-    it("should have all other files compressed", function() {
-      var metadata = _.find(files, function(f) { return f.name != 'mimetype' && f.compress == false });
-      expect(metadata).to.be.undefined;
-    });
+      it("the file should now exist", function(done) {
+        expect( function() {
+          epub.writeEPUB({}, "test","test-book", function(){
+            try {
+              var result = fs.statSync('test/test-book.epub').isFile();
+              if (!result) throw new Error("EPUB not created or not a File.");
+            } catch (e) { throw new Error("EPUB not created."); }
+            done();
+          })
+        } ).not.to.throw();
+      });
 
-  });
-
-  describe("When a final EPUB is requested", function() {
-
-    var files = [];
-
-    beforeEach(function(done) {
-      epub = makepub.document( validMetadata );
-      epub.addChapter('title', 'content');
-      epub.writeEPUB({}, 'test','test-book', function(){ done(); });
-    });
-
-    it("the file should now exist", function() {
-      try {
-        fs.statSync('test/test-book.epub').isFile();
-      } catch (e) {
-        throw new Error("Failed write: " + e);
-      }
     });
 
   });
