@@ -3,7 +3,7 @@ var sampleMetadata = {
 	id: '12345678',
 	title: 'Unnamed Document',
 	series: 'My Series',
-	sequence: 2,
+	sequence: 1,
 	author: 'Anonymous',
 	fileAs: 'Anonymous',
 	genre: 'Non-Fiction',

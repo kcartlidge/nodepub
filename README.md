@@ -62,15 +62,23 @@ Using **makepub** is straightforward. Note that the HTML you provide for chapter
 var epub = require('./index').document({
 	id: '12345678',
 	title: 'Unnamed Document',
+	series: 'My Series',
+	sequence: 1,
 	author: 'Anonymous',
 	fileAs: 'Anonymous',
 	genre: 'Non-Fiction',
+	tags: 'Sample,Example,Test',
 	copyright: 'Anonymous, 1980',
 	publisher: 'My Fake Publisher',
 	published: '2000-12-31',
 	language: 'en',
-	cover: 'sample-cover.png',
-	description: 'A sample book.'
+	cover: 'test/test-cover.png',
+	description: 'A test book.',
+	thanks: "Thanks for reading <em>[[TITLE]]</em>. If you enjoyed it please consider leaving a review where you purchased it.",
+	linkText: "See more books and register for special offers here.",
+	bookPage: "https://github.com/kcartlidge/node-makepub",
+	showChapterNumbers: true,
+	includeCopyrightPage: true
 });
 
 // Add some content.
@@ -91,15 +99,23 @@ epub.writeEPUB('.', 'sample', function() { console.log('\nFinished.\n'); });
 var epub = require('./index').document({
 	id: '12345678',
 	title: 'Unnamed Document',
+	series: 'My Series',
+	sequence: 1,
 	author: 'Anonymous',
 	fileAs: 'Anonymous',
 	genre: 'Non-Fiction',
+	tags: 'Sample,Example,Test',
 	copyright: 'Anonymous, 1980',
 	publisher: 'My Fake Publisher',
 	published: '2000-12-31',
 	language: 'en',
-	cover: 'sample-cover.png',
-	description: 'A sample book.'
+	cover: 'test/test-cover.png',
+	description: 'A test book.',
+	thanks: "Thanks for reading <em>[[TITLE]]</em>. If you enjoyed it please consider leaving a review where you purchased it.",
+	linkText: "See more books and register for special offers here.",
+	bookPage: "https://github.com/kcartlidge/node-makepub",
+	showChapterNumbers: true,
+	includeCopyrightPage: true
 });
 
 // Add some content.
