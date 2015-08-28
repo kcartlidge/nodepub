@@ -22,7 +22,7 @@ Cover images are included and must be in PNG format; I recommend 600x800 or an a
 
 If you use the raw generated files to write the EPUB yourself, bear in mind that the **mimetype** file MUST be the first file in the archive and also MUST NOT be compressed. In simple terms, an EPUB is a renamed ZIP file where compression is optional apart from the mimetype file which should be added first using the 'store' option.
 
-Note that ALL functions of the module are synchronous EXCEPT if you choose to use the option to create the complete EPUB (*writeEPUB*), which is internally synchronous whilst generating the file contents but for external purposes is asynchronous with a callback due to the nature of the *archiver* dependency used to create the final output. This is definitely an anti-pattern and will be fixed.
+ALL functions of the module are synchronous EXCEPT if you choose to use the option to create the complete EPUB (*writeEPUB*), which is internally synchronous whilst generating the file contents but for external purposes is asynchronous with a callback due to the nature of the *archiver* dependency used to create the final output. This is definitely an anti-pattern and will be fixed.
 
 *Upcoming Changes*
 
@@ -45,9 +45,9 @@ To just see an example usage, *cd* into the *example* folder, run the following 
 
 ### Usage ###
 
-**Note that this is not yet published as an NPM module (is imminent though).**
+**This is not yet published as an NPM module (it is imminent though).**
 
-Using **makepub** is straightforward. Note that the HTML you provide for chapter contents should be for the body contents only (typically a sequence of *&lt;p>one paragraph of text&lt;/p>* lines). You can use header tags, but I recommend no higher than *h3* be used. This may mean that if you produce HTML from a Markdown file you need to demote headers with a search and replace (*h1* becomes *h3*, *h2* becomes *h4* and so on - remember to demote the closing tags too, as incorrect content markup confuses some ereader software [eg iBooks]).
+Using **makepub** is straightforward. The HTML you provide for chapter contents should be for the body contents only (typically a sequence of *&lt;p>one paragraph of text&lt;/p>* lines). You can use header tags, but I recommend no higher than *h3* be used. This may mean that if you produce HTML from a Markdown file you need to demote headers with a search and replace (*h1* becomes *h3*, *h2* becomes *h4* and so on - remember to demote the closing tags too, as incorrect content markup confuses some ereader software [eg iBooks]).
 
 1. Require the module and call *document()* with a metadata object detailing your book.
 2. Repeatedly call *addChapter()* with a title and HTML contents.
@@ -136,4 +136,4 @@ for(var i in files) {
 epub.writeFilesForEPUB('./sample');
 ```
 
-**Note that this is a utility module, not a user-facing one. In other words it is assumed that whoever calls into *makepub* has already validated all inputs.**
+*This is a utility module, not a user-facing one. In other words it is assumed that whoever calls into *makepub* has already validated the majority of inputs.*
