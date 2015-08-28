@@ -1,6 +1,7 @@
 
-var fs = require('fs'), expect = require("chai").expect,
-    makepub = require('../index'), _ = require('underscore');
+var fs = require("fs"), expect = require("chai").expect,
+    makepub = require("../index"), _ = require("underscore"),
+    sinon = require("sinon");
 
 var validMetadata = {
 	id: '12345678',
@@ -130,6 +131,30 @@ describe("Create EPUB with valid document metadata and cover image", function() 
       it("should have all other files compressed", function() {
         var metadata = _.find(files, function(f) { return f.name != 'mimetype' && f.compress == false });
         expect(metadata).to.be.undefined;
+      });
+
+    });
+
+    describe("When the constituent files are to be written to a folder", function() {
+      var stubMkdir, stubWrite, expectation;
+
+      beforeEach(function() {
+        stubMkdir = sinon.stub(fs, "mkdirSync");
+        stubWrite = sinon.stub(fs, "writeFileSync");
+      });
+      afterEach(function() {
+        stubWrite.restore();
+        stubMkdir.restore();
+      });
+
+      it("Should attempt to create a subfolder", function() {
+        epub.writeFilesForEPUB("test/test");
+        expect(fs.mkdirSync.callCount).to.equal(2);
+      });
+
+      it("Should attempt to write the correct quantity of files", function() {
+        epub.writeFilesForEPUB("test/test");
+        expect(fs.writeFileSync.callCount).to.equal(11);
       });
 
     });
