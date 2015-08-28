@@ -136,4 +136,4 @@ for(var i in files) {
 epub.writeFilesForEPUB('./sample');
 ```
 
-*This is a utility module, not a user-facing one. In other words it is assumed that whoever calls into *makepub* has already validated the majority of inputs.*
+*This is a utility module, not a user-facing one. In other words it is assumed that the caller has already validated the majority of inputs.*
