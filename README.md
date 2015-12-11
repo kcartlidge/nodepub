@@ -1,4 +1,4 @@
-# Nodepub v0.6.3
+# Nodepub v0.6.4
 
 Nodepub is a **Node** module which can be used to create **EPUB** documents. The resultant files are designed to pass the [IDPF online validator](http://validator.idpf.org) and Sigil's preflight checks. They should also open correctly in iBooks (as this is the most picky mainstream reader) and be suited for upload into the Amazon KDP and Kobo Writing Life sites. For those using KDP who wish to do a conversion locally, it should also satisfy KindleGen.
 
@@ -8,9 +8,10 @@ Resultant EPUBs can be generated to one of three levels of completeness:
 2. A folder containing all the files necessary to build the final EPUB
 3. A Javascript object containing all the filenames and content needed for the final EPUB
 
+
 The module has no concept of how the original content is obtained; it is passed a metadata object at creation after which content is added sequentially by the caller. There is no automatic pre-processing of content files such as Markdown as the module expects to be given *HTML* to work with and it is trivial for the caller to pre-process in advance by requiring a Markdown module, the Jade rendering engine or similar.
 
-###Progress###
+### Progress ###
 
 The generation of EPUBs to all three levels of completeness mentioned above is in place along with a sample script to show the usage. The codebase also includes both the resulting sample EPUB and the files that were joined to create it.
 
@@ -23,6 +24,7 @@ If you use the raw generated files to write the EPUB yourself, bear in mind that
 ALL functions of the module are synchronous EXCEPT if you choose to use the option to create the complete EPUB (*writeEPUB*), which is internally synchronous whilst generating the file contents but for external purposes is asynchronous with a callback due to the nature of the *archiver* dependency used to create the final output.
 This is definitely an anti-pattern and will be fixed.
 
+
 *Upcoming Changes*
 
 * Allow CSS overriding; the current EPUBs are simple yet attractive, but I appreciate you may want to add your own styles.
@@ -30,9 +32,10 @@ This is definitely an anti-pattern and will be fixed.
 
 ### Tests and Example ###
 
-There are both tests and an example generator.
+There are both tests and also serve as an example generator.
 
 To run the tests, in the top folder (containing the *package.json* file) run the following and check the inner test subfolder for both a resulting final EPUB and a subfolder of constituent files:
+
 ``` javascript
 npm test
 ```
@@ -62,7 +65,8 @@ And for production is one of:
 1. Call *writeFilesForEPUB()* if you want to create a folder containing the complete files as mentioned above. You can edit these and produce an EPUB; simply zip the files and change the extention. For a valid EPUB the *mimetype* file **must** be added first and *must not* be compressed. Some validators will pass the file anyway; some ereaders will fail to read it.
 1. Call *writeEPUB()*. This is the easiest way and also the only one guaranteed to produce valid EPUB output simply because the other two methods allow for changes and compression issues.
 
-**The Simplest Way**
+
+#### The Simplest Way ####
 
 ```javascript
 // Create a book.
@@ -99,7 +103,7 @@ epub.addChapter('The Conclusion of Things', lipsum);
 epub.writeEPUB('.', 'sample', function() { console.log('\nFinished.\n'); });
 ```
 
-**More Manual Output Options**
+#### More Manual Output Options ####
 
 ```javascript
 // Create a book.
