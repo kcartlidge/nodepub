@@ -1,4 +1,4 @@
-# Nodepub
+# Nodepub v0.6.3
 
 Nodepub is a **Node** module which can be used to create **EPUB** documents. The resultant files are designed to pass the [IDPF online validator](http://validator.idpf.org) and Sigil's preflight checks. They should also open correctly in iBooks (as this is the most picky mainstream reader) and be suited for upload into the Amazon KDP and Kobo Writing Life sites. For those using KDP who wish to do a conversion locally, it should also satisfy KindleGen.
 
@@ -39,9 +39,12 @@ npm test
 
 *Important Note about the Tests*
 
-The tests do not stub *fs* for most operations.
-They do however actually write a final EPUB document as this also serves as an *example* of the resulting files.
+The tests stub *fs* where necessary.
+However they do actually write a final EPUB document as this also serves as an *example* of the resulting files.
 This means that (a) the test process needs writes to the test folder and (b) an actual file is generated.
+Whilst the *process* is tested, the final EPUB is not; it is manually tested via the [IDPF Validator](http://validator.idpf.org/).
+The actual testing of an EPUB file is already sufficiently covered by the *epubcheck* that site uses.
+It would be pretty simple to include the use of *epubcheck* as part of integration testing should the need arise.
 
 ### Usage ###
 

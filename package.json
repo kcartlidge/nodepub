@@ -1,6 +1,6 @@
 {
-  "name": "node-makepub",
-  "version": "0.6.2",
+  "name": "nodepub",
+  "version": "0.6.3",
   "description": "Create valid EPUB ebooks from metadata, chapters and a cover image.",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kcartlidge/node-makepub"
+    "url": "https://github.com/kcartlidge/nodepub"
   },
   "keywords": [
     "epub",
