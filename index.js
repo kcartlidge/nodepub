@@ -1,4 +1,3 @@
-
 var sampleMetadata = {
 	id: '12345678',
 	title: 'Unnamed Document',
@@ -22,10 +21,10 @@ var sampleMetadata = {
 };
 
 /*
-	Sample cover by Hyokano (https://www.flickr.com/photos/75797208@N00/2847467731/).
-	Licensed as CC BY-SA 2.0 (https://creativecommons.org/licenses/by-sa/2.0/).
-	Included under that licence with no endorsement implied on behalf of the creator.
-*/
+ Sample cover by Hyokano (https://www.flickr.com/photos/75797208@N00/2847467731/).
+ Licensed as CC BY-SA 2.0 (https://creativecommons.org/licenses/by-sa/2.0/).
+ Included under that licence with no endorsement implied on behalf of the creator.
+ */
 
 var fs = require('fs'), zip = require('archiver'), _ = require('underscore');
 
@@ -35,105 +34,113 @@ exports.document = document;
 function document(metadata) {
 	var self = this;
 
-  // Basic validation.
-  var required = ["id", "title", "author", "cover"];
-  if (metadata == null) throw "Missing metadata";
-  _.each(required, function(field) {
-    var prop = metadata[field];
-    if (prop == null || typeof(prop) == "undefined" || prop.toString().trim() == "")
-      throw "Missing metadata: " + field;
-  });
-  try {
-    fs.statSync(metadata.cover).isFile();
-  } catch (e) {
-    throw "Missing file or invalid metadata: cover"
-  }
+	// Basic validation.
+	var required = ["id", "title", "author", "cover"];
+	if (metadata == null) throw "Missing metadata";
+	_.each(required, function (field) {
+		var prop = metadata[field];
+		if (prop == null || typeof(prop) == "undefined" || prop.toString().trim() == "")
+			throw "Missing metadata: " + field;
+	});
+	try {
+		fs.statSync(metadata.cover).isFile();
+	} catch (e) {
+		throw "Missing file or invalid metadata: cover"
+	}
 
 	// Add a new chapter with the given title and (HTML) body content.
-	self.addChapter = function(title,content) {
-		self.chapters.push({title:title, content:content});
+	self.addChapter = function (title, content) {
+		self.chapters.push({title: title, content: content});
 	};
 
 	// Gets the number of chapters added so far.
-	self.getChapterCount = function() {
+	self.getChapterCount = function () {
 		return self.chapters.length;
 	};
 
 	// Gets the files needed for the EPUB, as an array of objects.
 	// Note that 'compress:false' MUST be respected for valid EPUB files.
-	self.getFilesForEPUB = function() {
+	self.getFilesForEPUB = function () {
 		var files = [];
-		files.push({ name:'mimetype', folder:'', compress:false, content:getMimetype() });
-		files.push({ name:'container.xml', folder:'META-INF', compress:true, content:getContainer(self) });
-		files.push({ name:'ebook.opf', folder:'', compress:true, content:getOPF(self) });
-		files.push({ name:'navigation.ncx', folder:'', compress:true, content:getNCX(self) });
-		files.push({ name:'toc.xhtml', folder:'', compress:true, content:getTOC(self) });
-		files.push({ name:'cover.xhtml', folder:'', compress:true, content:getCover(self) });
+		files.push({name: 'mimetype', folder: '', compress: false, content: getMimetype()});
+		files.push({name: 'container.xml', folder: 'META-INF', compress: true, content: getContainer(self)});
+		files.push({name: 'ebook.opf', folder: '', compress: true, content: getOPF(self)});
+		files.push({name: 'navigation.ncx', folder: '', compress: true, content: getNCX(self)});
+		files.push({name: 'toc.xhtml', folder: '', compress: true, content: getTOC(self)});
+		files.push({name: 'cover.xhtml', folder: '', compress: true, content: getCover(self)});
 		if (self.metadata.includeCopyrightPage) {
-			files.push({ name:'copyright.xhtml', folder:'', compress:true, content:getCopyright(self) });
+			files.push({name: 'copyright.xhtml', folder: '', compress: true, content: getCopyright(self)});
 		}
-		files.push({ name:'ebook.css', folder:'', compress:true, content:getCSS(self) });
-		files.push({ name:'Cover.png', folder:'', compress:true, content:fs.readFileSync(self.metadata.cover) });
-		for(var i = 1; i <= self.chapters.length; i++) {
-			files.push({ name:'ch' + i + '.xhtml', folder:'', compress:true, content:getChapter(self, i) });
-		};
-		files.push({ name:'back.xhtml', folder:'', compress:true, content:getBackMatter(self) });
+		files.push({name: 'ebook.css', folder: '', compress: true, content: getCSS(self)});
+		files.push({name: 'Cover.png', folder: '', compress: true, content: fs.readFileSync(self.metadata.cover)});
+		for (var i = 1; i <= self.chapters.length; i++) {
+			files.push({name: 'ch' + i + '.xhtml', folder: '', compress: true, content: getChapter(self, i)});
+		}
+		;
+		files.push({name: 'back.xhtml', folder: '', compress: true, content: getBackMatter(self)});
 		return files;
 	};
 
 	// Writes the files needed for the EPUB into a folder structure.
 	// Note that for valid EPUB files the 'mimetype' MUST be the first entry in an EPUB and uncompressed.
-	self.writeFilesForEPUB = function(folder) {
+	self.writeFilesForEPUB = function (folder) {
 		var files = self.getFilesForEPUB();
 		makeFolder(folder);
-		for(var i in files) {
+		for (var i in files) {
 			if (files[i].folder.length > 0) {
 				makeFolder(folder + '/' + files[i].folder);
 				fs.writeFileSync(folder + '/' + files[i].folder + '/' + files[i].name, files[i].content);
 			} else {
 				fs.writeFileSync(folder + '/' + files[i].name, files[i].content);
-			};
-		};
+			}
+			;
+		}
+		;
 	};
 
 	// Writes the EPUB. The filename should not have an extention.
-	self.writeEPUB = function(onError, folder, filename, onSuccess) {
+	self.writeEPUB = function (onError, folder, filename, onSuccess) {
 		try {
 			var files = self.getFilesForEPUB();
 			makeFolder(folder);
 
 			// Start a zip stream emitter.
 			var output = fs.createWriteStream(folder + '/' + filename + '.epub');
-			var archive = zip('zip', { store: false });
+			var archive = zip('zip', {store: false});
 
 			// Some end-state handlers.
 			output.on('close', function () {
-			  if (typeof(onSuccess) == 'function') {
-				  onSuccess(null);
-				};
+				if (typeof(onSuccess) == 'function') {
+					onSuccess(null);
+				}
+				;
 			});
-			archive.on('error', function(err) {
+			archive.on('error', function (err) {
 				throw err;
 			});
 			archive.pipe(output);
 
 			// Write the file contents.
-			for(var i in files) {
+			for (var i in files) {
 				if (files[i].folder.length > 0) {
-					archive.append(null, { name:files[i].folder + '/' });
-					archive.append(files[i].content, { name:files[i].folder + '/' + files[i].name, store: !files[i].compress });
+					archive.append(null, {name: files[i].folder + '/'});
+					archive.append(files[i].content, {name: files[i].folder + '/' + files[i].name, store: !files[i].compress});
 				} else {
-					archive.append(files[i].content, { name:files[i].name, store: !files[i].compress });
-				};
-			};
+					archive.append(files[i].content, {name: files[i].name, store: !files[i].compress});
+				}
+				;
+			}
+			;
 
 			// Done.
 			archive.finalize();
 		} catch (err) {
-			  if (typeof(onError) == 'function') {
-			    onError(err);
-				};
-		};
+			if (typeof(onError) == 'function') {
+				onError(err);
+			}
+			;
+		}
+		;
 	};
 
 	self.metadata = metadata ? metadata : sampleMetadata;
@@ -206,8 +213,8 @@ function getOPF(document) {
 	opf += "		<dc:subject>[[GENRE]]</dc:subject>[[EOL]]";
 
 	if (document.metadata.tags) {
-	  var tags = document.metadata.tags.split(',');
-	  for(var i = 0; i < tags.length; i++) {
+		var tags = document.metadata.tags.split(',');
+		for (var i = 0; i < tags.length; i++) {
 			opf += "		<dc:subject>" + tags[i] + "</dc:subject>[[EOL]]";
 		}
 	}
@@ -224,8 +231,8 @@ function getOPF(document) {
 	opf += "		<item id='cover' media-type='application/xhtml+xml' href='cover.xhtml'/>[[EOL]]";
 	opf += "		<item id='navigation' media-type='application/x-dtbncx+xml' href='navigation.ncx'/>[[EOL]]";
 
-	for(var i = 1; i <= document.chapters.length; i++) {
-		opf += "		<item id='ch"+i+"' media-type='application/xhtml+xml' href='ch"+i+".xhtml'/>[[EOL]]";
+	for (var i = 1; i <= document.chapters.length; i++) {
+		opf += "		<item id='ch" + i + "' media-type='application/xhtml+xml' href='ch" + i + ".xhtml'/>[[EOL]]";
 	}
 
 	if (document.metadata.includeCopyrightPage) {
@@ -241,8 +248,8 @@ function getOPF(document) {
 	opf += "		<itemref idref='copyright'/>[[EOL]]";
 	opf += "		<itemref idref='toc'/>[[EOL]]";
 
-	for(var i=1; i <= document.chapters.length; i++) {
-		opf += "		<itemref idref='ch"+i+"' />[[EOL]]";
+	for (var i = 1; i <= document.chapters.length; i++) {
+		opf += "		<itemref idref='ch" + i + "' />[[EOL]]";
 	}
 
 	opf += "		<itemref idref='back'/>[[EOL]]";
@@ -258,50 +265,50 @@ function getOPF(document) {
 function getNCX(document) {
 	var ncx = '';
 	var playOrder = 1;
-	ncx +=  "<?xml version='1.0' encoding='UTF-8'?>[[EOL]]";
-	ncx +=  "<!DOCTYPE ncx PUBLIC '-//NISO//DTD ncx 2005-1//EN' 'http://www.daisy.org/z3986/2005/ncx-2005-1.dtd'>[[EOL]]";
-	ncx +=  "<ncx xmlns='http://www.daisy.org/z3986/2005/ncx/'>[[EOL]]";
-	ncx +=  "<head>[[EOL]]";
-	ncx +=  "  <meta name='dtb:uid' content='[[ID]]'/>[[EOL]]";
-	ncx +=  "  <meta name='dtb:depth' content='1'/>[[EOL]]";
-	ncx +=  "  <meta name='dtb:totalPageCount' content='0'/>[[EOL]]";
-	ncx +=  "  <meta name='dtb:maxPageNumber' content='0'/>[[EOL]]";
-	ncx +=  "</head>[[EOL]]";
-	ncx +=  "<docTitle><text>[[TITLE]]</text></docTitle>[[EOL]]";
-	ncx +=  "<docAuthor><text>[[AUTHOR]]</text></docAuthor>[[EOL]]";
-	ncx +=  "<navMap>[[EOL]]";
-	ncx +=  "  <navPoint id='cover' playOrder='" + (playOrder++) + "'>[[EOL]]";
-	ncx +=  "    <navLabel><text>Cover</text></navLabel>[[EOL]]";
-	ncx +=  "    <content src='cover.xhtml'/>[[EOL]]";
-	ncx +=  "  </navPoint>[[EOL]]";
+	ncx += "<?xml version='1.0' encoding='UTF-8'?>[[EOL]]";
+	ncx += "<!DOCTYPE ncx PUBLIC '-//NISO//DTD ncx 2005-1//EN' 'http://www.daisy.org/z3986/2005/ncx-2005-1.dtd'>[[EOL]]";
+	ncx += "<ncx xmlns='http://www.daisy.org/z3986/2005/ncx/'>[[EOL]]";
+	ncx += "<head>[[EOL]]";
+	ncx += "  <meta name='dtb:uid' content='[[ID]]'/>[[EOL]]";
+	ncx += "  <meta name='dtb:depth' content='1'/>[[EOL]]";
+	ncx += "  <meta name='dtb:totalPageCount' content='0'/>[[EOL]]";
+	ncx += "  <meta name='dtb:maxPageNumber' content='0'/>[[EOL]]";
+	ncx += "</head>[[EOL]]";
+	ncx += "<docTitle><text>[[TITLE]]</text></docTitle>[[EOL]]";
+	ncx += "<docAuthor><text>[[AUTHOR]]</text></docAuthor>[[EOL]]";
+	ncx += "<navMap>[[EOL]]";
+	ncx += "  <navPoint id='cover' playOrder='" + (playOrder++) + "'>[[EOL]]";
+	ncx += "    <navLabel><text>Cover</text></navLabel>[[EOL]]";
+	ncx += "    <content src='cover.xhtml'/>[[EOL]]";
+	ncx += "  </navPoint>[[EOL]]";
 
 	if (document.metadata.includeCopyrightPage) {
-		ncx +=  "  <navPoint id='copyright' playOrder='" + (playOrder++) + "'>[[EOL]]";
-		ncx +=  "    <navLabel><text>Copyright</text></navLabel>[[EOL]]";
-		ncx +=  "    <content src='copyright.xhtml'/>[[EOL]]";
-		ncx +=  "  </navPoint>[[EOL]]";
+		ncx += "  <navPoint id='copyright' playOrder='" + (playOrder++) + "'>[[EOL]]";
+		ncx += "    <navLabel><text>Copyright</text></navLabel>[[EOL]]";
+		ncx += "    <content src='copyright.xhtml'/>[[EOL]]";
+		ncx += "  </navPoint>[[EOL]]";
 	}
 
-	ncx +=  "  <navPoint class='toc' id='toc' playOrder='" + (playOrder++) + "'>[[EOL]]";
-	ncx +=  "    <navLabel><text>Contents</text></navLabel>[[EOL]]";
-	ncx +=  "    <content src='toc.xhtml'/>[[EOL]]";
-	ncx +=  "  </navPoint>[[EOL]]";
-	ncx +=  "  <navPoint id='start' playOrder='" + (playOrder++) + "'>[[EOL]]";
-	ncx +=  "    <navLabel><text>Start Reading</text></navLabel>[[EOL]]";
-	ncx +=  "    <content src='ch1.xhtml#start_reading'/>[[EOL]]";
-	ncx +=  "  </navPoint>[[EOL]]";
+	ncx += "  <navPoint class='toc' id='toc' playOrder='" + (playOrder++) + "'>[[EOL]]";
+	ncx += "    <navLabel><text>Contents</text></navLabel>[[EOL]]";
+	ncx += "    <content src='toc.xhtml'/>[[EOL]]";
+	ncx += "  </navPoint>[[EOL]]";
+	ncx += "  <navPoint id='start' playOrder='" + (playOrder++) + "'>[[EOL]]";
+	ncx += "    <navLabel><text>Start Reading</text></navLabel>[[EOL]]";
+	ncx += "    <content src='ch1.xhtml#start_reading'/>[[EOL]]";
+	ncx += "  </navPoint>[[EOL]]";
 
-	for(var i=1; i <= document.chapters.length; i++) {
-		var title = document.chapters[i-1].title;
+	for (var i = 1; i <= document.chapters.length; i++) {
+		var title = document.chapters[i - 1].title;
 		var order = i + playOrder - 1;
-		ncx +=  "  <navPoint class='chapter' id='ch"+i+"' playOrder='" + order + "'>[[EOL]]";
-		ncx +=  "    <navLabel><text>" + title + "</text></navLabel>[[EOL]]";
-		ncx +=  "    <content src='ch" + i + ".xhtml'/>[[EOL]]";
-		ncx +=  "  </navPoint>[[EOL]]";
+		ncx += "  <navPoint class='chapter' id='ch" + i + "' playOrder='" + order + "'>[[EOL]]";
+		ncx += "    <navLabel><text>" + title + "</text></navLabel>[[EOL]]";
+		ncx += "    <content src='ch" + i + ".xhtml'/>[[EOL]]";
+		ncx += "  </navPoint>[[EOL]]";
 	}
 
-	ncx +=  "</navMap>[[EOL]]";
-	ncx +=  "</ncx>[[EOL]]";
+	ncx += "</navMap>[[EOL]]";
+	ncx += "</ncx>[[EOL]]";
 	return replacements(document, replacements(document, ncx));
 };
 
@@ -321,8 +328,8 @@ function getTOC(document) {
 	toc += "        <h1>Contents</h1>[[EOL]]";
 	toc += "        <div class='toc'>[[EOL]]";
 
-	for(var i=1; i <= document.chapters.length; i++) {
-		var title = document.chapters[i-1].title;
+	for (var i = 1; i <= document.chapters.length; i++) {
+		var title = document.chapters[i - 1].title;
 		toc += "          <a href='ch" + i + ".xhtml'>" + title + "</a><br/>[[EOL]]";
 	}
 
@@ -379,7 +386,7 @@ function getCopyright(document) {
 		copyright += "    <h2>&copy; [[AUTHOR]]</h2>[[EOL]]";
 	}
 
-  var year = parseInt(document.metadata.published);
+	var year = parseInt(document.metadata.published);
 	copyright += "    <h3>Published by [[PUBLISHER]], " + year + ".</h3>[[EOL]]";
 	copyright += "  </div>[[EOL]]";
 	copyright += "</body>[[EOL]]";
@@ -482,23 +489,23 @@ function getChapter(document, chapterNumber) {
 	html += "    <div id='start_reading'></div>[[EOL]]";
 	html += "    <div id='ch" + chapterNumber + "'></div>[[EOL]]";
 
-  if (showChapterNumbers) {
-    html += "    <h1 class='big-chapter'><span class='big'>" + chapterNumber + "</span>" + title + "</h1>[[EOL]]";
-  } else {
-    html += "    <h1 class='chapter'>" + title + "</h1>[[EOL]]";
-  }
-  html += "<div>[[EOL]]";
+	if (showChapterNumbers) {
+		html += "    <h1 class='big-chapter'><span class='big'>" + chapterNumber + "</span>" + title + "</h1>[[EOL]]";
+	} else {
+		html += "    <h1 class='chapter'>" + title + "</h1>[[EOL]]";
+	}
+	html += "<div>[[EOL]]";
 
 	var lines = content.split('\n');
 	var emptyRun = 0;
-	for(var lineIdx in lines) {
+	for (var lineIdx in lines) {
 		var line = lines[lineIdx];
 		if (line.length > 0) {
 			html += "    " + line + "[[EOL]]";
 		}
 	}
 
-  html += "</div>[[EOL]]";
+	html += "</div>[[EOL]]";
 	html += "  </body>[[EOL]]";
 	html += "</html>[[EOL]]";
 	return replacements(document, replacements(document, html));
@@ -509,8 +516,8 @@ function getChapter(document, chapterNumber) {
 function makeFolder(path) {
 	try {
 		fs.mkdirSync(path);
-	} catch(e) {
-		if ( e.code != 'EEXIST' ) throw e;
+	} catch (e) {
+		if (e.code != 'EEXIST') throw e;
 	}
 };
 
