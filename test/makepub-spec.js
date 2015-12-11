@@ -1,8 +1,8 @@
 var fs = require("fs"),
+	_ = require("underscore"),
 	assert = require('assert'),
 	expect = require('chai').expect,
 	makepub = require("../index"),
-	_ = require("underscore"),
 	sinon = require("sinon");
 
 var validMetadata = {
@@ -26,6 +26,8 @@ var validMetadata = {
 	showChapterNumbers: true,
 	includeCopyrightPage: true
 };
+
+var lipsum = "<p><em>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse mattis iaculis pharetra. Proin malesuada tortor ut nibh viverra eleifend.</em></p><p>Duis efficitur, arcu vitae viverra consectetur, nisi mi pharetra metus, vel egestas ex velit id leo. Curabitur non tortor nisi. Mauris ornare, tellus vel fermentum suscipit, ligula est eleifend dui, in elementum nunc risus in ipsum. Pellentesque finibus aliquet turpis sed scelerisque. Pellentesque gravida semper elit, ut consequat est mollis sit amet. Nulla facilisi.</p>";
 
 describe("Create EPUB with invalid document metadata", function () {
 
@@ -81,40 +83,24 @@ describe("Create EPUB with valid document metadata and cover image", function ()
 	});
 
 	it("should not throw an exception when addChapter is called", function () {
-		epub.addChapter('title', 'content');
+		epub.addChapter('title', lipsum);
 		expect(true).to.equal(true);
 	});
 
 	it("should increase the chapter count when addChapter is called", function () {
-		epub.addChapter('title', 'content');
+		epub.addChapter('title', lipsum);
 		expect(epub.chapters.length).to.equal(1);
 	});
 
 	it("should return the correct chapter count when getChapterCount is called", function () {
-		epub.addChapter('title', 'content');
+		epub.addChapter('title', lipsum);
 		expect(epub.getChapterCount()).to.equal(1);
 	});
 
-	it("should not error if EPUB files requested", function () {
-		epub.addChapter('title', 'content');
+	it("should provide an EPUB file collection when asked", function () {
+		epub.addChapter('title', lipsum);
 		expect(function () {
 			epub.getFilesForEPUB()
-		}).not.to.throw();
-	});
-
-	it("should not error if EPUB constituent files write requested", function () {
-		epub.addChapter('title', 'content');
-		expect(function () {
-			epub.writeFilesForEPUB("test/test")
-		}).not.to.throw();
-	});
-
-	it("should not error if EPUB final file write requested", function (done) {
-		epub.addChapter('title', 'content');
-		expect(function () {
-			epub.writeEPUB({}, "test", "test-book", function () {
-				done();
-			})
 		}).not.to.throw();
 	});
 
@@ -124,14 +110,16 @@ describe("Create EPUB with valid document metadata and cover image", function ()
 
 		beforeEach(function () {
 			epub = makepub.document(validMetadata);
-			epub.addChapter('title', 'content');
+			epub.addChapter('Chapter 1', lipsum);
+			epub.addChapter('Chapter 2', lipsum);
+			epub.addChapter('Chapter 3', lipsum);
 			files = epub.getFilesForEPUB();
 		});
 
 		describe("When the constituent files are requested", function () {
 
 			it("should return the correct number of files", function () {
-				expect(files.length).to.equal(11);
+				expect(files.length).to.equal(13);
 			});
 
 			it("should have a mimetype file", function () {
@@ -176,7 +164,7 @@ describe("Create EPUB with valid document metadata and cover image", function ()
 
 			it("Should attempt to write the correct quantity of files", function () {
 				epub.writeFilesForEPUB("test/test");
-				expect(fs.writeFileSync.callCount).to.equal(11);
+				expect(fs.writeFileSync.callCount).to.equal(13);
 			});
 
 		});

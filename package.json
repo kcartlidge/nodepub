@@ -1,7 +1,7 @@
 {
   "name": "node-makepub",
-  "version": "0.6.1",
-  "description": "Create valid EPUB ebooks from chapters and metadata.",
+  "version": "0.6.2",
+  "description": "Create valid EPUB ebooks from metadata, chapters and a cover image.",
   "main": "index.js",
   "scripts": {
     "test": "jasmine-node test --verbose"
@@ -14,12 +14,12 @@
     "epub",
     "ebook"
   ],
-  "author": "Karl Cartlidge <kcartlidge@users.noreply.github.com> (http://www.kcartlidge.com)",
+  "author": "K Cartlidge (http://www.kcartlidge.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kcartlidge/node-makepub/issues"
+    "url": "https://github.com/kcartlidge/nodepub/issues"
   },
-  "homepage": "https://github.com/kcartlidge/node-makepub",
+  "homepage": "https://github.com/kcartlidge/nodepub",
   "dependencies": {
     "archiver": "^0.14.2",
     "underscore": "1.8.x"

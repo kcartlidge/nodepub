@@ -1,8 +1,6 @@
-# makepub
+# Nodepub
 
-Makepub is a **Node** module which can be used to create **EPUB** documents. The resultant files are designed to pass the [IDPF online validator](http://validator.idpf.org) and Sigil's preflight checks. They should also open correctly in iBooks (as this is the most picky mainstream reader) and be suited for upload into the Amazon KDP and Kobo Writing Life sites. For those using KDP who wish to do a conversion locally, it should also satisfy KindleGen.
-
-*This module has only been tested via the require statement in the sample-usage.js file - this should be sufficient but further testing will follow shortly. Files have not yet been verified against KDP/Kobo, although the same generation methodology has been used successfully in the past so this also should occur shortly.*
+Nodepub is a **Node** module which can be used to create **EPUB** documents. The resultant files are designed to pass the [IDPF online validator](http://validator.idpf.org) and Sigil's preflight checks. They should also open correctly in iBooks (as this is the most picky mainstream reader) and be suited for upload into the Amazon KDP and Kobo Writing Life sites. For those using KDP who wish to do a conversion locally, it should also satisfy KindleGen.
 
 Resultant EPUBs can be generated to one of three levels of completeness:
 
@@ -22,7 +20,8 @@ Cover images are included and must be in PNG format; I recommend 600x800 or an a
 
 If you use the raw generated files to write the EPUB yourself, bear in mind that the **mimetype** file MUST be the first file in the archive and also MUST NOT be compressed. In simple terms, an EPUB is a renamed ZIP file where compression is optional apart from the mimetype file which should be added first using the 'store' option.
 
-ALL functions of the module are synchronous EXCEPT if you choose to use the option to create the complete EPUB (*writeEPUB*), which is internally synchronous whilst generating the file contents but for external purposes is asynchronous with a callback due to the nature of the *archiver* dependency used to create the final output. This is definitely an anti-pattern and will be fixed.
+ALL functions of the module are synchronous EXCEPT if you choose to use the option to create the complete EPUB (*writeEPUB*), which is internally synchronous whilst generating the file contents but for external purposes is asynchronous with a callback due to the nature of the *archiver* dependency used to create the final output.
+This is definitely an anti-pattern and will be fixed.
 
 *Upcoming Changes*
 
@@ -38,22 +37,27 @@ To run the tests, in the top folder (containing the *package.json* file) run the
 npm test
 ```
 
-To just see an example usage, *cd* into the *example* folder, run the following and check the inner example subfolder for both a resulting final EPUB and a subfolder of constituent files:
-``` javascript
-./example.js
-```
+*Important Note about the Tests*
+
+The tests do not stub *fs* for most operations.
+They do however actually write a final EPUB document as this also serves as an *example* of the resulting files.
+This means that (a) the test process needs writes to the test folder and (b) an actual file is generated.
 
 ### Usage ###
 
-**This is not yet published as an NPM module (it is imminent though).**
+Using **nodepub** is straightforward. The HTML you provide for chapter contents should be for the body contents only (typically a sequence of *&lt;p>one paragraph of text&lt;/p>* lines).
+You can use header tags, but I recommend no higher than *h3* be used. This may mean that if you produce HTML from a Markdown file you need to demote headers with a search and replace (*h1* becomes *h3*, *h2* becomes *h4* and so on - remember to demote the closing tags too, as incorrect content markup confuses some ereader software [eg iBooks]).
 
-Using **makepub** is straightforward. The HTML you provide for chapter contents should be for the body contents only (typically a sequence of *&lt;p>one paragraph of text&lt;/p>* lines). You can use header tags, but I recommend no higher than *h3* be used. This may mean that if you produce HTML from a Markdown file you need to demote headers with a search and replace (*h1* becomes *h3*, *h2* becomes *h4* and so on - remember to demote the closing tags too, as incorrect content markup confuses some ereader software [eg iBooks]).
+The sequence for creation is:
 
 1. Require the module and call *document()* with a metadata object detailing your book.
-2. Repeatedly call *addChapter()* with a title and HTML contents.
-3. Call *getFilesForEPUB()* if you want a simple array of file description and contents for storing in a database or further working through. This array will contain all needed files for a valid EPUB, along with their name, subfolder (if any) and a flag as to whether they should be compressed (a value of *false* should **not** be ignored).
-4. Call *writeFilesForEPUB()* if you want to create a folder containing the complete files as mentioned above. You can edit these and produce an EPUB; simply zip the files and change the extention. For a valid EPUB the *mimetype* file **must** be added first and *must not* be compressed. Some validators will pass the file anyway; some ereaders will fail to read it.
-5. Call *writeEPUB()*. This is the easiest way and also the only one guaranteed to produce valid EPUB output simply because the other two methods allow for changes and compression issues.
+1. Repeatedly call *addChapter()* with a title and HTML contents.
+
+And for production is one of:
+
+1. Call *getFilesForEPUB()* if you want a simple array of file description and contents for storing in a database or further working through. This array will contain all needed files for a valid EPUB, along with their name, subfolder (if any) and a flag as to whether they should be compressed (a value of *false* should **not** be ignored).
+1. Call *writeFilesForEPUB()* if you want to create a folder containing the complete files as mentioned above. You can edit these and produce an EPUB; simply zip the files and change the extention. For a valid EPUB the *mimetype* file **must** be added first and *must not* be compressed. Some validators will pass the file anyway; some ereaders will fail to read it.
+1. Call *writeEPUB()*. This is the easiest way and also the only one guaranteed to produce valid EPUB output simply because the other two methods allow for changes and compression issues.
 
 **The Simplest Way**
 
@@ -76,7 +80,7 @@ var epub = require('./index').document({
 	description: 'A test book.',
 	thanks: "Thanks for reading <em>[[TITLE]]</em>. If you enjoyed it please consider leaving a review where you purchased it.",
 	linkText: "See more books and register for special offers here.",
-	bookPage: "https://github.com/kcartlidge/node-makepub",
+	bookPage: "https://github.com/kcartlidge/nodepub",
 	showChapterNumbers: true,
 	includeCopyrightPage: true
 });
@@ -113,7 +117,7 @@ var epub = require('./index').document({
 	description: 'A test book.',
 	thanks: "Thanks for reading <em>[[TITLE]]</em>. If you enjoyed it please consider leaving a review where you purchased it.",
 	linkText: "See more books and register for special offers here.",
-	bookPage: "https://github.com/kcartlidge/node-makepub",
+	bookPage: "https://github.com/kcartlidge/nodepub",
 	showChapterNumbers: true,
 	includeCopyrightPage: true
 });
@@ -136,4 +140,4 @@ for(var i in files) {
 epub.writeFilesForEPUB('./sample');
 ```
 
-*This is a utility module, not a user-facing one. In other words it is assumed that the caller has already validated the majority of inputs.*
+*This is a utility module, not a user-facing one. In other words it is assumed that the caller has already validated the inputs.*
