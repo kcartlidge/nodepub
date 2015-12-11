@@ -36,18 +36,17 @@ function document(metadata) {
 	var self = this;
 
   // Basic validation.
-  var required = ["ID", "Title", "Author", "Cover"];
+  var required = ["id", "title", "author", "cover"];
   if (metadata == null) throw "Missing metadata";
   _.each(required, function(field) {
-    var lowerField = field.toLowerCase();
-    var prop = metadata[lowerField];
+    var prop = metadata[field];
     if (prop == null || typeof(prop) == "undefined" || prop.toString().trim() == "")
       throw "Missing metadata: " + field;
   });
   try {
     fs.statSync(metadata.cover).isFile();
   } catch (e) {
-    throw "Missing or invalid metadata: Cover"
+    throw "Missing file or invalid metadata: cover"
   }
 
 	// Add a new chapter with the given title and (HTML) body content.

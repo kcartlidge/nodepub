@@ -1,4 +1,4 @@
-# Nodepub v0.6.4
+# Nodepub v0.6.5
 
 Nodepub is a **Node** module which can be used to create **EPUB** documents. The resultant files are designed to pass the [IDPF online validator](http://validator.idpf.org) and Sigil's preflight checks. They should also open correctly in iBooks (as this is the most picky mainstream reader) and be suited for upload into the Amazon KDP and Kobo Writing Life sites. For those using KDP who wish to do a conversion locally, it should also satisfy KindleGen.
 
@@ -70,7 +70,7 @@ And for production is one of:
 
 ```javascript
 // Create a book.
-var epub = require('./index').document({
+var epub = require('nodepub').document({
 	id: '12345678',
 	title: 'Unnamed Document',
 	series: 'My Series',
@@ -83,7 +83,7 @@ var epub = require('./index').document({
 	publisher: 'My Fake Publisher',
 	published: '2000-12-31',
 	language: 'en',
-	cover: 'test/test-cover.png',
+	cover: 'test-cover.png',
 	description: 'A test book.',
 	thanks: "Thanks for reading <em>[[TITLE]]</em>. If you enjoyed it please consider leaving a review where you purchased it.",
 	linkText: "See more books and register for special offers here.",
@@ -100,14 +100,16 @@ epub.addChapter('A Moment of Conflict', lipsum);
 epub.addChapter('The Conclusion of Things', lipsum);
 
 // Write a complete EPUB.
-epub.writeEPUB('.', 'sample', function() { console.log('\nFinished.\n'); });
+epub.writeEPUB('.', 'sample', 'sample-output', function() { console.log('\nFinished.\n'); });
 ```
+
+Note that this example will require a *cover image* called *test-cover.png*.
 
 #### More Manual Output Options ####
 
 ```javascript
 // Create a book.
-var epub = require('./index').document({
+var epub = require('nodepub').document({
 	id: '12345678',
 	title: 'Unnamed Document',
 	series: 'My Series',
@@ -120,7 +122,7 @@ var epub = require('./index').document({
 	publisher: 'My Fake Publisher',
 	published: '2000-12-31',
 	language: 'en',
-	cover: 'test/test-cover.png',
+	cover: 'test-cover.png',
 	description: 'A test book.',
 	thanks: "Thanks for reading <em>[[TITLE]]</em>. If you enjoyed it please consider leaving a review where you purchased it.",
 	linkText: "See more books and register for special offers here.",
@@ -146,5 +148,7 @@ for(var i in files) {
 // Write the contents of the EPUB file into a folder (as an FYI or if you wish to modify it).
 epub.writeFilesForEPUB('./sample');
 ```
+
+Note that this example will require a *cover image* called *test-cover.png*.
 
 *This is a utility module, not a user-facing one. In other words it is assumed that the caller has already validated the inputs.*

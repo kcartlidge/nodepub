@@ -1,6 +1,6 @@
 {
   "name": "nodepub",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "Create valid EPUB ebooks from metadata, chapters and a cover image.",
   "main": "index.js",
   "scripts": {

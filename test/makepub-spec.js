@@ -41,35 +41,35 @@ describe("Create EPUB with invalid document metadata", function () {
 		expect(function () {
 			epub = makepub.document({title: "T", author: "A", cover: 'test-cover.png'})
 		})
-			.to.throw(": ID");
+			.to.throw(": id");
 	});
 
 	it("should throw an exception if no Title", function () {
 		expect(function () {
 			epub = makepub.document({id: "1", author: "A", cover: 'test-cover.png'})
 		})
-			.to.throw(": Title");
+			.to.throw(": title");
 	});
 
 	it("should throw an exception if no Author", function () {
 		expect(function () {
 			epub = makepub.document({id: "1", title: "T", cover: 'test-cover.png'})
 		})
-			.to.throw(": Author");
+			.to.throw(": author");
 	});
 
 	it("should throw an exception if no Cover", function () {
 		expect(function () {
 			epub = makepub.document({id: "1", title: "T", author: "A"})
 		})
-			.to.throw(": Cover");
+			.to.throw(": cover");
 	});
 
 	it("should throw an exception if a missing/invalid Cover is specified", function () {
 		expect(function () {
 			epub = makepub.document({id: "1", title: "T", author: "A", cover: "test-cover"})
 		})
-			.to.throw(": Cover");
+			.to.throw(": cover");
 	});
 
 });
