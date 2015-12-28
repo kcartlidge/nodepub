@@ -1,4 +1,4 @@
-# Nodepub v0.6.5
+# Nodepub v0.6.6
 
 Nodepub is a **Node** module which can be used to create **EPUB** documents. The resultant files are designed to pass the [IDPF online validator](http://validator.idpf.org) and Sigil's preflight checks. They should also open correctly in iBooks (as this is the most picky mainstream reader) and be suited for upload into the Amazon KDP and Kobo Writing Life sites. For those using KDP who wish to do a conversion locally, it should also satisfy KindleGen.
 
@@ -29,6 +29,10 @@ This is definitely an anti-pattern and will be fixed.
 
 * Allow CSS overriding; the current EPUBs are simple yet attractive, but I appreciate you may want to add your own styles.
 * Inline images; you can already have a cover image so the base functionality is there, but I will be adding an option to insert an image at any point in the text. As each chapter's HTML is provided in advance by the caller, the links will already be in the markup so all that should be required is to copy the images themselves into a suitable place in the file and ensure they appear in the relevant EPUB structural files.
+
+### Recent Updates ###
+
+* Added *includeBackMatter* option to definition file. 
 
 ### Tests and Example ###
 
@@ -89,7 +93,8 @@ var epub = require('nodepub').document({
 	linkText: "See more books and register for special offers here.",
 	bookPage: "https://github.com/kcartlidge/nodepub",
 	showChapterNumbers: true,
-	includeCopyrightPage: true
+	includeCopyrightPage: true,
+	includeBackMatter: true
 });
 
 // Add some content.
@@ -128,7 +133,8 @@ var epub = require('nodepub').document({
 	linkText: "See more books and register for special offers here.",
 	bookPage: "https://github.com/kcartlidge/nodepub",
 	showChapterNumbers: true,
-	includeCopyrightPage: true
+	includeCopyrightPage: true,
+	includeBackMatter: true
 });
 
 // Add some content.

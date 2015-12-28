@@ -24,7 +24,8 @@ var validMetadata = {
 	linkText: "See more books and register for special offers here.",
 	bookPage: "https://github.com/kcartlidge/node-makepub",
 	showChapterNumbers: true,
-	includeCopyrightPage: true
+	includeCopyrightPage: true,
+	includeBackMatterPage: true
 };
 
 var lipsum = "<p><em>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse mattis iaculis pharetra. Proin malesuada tortor ut nibh viverra eleifend.</em></p><p>Duis efficitur, arcu vitae viverra consectetur, nisi mi pharetra metus, vel egestas ex velit id leo. Curabitur non tortor nisi. Mauris ornare, tellus vel fermentum suscipit, ligula est eleifend dui, in elementum nunc risus in ipsum. Pellentesque finibus aliquet turpis sed scelerisque. Pellentesque gravida semper elit, ut consequat est mollis sit amet. Nulla facilisi.</p>";
@@ -192,6 +193,42 @@ describe("Create EPUB with valid document metadata and cover image", function ()
 				}).not.to.throw();
 			});
 
+		});
+
+	});
+
+});
+
+describe("Create EPUB with valid document metadata", function () {
+
+	var epub;
+
+	describe("With no copyright page", function () {
+
+		it("should return the correct number of files", function () {
+			validMetadata.includeCopyrightPage = false;
+			validMetadata.includeBackMatterPage = true;
+			epub = makepub.document(validMetadata);
+			epub.addChapter('Chapter 1', lipsum);
+			epub.addChapter('Chapter 2', lipsum);
+			epub.addChapter('Chapter 3', lipsum);
+			files = epub.getFilesForEPUB();
+			expect(files.length).to.equal(12);
+		});
+
+	});
+
+	describe("With no back matter page", function () {
+
+		it("should return the correct number of files", function () {
+			validMetadata.includeCopyrightPage = false;
+			validMetadata.includeBackMatterPage = false;
+			epub = makepub.document(validMetadata);
+			epub.addChapter('Chapter 1', lipsum);
+			epub.addChapter('Chapter 2', lipsum);
+			epub.addChapter('Chapter 3', lipsum);
+			files = epub.getFilesForEPUB();
+			expect(files.length).to.equal(11);
 		});
 
 	});

@@ -17,7 +17,8 @@ var sampleMetadata = {
 	linkText: "See more books and register for special offers here.",
 	bookPage: "https://github.com/kcartlidge/node-makepub",
 	showChapterNumbers: true,
-	includeCopyrightPage: true
+	includeCopyrightPage: true,
+	includeBackMatterPage: true
 };
 
 /*
@@ -76,8 +77,9 @@ function document(metadata) {
 		for (var i = 1; i <= self.chapters.length; i++) {
 			files.push({name: 'ch' + i + '.xhtml', folder: '', compress: true, content: getChapter(self, i)});
 		}
-		;
-		files.push({name: 'back.xhtml', folder: '', compress: true, content: getBackMatter(self)});
+		if (metadata.includeBackMatterPage) {
+			files.push({name: 'back.xhtml', folder: '', compress: true, content: getBackMatter(self)});
+		}
 		return files;
 	};
 
@@ -241,7 +243,11 @@ function getOPF(document) {
 
 	opf += "		<item id='toc' media-type='application/xhtml+xml' href='toc.xhtml'/>[[EOL]]";
 	opf += "		<item id='css' media-type='text/css' href='ebook.css'/>[[EOL]]";
-	opf += "		<item id='back' media-type='application/xhtml+xml' href='back.xhtml'/>[[EOL]]";
+
+	if (document.metadata.includeBackMatterPage) {
+		opf += "		<item id='back' media-type='application/xhtml+xml' href='back.xhtml'/>[[EOL]]";
+	}
+
 	opf += "	</manifest>[[EOL]]";
 	opf += "	<spine toc='navigation'>[[EOL]]";
 	opf += "		<itemref idref='cover' linear='yes' />[[EOL]]";
@@ -252,7 +258,10 @@ function getOPF(document) {
 		opf += "		<itemref idref='ch" + i + "' />[[EOL]]";
 	}
 
-	opf += "		<itemref idref='back'/>[[EOL]]";
+	if (document.metadata.includeBackMatterPage) {
+		opf += "		<itemref idref='back'/>[[EOL]]";
+	}
+
 	opf += "	</spine>[[EOL]]";
 	opf += "	<guide>[[EOL]]";
 	opf += "		<reference type='toc' title='Contents' href='toc.xhtml'></reference>[[EOL]]";
