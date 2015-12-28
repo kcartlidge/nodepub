@@ -18,13 +18,12 @@ var validMetadata = {
 	publisher: 'My Fake Publisher',
 	published: '2000-12-31',
 	language: 'en',
-	cover: 'test/test-cover.png',
 	description: 'A test book.',
 	thanks: "Thanks for reading <em>[[TITLE]]</em>. If you enjoyed it please consider leaving a review where you purchased it.",
 	linkText: "See more books and register for special offers here.",
 	bookPage: "https://github.com/kcartlidge/node-makepub",
 	showChapterNumbers: true,
-	includeCopyrightPage: true,
+	includeFrontMatterPage: true,
 	includeBackMatterPage: true
 };
 
@@ -40,37 +39,37 @@ describe("Create EPUB with invalid document metadata", function () {
 
 	it("should throw an exception if no ID", function () {
 		expect(function () {
-			epub = makepub.document({title: "T", author: "A", cover: 'test-cover.png'})
+			epub = makepub.document({title: "T", author: "A", genre: 'Non-Fiction'})
 		})
 			.to.throw(": id");
 	});
 
 	it("should throw an exception if no Title", function () {
 		expect(function () {
-			epub = makepub.document({id: "1", author: "A", cover: 'test-cover.png'})
+			epub = makepub.document({id: "1", author: "A", genre: 'Non-Fiction'})
 		})
 			.to.throw(": title");
 	});
 
 	it("should throw an exception if no Author", function () {
 		expect(function () {
-			epub = makepub.document({id: "1", title: "T", cover: 'test-cover.png'})
+			epub = makepub.document({id: "1", title: "T", genre: 'Non-Fiction'})
 		})
 			.to.throw(": author");
 	});
 
 	it("should throw an exception if no Cover", function () {
 		expect(function () {
-			epub = makepub.document({id: "1", title: "T", author: "A"})
+			epub = makepub.document({id: "1", title: "T", author: "A", genre: 'Non-Fiction'})
 		})
-			.to.throw(": cover");
+			.to.throw("cover");
 	});
 
 	it("should throw an exception if a missing/invalid Cover is specified", function () {
 		expect(function () {
-			epub = makepub.document({id: "1", title: "T", author: "A", cover: "test-cover"})
+			epub = makepub.document({id: "1", title: "T", author: "A", genre: 'Non-Fiction' }, 'missing-cover.png')
 		})
-			.to.throw(": cover");
+			.to.throw("cover");
 	});
 
 });
@@ -80,7 +79,7 @@ describe("Create EPUB with valid document metadata and cover image", function ()
 	var epub;
 
 	beforeEach(function () {
-		epub = makepub.document(validMetadata);
+		epub = makepub.document(validMetadata, "test/test-cover.png");
 	});
 
 	it("should not throw an exception when addChapter is called", function () {
@@ -203,10 +202,10 @@ describe("Create EPUB with valid document metadata", function () {
 
 	var epub;
 
-	describe("With no copyright page", function () {
+	describe("With no front matter page", function () {
 
 		it("should return the correct number of files", function () {
-			validMetadata.includeCopyrightPage = false;
+			validMetadata.includeFrontMatterPage = false;
 			validMetadata.includeBackMatterPage = true;
 			epub = makepub.document(validMetadata);
 			epub.addChapter('Chapter 1', lipsum);
@@ -221,7 +220,7 @@ describe("Create EPUB with valid document metadata", function () {
 	describe("With no back matter page", function () {
 
 		it("should return the correct number of files", function () {
-			validMetadata.includeCopyrightPage = false;
+			validMetadata.includeFrontMatterPage = false;
 			validMetadata.includeBackMatterPage = false;
 			epub = makepub.document(validMetadata);
 			epub.addChapter('Chapter 1', lipsum);

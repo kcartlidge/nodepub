@@ -1,4 +1,4 @@
-# Nodepub v0.6.6
+# Nodepub v1.0.0
 
 Nodepub is a **Node** module which can be used to create **EPUB** documents. The resultant files are designed to pass the [IDPF online validator](http://validator.idpf.org) and Sigil's preflight checks. They should also open correctly in iBooks (as this is the most picky mainstream reader) and be suited for upload into the Amazon KDP and Kobo Writing Life sites. For those using KDP who wish to do a conversion locally, it should also satisfy KindleGen.
 
@@ -22,8 +22,7 @@ Cover images are included and must be in PNG format; I recommend 600x800 or an a
 If you use the raw generated files to write the EPUB yourself, bear in mind that the **mimetype** file MUST be the first file in the archive and also MUST NOT be compressed. In simple terms, an EPUB is a renamed ZIP file where compression is optional apart from the mimetype file which should be added first using the 'store' option.
 
 ALL functions of the module are synchronous EXCEPT if you choose to use the option to create the complete EPUB (*writeEPUB*), which is internally synchronous whilst generating the file contents but for external purposes is asynchronous with a callback due to the nature of the *archiver* dependency used to create the final output.
-This is definitely an anti-pattern and will be fixed.
-
+As the use of this third output option is expected to be mutually exclusive of the other two, this latter one being asynchronous is not currently considered an issue.
 
 *Upcoming Changes*
 
@@ -32,7 +31,10 @@ This is definitely an anti-pattern and will be fixed.
 
 ### Recent Updates ###
 
-* Added *includeBackMatter* option to definition file. 
+The following two changes do not break the API but *will* materially affect the output pages of current projects:
+
+* Added *includeBackMatter* option to definition file.
+* Renamed *copyright* page to *front matter* page.
 
 ### Tests and Example ###
 
