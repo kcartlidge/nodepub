@@ -22,6 +22,7 @@
   "homepage": "https://github.com/kcartlidge/nodepub",
   "dependencies": {
     "archiver": "^0.14.2",
+    "moment": "^2.10.6",
     "underscore": "1.8.x"
   },
   "devDependencies": {

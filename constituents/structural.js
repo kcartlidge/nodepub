@@ -17,7 +17,17 @@ var structural = {
 		result += "<?xml version='1.0' encoding='utf-8'?>[[EOL]]";
 		result += "<package xmlns='http://www.idpf.org/2007/opf' version='2.0' unique-identifier='BookId'>[[EOL]]";
 		result += "	<metadata xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:opf='http://www.idpf.org/2007/opf'>[[EOL]]";
-		result += "		<dc:title>[[TITLE]]</dc:title>[[EOL]]";
+
+		if (document.metadata.series && document.metadata.sequence) {
+			result += "		<dc:title>[[TITLE]] ([[SERIES]] #[[SEQUENCE]])</dc:title>[[EOL]]";
+		} else if (document.metadata.series) {
+			result += "		<dc:title>[[TITLE]] ([[SERIES]])</dc:title>[[EOL]]";
+		} else if (document.metadata.sequence) {
+			result += "		<dc:title>[[TITLE]] (#[[SEQUENCE]])</dc:title>[[EOL]]";
+		} else {
+			result += "		<dc:title>[[TITLE]]</dc:title>[[EOL]]";
+		}
+
 		result += "		<dc:identifier id='BookId' opf:scheme='URI'>[[ID]]</dc:identifier>[[EOL]]";
 		result += "		<dc:language>[[LANGUAGE]]</dc:language>[[EOL]]";
 		result += "		<dc:creator opf:role='aut' opf:file-as='[[FILEAS]]'>[[AUTHOR]]</dc:creator>[[EOL]]";
@@ -26,6 +36,7 @@ var structural = {
 		result += "		<dc:coverage></dc:coverage>[[EOL]]";
 		result += "		<dc:source></dc:source>[[EOL]]";
 		result += "		<dc:date opf:event='publication'>[[PUBLISHED]]</dc:date>[[EOL]]";
+		result += "		<dc:date opf:event='modification'>[[MODIFIED]]</dc:date>[[EOL]]";
 		result += "		<dc:rights>[[COPYRIGHT]]</dc:rights>[[EOL]]";
 		result += "		<dc:subject>[[GENRE]]</dc:subject>[[EOL]]";
 

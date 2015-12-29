@@ -2,7 +2,7 @@ var makepub = require("../index.js"), _ = require("underscore");
 
 // Metadata example.
 var metadata = {
-	id: '12345678',
+	id: Date.now(),
 	title: 'Unnamed Document',
 	series: 'My Series',
 	sequence: 1,

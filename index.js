@@ -1,6 +1,7 @@
 var fs = require('fs'),
 	zip = require('archiver'),
 	_ = require('underscore'),
+	moment = require('moment'),
 	structuralFiles = require('./constituents/structural.js'),
 	markupFiles = require('./constituents/markup.js');
 
@@ -141,6 +142,7 @@ function tagReplace(original, tag, value) {
 
 // Do all in-line replacements needed.
 function replacements(document, original) {
+	var modified = moment().format('YYYY-MM-DD');
 	var result = original;
 	result = tagReplace(result, 'EOL', '\n');
 	result = tagReplace(result, 'ID', document.metadata.id);
@@ -160,6 +162,7 @@ function replacements(document, original) {
 	result = tagReplace(result, 'BOOKPAGE', document.metadata.bookPage);
 	result = tagReplace(result, 'LINKTEXT', document.metadata.linkText);
 	result = tagReplace(result, 'CONTENTS', document.metadata.contents);
+	result = tagReplace(result, 'MODIFIED', modified);
 	return result;
 }
 
