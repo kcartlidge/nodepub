@@ -103,36 +103,36 @@ This generates a more complete example EPUB document than the test, and the code
 
 Using **nodepub** is straightforward. The HTML you provide for chapter contents should be the body markup only (typically a sequence of *&lt;p>one paragraph of text&lt;/p>* lines or headers).
 
-The sequence is:
+The steps are:
 
-1. *Require* the module and call *document()* with a metadata object detailing your book plus the path of a cover image:
+* *Require* the module and call *document()* with a metadata object detailing your book plus the path of a cover image:
 ``` javascript
 var epub = makepub.document(metadata, "cover.png");
 ```
 
-1. Optionally add some *CSS* definitions:
+* Optionally add some *CSS* definitions:
 ``` javascript
 epub.addCSS(myCSS);
 ```
 
-1. Repeatedly call *addSection()* with a title and HTML contents, plus options for whether to exclude from the contents list and/or use as front matter:
+* Repeatedly call *addSection()* with a title and HTML contents, plus options for whether to exclude from the contents list and/or use as front matter:
 ``` javascript
 epub.addSection('Chapter 1', "<h1>One</h1><p>...</p>");
 ```
 
-1. Produce *one* of the following outputs:
+* Produce *one* of the following outputs:
 
-	* Call *getFilesForEPUB()* if you want a simple array of file description and contents for storing in a database or further working through. This array will contain all needed files for a valid EPUB, along with their name, subfolder (if any) and a flag as to whether they should be compressed (a value of *false* should **not** be ignored).
+	Call *getFilesForEPUB()* if you want a simple array of file description and contents for storing in a database or further working through. This array will contain all needed files for a valid EPUB, along with their name, subfolder (if any) and a flag as to whether they should be compressed (a value of *false* should **not** be ignored).
 ```javascript
 var files = epub.getFilesForEPUB();
 ```
 
-	* Call *writeFilesForEPUB()* if you want to create a folder containing the complete files as mentioned above. You can edit these and produce an EPUB; simply zip the files and change the extention. For a valid EPUB the *mimetype* file **must** be added first and *must not* be compressed. Some validators will pass the file anyway; some ereaders will fail to read it.
+	Call *writeFilesForEPUB()* if you want to create a folder containing the complete files as mentioned above. You can edit these and produce an EPUB; simply zip the files and change the extention. For a valid EPUB the *mimetype* file **must** be added first and *must not* be compressed. Some validators will pass the file anyway; some ereaders will fail to read it.
 ```javascript
 epub.writeFilesForEPUB("./output");
 ```
 
-	* Call *writeEPUB()*. This is the easiest way and also the only one guaranteed to produce valid EPUB output simply because the other two methods allow for changes and compression issues.
+	Call *writeEPUB()*. This is the easiest way and also the only one guaranteed to produce valid EPUB output simply because the other two methods allow for changes and compression issues.
 ```javascript
 epub.writeEPUB(function (e) {
 		console.log("Error:", e);
@@ -149,16 +149,16 @@ The following assumes the module has been required using the following statement
 var makepub = require("nodepub");
 ```
 
-**document ( metadata, coverImage )**
+### document ( metadata, coverImage )
 
 This begins a new document with the given metadata (see below) and cover image (a *path* to a *PNG*).
 
 *Example:*
 ```javascript
-var epub = makepub.document(metadata, coverImage);
+var epub = makepub.document(metadata, "./cover.png");
 ```
 
-**addCSS ( content )**
+### addCSS ( content )
 
 Adds your own custom *CSS* entries for use across *all* pages in the ebook. The default CSS is empty.
 
@@ -167,12 +167,12 @@ Adds your own custom *CSS* entries for use across *all* pages in the ebook. The 
 epub.addCSS("body { font-size: 14pt; }");
 ```
 
-**addSection ( title, content, excludeFromContents, isFrontMatter )**
+### addSection ( title, content, excludeFromContents, isFrontMatter )
 
 Adds a section, which is usually something like a front matter page, a copyright page, a chapter or an about the author page.
 
 * *title*, *content* - these parameters are obvious.
-* *excludeFromContents* - this option (default `false`) allows you to add content which does not appear either in the auto-generated HTML table of contents or the metadata contents used directly by ereaders/software. This is handy for example when adding a page just after the cover containing the title and author. This is quite a common page but does not warrant it's own contents entry.
+* *excludeFromContents* - this option (default `false`) allows you to add content which does not appear either in the auto-generated HTML table of contents or the metadata contents used directly by ereaders/software. This is handy for example when adding a page just after the cover containing the title and author - quite a common page which does not usually warrant it's own contents entry.
 * *isFrontMatter* - this option (default `false`) specifies that the section should appear *before* the contents page. This is often used for copyright pages or similar.
 
 *Example:*
@@ -181,7 +181,7 @@ epub.addSection('Copyright', myCopyrightText, false, true);
 epub.addSection('Chapter 1', "<h1>One</h1><p>...</p>");
 ```
 
-**getSectionCount ( )**
+### getSectionCount ( )
 
 Returns the quantity of sections currently added.
 
@@ -190,9 +190,9 @@ Returns the quantity of sections currently added.
 var qty = epub.getSectionCount();
 ```
 
-**getFilesForEPUB ( )**
+### getFilesForEPUB ( )
 
-Returns an of objects for the files needed to create an EPUB as defined so far. Writing these files in the sequence given and respecting all the properties provided should give a valid EPUB document.
+Returns an array of objects for the files needed to create an EPUB as defined so far. Writing these files in the sequence given and respecting all the properties provided should give a valid EPUB document.
 
 *Example:*
 ``` javascript
@@ -200,14 +200,14 @@ var files = epub.getFilesForEPUB();
 console.log("Files needed:", files.length);
 ```
 
-Each *file* has the following properties:
+Each entry has the following properties:
 
 * *name* - the filename within the EPUB archive.
 * *folder* - any folder within the EPUB archive within which the file should be placed.
-* *compress* - whether the file should be compressed. For a fully compliant EPUB this *must* be respected as it is a requirement for the *mimetype* (which will also be listed [and must be written] first).
+* *compress* - whether the file should be compressed - for a fully compliant EPUB this *must* be respected as it is a requirement for the *mimetype* (which will also be listed [and must be written] first).
 * *content* - the raw content to write.
 
-**writeFilesForEPUB ( folder )**
+### writeFilesForEPUB ( folder )
 
 Creates the *folder* (if need be) then writes the files/folders in the order returned by *getFilesForEPUB*. This is ideal for debugging purposes or if you intend to manually/programmatically make changes.
 
@@ -218,7 +218,7 @@ Note that if you are creating your own EPUB from this set of files it is your ow
 var qty = epub.writeFilesForEPUB("./raw-files");
 ```
 
-**writeEPUB ( onError, folder, filename, onSuccess )**
+### writeEPUB ( onError, folder, filename, onSuccess )
 
 Creates a *version 2 EPUB* document.
 
