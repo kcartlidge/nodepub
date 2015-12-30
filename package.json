@@ -1,7 +1,7 @@
 {
   "name": "nodepub",
   "version": "1.0.0",
-  "description": "Create valid EPUB ebooks with metadata, contents and cover image.",
+  "description": "Create valid EPUB (v2) ebooks with metadata, contents and cover image.",
   "main": "index.js",
   "scripts": {
     "test": "jasmine-node test --verbose"
