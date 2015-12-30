@@ -158,9 +158,6 @@ function replacements(document, original) {
 	result = tagReplace(result, 'PUBLISHED', document.metadata.published);
 	result = tagReplace(result, 'GENRE', document.metadata.genre);
 	result = tagReplace(result, 'TAGS', document.metadata.tags);
-	result = tagReplace(result, 'THANKS', document.metadata.thanks);
-	result = tagReplace(result, 'BOOKPAGE', document.metadata.bookPage);
-	result = tagReplace(result, 'LINKTEXT', document.metadata.linkText);
 	result = tagReplace(result, 'CONTENTS', document.metadata.contents);
 	result = tagReplace(result, 'MODIFIED', modified);
 	return result;

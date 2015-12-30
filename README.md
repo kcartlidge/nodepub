@@ -1,4 +1,4 @@
-# Nodepub v1.0.0
+# Nodepub v1.0.1
 ## Create valid EPUB (v2) ebooks with metadata, contents and cover image.
 
 [By K Cartlidge](http://www.kcartlidge.com).
@@ -122,24 +122,11 @@ epub.addSection('Chapter 1', "<h1>One</h1><p>...</p>");
 
 * Produce *one* of the following outputs:
 
-	Call *getFilesForEPUB()* if you want a simple array of file description and contents for storing in a database or further working through. This array will contain all needed files for a valid EPUB, along with their name, subfolder (if any) and a flag as to whether they should be compressed (a value of *false* should **not** be ignored).
-```javascript
-var files = epub.getFilesForEPUB();
-```
+	* Call `getFilesForEPUB()` if you want a simple array of file description and contents for storing in a database or further working through. This array will contain all needed files for a valid EPUB, along with their name, subfolder (if any) and a flag as to whether they should be compressed (a value of *false* should **not** be ignored).
 
-	Call *writeFilesForEPUB()* if you want to create a folder containing the complete files as mentioned above. You can edit these and produce an EPUB; simply zip the files and change the extention. For a valid EPUB the *mimetype* file **must** be added first and *must not* be compressed. Some validators will pass the file anyway; some ereaders will fail to read it.
-```javascript
-epub.writeFilesForEPUB("./output");
-```
+	* Call `writeFilesForEPUB()` if you want to create a folder containing the complete files as mentioned above. You can edit these and produce an EPUB; simply zip the files and change the extention. For a valid EPUB the *mimetype* file **must** be added first and *must not* be compressed. Some validators will pass the file anyway; some ereaders will fail to read it.
 
-	Call *writeEPUB()*. This is the easiest way and also the only one guaranteed to produce valid EPUB output simply because the other two methods allow for changes and compression issues.
-```javascript
-epub.writeEPUB(function (e) {
-		console.log("Error:", e);
-}, './output', 'example-ebook', function () {
-		console.log("EPUB created.")
-});
-```
+	* Call `writeEPUB()`. This is the easiest way and also the only one guaranteed to produce valid EPUB output simply because the other two methods allow for changes and compression issues.
 
 ## Public Methods
 
@@ -236,6 +223,67 @@ epub.writeEPUB(function (e) {
 });
 ```
 
+## Metadata
+
+The metadata object passed into the `document` method should look like this:
+
+``` javascript
+var metadata = {
+	id: Date.now(),
+	title: 'Unnamed Document',
+	series: 'My Series',
+	sequence: 1,
+	author: 'Anonymous',
+	fileAs: 'Anonymous',
+	genre: 'Non-Fiction',
+	tags: 'Sample,Example,Test',
+	copyright: 'Anonymous, 1980',
+	publisher: 'My Fake Publisher',
+	published: '2000-12-31',
+	language: 'en',
+	description: 'A test book.',
+	contents: 'Chapters'
+};
+```
+
+The properties are:
+
+* *id* - the book ID, whether that be an *ISBN*, an Amazon product code or just a random string.
+* *title* - just the book title; do not append details of any *series* or *sequence*.
+* *series* - any series to which the book belongs (e.g. *The Fellowship of the Ring* belongs to the series *The Lord of the Rings*).
+* *sequence* - the book number within any series (e.g. *1* in the Lord of the Rings example above).
+* *author* - the user-friendly author name (e.g. *K Cartlidge*).
+* *fileAs* - how the author should be considered when filing/sorting (e.g. *Cartlidge, K*).
+* *genre* - anything you like (e.g. *Science Fiction*).
+* *tags* - a comma-delimited list of *keyword-style* tags, which will appear as multiple *subjects* in the EPUB.
+* *copyright* - how you want the *copyright* to appear when applied as a *substitution* (see below), *without* the &copy; symbol.
+* *publisher* - the name of the publisher (or yourself if none).
+* *published* - the publication date (note the year/month/day format).
+* *language* - the short *ISO* language name (e.g. *en* for English or *fr* for French).
+* *description* - the short description included within the book definition and shown in (for example) the list view in *iBooks*.
+* *contents* - the *title* of the auto-generated contents HTML page.
+
+## Substitutions
+
+As mentioned briefly under the *copyright* entry of the *metadata* section above, a form of text substitution is supported.
+
+Basically, at any point in your section *content* you may include placeholders like `[[COPYRIGHT]]`. When the EPUB is generated any such placeholders which (within the double square braces) match the *capitalised* name of a *metadata* entry are replaced with the corresponding metadata value.
+
+For example, you could have a *Thanks for Reading* page at the end of your book which has the following markup:
+
+``` html
+<p>Thanks for reading <strong>[[TITLE]]</strong> by [[AUTHOR]].</p>
+```
+
+When the EPUB is produced and opened it may then look more like:
+
+----
+
+"Thanks for reading **The Hobbit** by JRR Tolkien."
+
+----
+
+This means you can re-use snippets of content across multiple books or refer to the author/title/series/whatever at any point within the book without worrying about consistency of spelling etc.
 
 ## Reminder
 
