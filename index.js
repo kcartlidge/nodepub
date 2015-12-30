@@ -5,9 +5,6 @@ var fs = require('fs'),
 	structuralFiles = require('./constituents/structural.js'),
 	markupFiles = require('./constituents/markup.js');
 
-exports.document = document;
-
-// Main entry point.
 function document(metadata, coverImage) {
 	var self = this;
 	self.CSS = "";
@@ -130,6 +127,9 @@ function document(metadata, coverImage) {
 	};
 	return self;
 }
+
+exports.document = document;
+
 
 
 /* PRIVATE */

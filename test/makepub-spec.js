@@ -6,28 +6,23 @@ var fs = require("fs"),
 	sinon = require("sinon");
 
 var validMetadata = {
-	id: '12345678',
-	title: 'Unnamed Document',
+	id: Date.now(),
+	title: 'Test Document',
 	series: 'My Series',
 	sequence: 1,
-	author: 'Anonymous',
-	fileAs: 'Anonymous',
+	author: 'Nodepub',
+	fileAs: 'Nodepub',
 	genre: 'Non-Fiction',
 	tags: 'Sample,Example,Test',
-	copyright: 'Anonymous, 1980',
+	copyright: 'Nodepub, 1980',
 	publisher: 'My Fake Publisher',
 	published: '2000-12-31',
 	language: 'en',
 	description: 'A test book.',
-	thanks: "Thanks for reading <em>[[TITLE]]</em>. If you enjoyed it please consider leaving a review where you purchased it.",
-	linkText: "See more books and register for special offers here.",
-	bookPage: "https://github.com/kcartlidge/node-makepub",
-	showChapterNumbers: true,
-	includeFrontMatterPage: true,
-	includeBackMatterPage: true
+	contents: 'Contents'
 };
 
-var lipsum = "<p><em>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse mattis iaculis pharetra. Proin malesuada tortor ut nibh viverra eleifend.</em></p><p>Duis efficitur, arcu vitae viverra consectetur, nisi mi pharetra metus, vel egestas ex velit id leo. Curabitur non tortor nisi. Mauris ornare, tellus vel fermentum suscipit, ligula est eleifend dui, in elementum nunc risus in ipsum. Pellentesque finibus aliquet turpis sed scelerisque. Pellentesque gravida semper elit, ut consequat est mollis sit amet. Nulla facilisi.</p>";
+var lipsum = "<h1>Chapter Title Goes Here</h1><p><em>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse mattis iaculis pharetra. Proin malesuada tortor ut nibh viverra eleifend.</em></p><p>Duis efficitur, arcu vitae viverra consectetur, nisi mi pharetra metus, vel egestas ex velit id leo. Curabitur non tortor nisi. Mauris ornare, tellus vel fermentum suscipit, ligula est eleifend dui, in elementum nunc risus in ipsum. Pellentesque finibus aliquet turpis sed scelerisque. Pellentesque gravida semper elit, ut consequat est mollis sit amet. Nulla facilisi.</p>";
 
 describe("Create EPUB with invalid document metadata", function () {
 
@@ -67,14 +62,14 @@ describe("Create EPUB with invalid document metadata", function () {
 
 	it("should throw an exception if a missing/invalid Cover is specified", function () {
 		expect(function () {
-			epub = makepub.document({id: "1", title: "T", author: "A", genre: 'Non-Fiction' }, 'missing-cover.png')
+			epub = makepub.document({id: "1", title: "T", author: "A", genre: 'Non-Fiction'}, 'missing-cover.png')
 		})
 			.to.throw("cover");
 	});
 
 });
 
-describe("Create EPUB with valid document metadata and cover image", function () {
+describe("Create EPUB with a valid document", function () {
 
 	var epub;
 
@@ -82,23 +77,23 @@ describe("Create EPUB with valid document metadata and cover image", function ()
 		epub = makepub.document(validMetadata, "test/test-cover.png");
 	});
 
-	it("should not throw an exception when addChapter is called", function () {
-		epub.addChapter('title', lipsum);
+	it("should not throw an exception when addSection is called", function () {
+		epub.addSection('title', lipsum);
 		expect(true).to.equal(true);
 	});
 
-	it("should increase the chapter count when addChapter is called", function () {
-		epub.addChapter('title', lipsum);
-		expect(epub.chapters.length).to.equal(1);
+	it("should increase the chapter count when addSection is called", function () {
+		epub.addSection('title', lipsum);
+		expect(epub.sections.length).to.equal(1);
 	});
 
 	it("should return the correct chapter count when getChapterCount is called", function () {
-		epub.addChapter('title', lipsum);
-		expect(epub.getChapterCount()).to.equal(1);
+		epub.addSection('title', lipsum);
+		expect(epub.getSectionCount()).to.equal(1);
 	});
 
 	it("should provide an EPUB file collection when asked", function () {
-		epub.addChapter('title', lipsum);
+		epub.addSection('title', lipsum);
 		expect(function () {
 			epub.getFilesForEPUB()
 		}).not.to.throw();
@@ -109,17 +104,17 @@ describe("Create EPUB with valid document metadata and cover image", function ()
 		var files = [];
 
 		beforeEach(function () {
-			epub = makepub.document(validMetadata);
-			epub.addChapter('Chapter 1', lipsum);
-			epub.addChapter('Chapter 2', lipsum);
-			epub.addChapter('Chapter 3', lipsum);
+			epub = makepub.document(validMetadata, "test/test-cover.png");
+			epub.addSection('Chapter 1', lipsum);
+			epub.addSection('Chapter 2', lipsum);
+			epub.addSection('Chapter 3', lipsum);
 			files = epub.getFilesForEPUB();
 		});
 
 		describe("When the constituent files are requested", function () {
 
 			it("should return the correct number of files", function () {
-				expect(files.length).to.equal(13);
+				expect(files.length).to.equal(11);
 			});
 
 			it("should have a mimetype file", function () {
@@ -164,12 +159,12 @@ describe("Create EPUB with valid document metadata and cover image", function ()
 
 			it("Should attempt to write the correct quantity of files", function () {
 				epub.writeFilesForEPUB("test/test");
-				expect(fs.writeFileSync.callCount).to.equal(13);
+				expect(fs.writeFileSync.callCount).to.equal(11);
 			});
 
 		});
 
-		describe("When a final EPUB is requested", function () {
+		describe("When writing the final EPUB is requested", function () {
 
 			beforeEach(function () {
 				try {
@@ -194,40 +189,64 @@ describe("Create EPUB with valid document metadata and cover image", function ()
 
 		});
 
-	});
+		describe("With a section excluded from the contents", function () {
 
-});
+			beforeEach(function () {
+				epub = makepub.document(validMetadata, "test/test-cover.png");
+				epub.addSection('Copyright', "<h1>Copyright Page</h1>", true, true);
+				epub.addSection('Chapter 1', lipsum);
+				epub.addSection('Chapter 2', lipsum);
+				epub.addSection('Chapter 3', lipsum);
+			});
 
-describe("Create EPUB with valid document metadata", function () {
+			it("should return the correct number of files", function () {
+				files = epub.getFilesForEPUB();
+				expect(files.length).to.equal(12);
+			});
 
-	var epub;
+			it("should not show the section in the NCX contents metadata", function () {
+				files = epub.getFilesForEPUB();
+				var ncxContent = ">Copyright<";
+				_.each(files, function (f) {
+					if (f.name === "navigation.ncx") {
+						ncxContent = f.content;
+					}
+				});
+				var copyrightPageInNCX = ncxContent.indexOf(">Copyright<") > -1;
+				expect(copyrightPageInNCX).to.equal(false);
+			});
 
-	describe("With no front matter page", function () {
+			it("should not show the section in the HTML contents area", function () {
+				files = epub.getFilesForEPUB();
+				var tocContent = ">Copyright<";
+				_.each(files, function (f) {
+					console.log(f.name);
+					if (f.name === "toc.xhtml") {
+						tocContent = f.content;
+					}
+				});
+				var copyrightPageInTOC = tocContent.indexOf("Copyright") > -1;
+				expect(copyrightPageInTOC).to.equal(false);
+			});
 
-		it("should return the correct number of files", function () {
-			validMetadata.includeFrontMatterPage = false;
-			validMetadata.includeBackMatterPage = true;
-			epub = makepub.document(validMetadata);
-			epub.addChapter('Chapter 1', lipsum);
-			epub.addChapter('Chapter 2', lipsum);
-			epub.addChapter('Chapter 3', lipsum);
-			files = epub.getFilesForEPUB();
-			expect(files.length).to.equal(12);
-		});
+			describe("With the excluded section being front-matter", function () {
 
-	});
+				it("should place the section before the HTML contents page", function () {
+					files = epub.getFilesForEPUB();
+					var opfContent = "";
+					_.each(files, function (f) {
+						console.log(f.name);
+						if (f.name === "ebook.opf") {
+							opfContent = f.content;
+						}
+					});
+					var copyrightPageInOPF = opfContent.indexOf("<itemref idref='s1' />");
+					var contentsPageInOPF = opfContent.indexOf("<itemref idref='toc'/>");
+					expect(copyrightPageInOPF).to.be.lessThan(contentsPageInOPF);
+				});
 
-	describe("With no back matter page", function () {
+			});
 
-		it("should return the correct number of files", function () {
-			validMetadata.includeFrontMatterPage = false;
-			validMetadata.includeBackMatterPage = false;
-			epub = makepub.document(validMetadata);
-			epub.addChapter('Chapter 1', lipsum);
-			epub.addChapter('Chapter 2', lipsum);
-			epub.addChapter('Chapter 3', lipsum);
-			files = epub.getFilesForEPUB();
-			expect(files.length).to.equal(11);
 		});
 
 	});
