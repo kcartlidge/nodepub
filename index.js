@@ -5,11 +5,13 @@ var fs = require('fs'),
 	structuralFiles = require('./constituents/structural.js'),
 	markupFiles = require('./constituents/markup.js');
 
-function document(metadata, coverImage) {
+function document(metadata, coverImage, generateContentsCallback) {
 	var self = this;
 	self.CSS = "";
 	self.sections = [];
 	self.metadata = metadata;
+	self.generateContentsCallback = generateContentsCallback;
+	self.filesForTOC = [];
 
 	// Basic validation.
 	var required = ["id", "title", "author", "genre"];
@@ -59,7 +61,6 @@ function document(metadata, coverImage) {
 		files.push({name: 'container.xml', folder: 'META-INF', compress: true, content: getContainer(self)});
 		files.push({name: 'ebook.opf', folder: '', compress: true, content: getOPF(self)});
 		files.push({name: 'navigation.ncx', folder: '', compress: true, content: getNCX(self)});
-		files.push({name: 'toc.xhtml', folder: '', compress: true, content: getTOC(self)});
 		files.push({name: 'cover.xhtml', folder: '', compress: true, content: getCover(self)});
 
 		// Optional files.
@@ -68,6 +69,10 @@ function document(metadata, coverImage) {
 		for (var i = 1; i <= self.sections.length; i++) {
 			files.push({name: 's' + i + '.xhtml', folder: '', compress: true, content: getSection(self, i)});
 		}
+
+		// Table of contents markup.
+		files.push({name: 'toc.xhtml', folder: '', compress: true, content: getTOC(self)});
+
 		return files;
 	};
 
@@ -188,7 +193,13 @@ function getNCX(document) {
 
 // Provide the contents of the TOC file.
 function getTOC(document) {
-	var content = markupFiles.getContents(document);
+	var content = "";
+	if (document.generateContentsCallback) {
+		var callbackContent = document.generateContentsCallback(document.filesForTOC, content);
+		content = markupFiles.getContents(document, callbackContent);
+	} else {
+		content = markupFiles.getContents(document);
+	}
 	return replacements(document, replacements(document, content));
 }
 

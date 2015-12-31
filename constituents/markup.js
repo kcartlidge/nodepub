@@ -1,27 +1,30 @@
 var markup = {
 
-	getContents: function (document, title) {
+	getContents: function (document, overrideContents) {
 		var result = "";
 		result += "<?xml version='1.0' encoding='utf-8'?>[[EOL]]";
 		result += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN' 'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd' >[[EOL]]";
 		result += "<html xmlns='http://www.w3.org/1999/xhtml'>[[EOL]]";
 		result += "  <head>[[EOL]]";
-		result += "    <title>Contents</title>[[EOL]]";
+		result += "    <title>[[CONTENTS]]</title>[[EOL]]";
 		result += "    <link rel='stylesheet' type='text/css' href='ebook.css' />[[EOL]]";
 		result += "  </head>[[EOL]]";
 		result += "  <body>[[EOL]]";
-		result += "    <div class='contents'>[[EOL]]";
-		result += "      <h1>[[CONTENTS]]</h1>[[EOL]]";
 
-		for (var i = 1; i <= document.sections.length; i++) {
-			var section = document.sections[i - 1];
-			if (!section.excludeFromContents) {
-				var title = section.title;
-				result += "      <a href='s" + i + ".xhtml'>" + title + "</a><br/>[[EOL]]";
+		if (overrideContents) {
+			result += overrideContents;
+		} else {
+			result += "    <div class='contents'>[[EOL]]";
+			result += "      <h1>[[CONTENTS]]</h1>[[EOL]]";
+			for (var i = 1; i <= document.sections.length; i++) {
+				var section = document.sections[i - 1];
+				if (!section.excludeFromContents) {
+					var title = section.title;
+					result += "      <a href='s" + i + ".xhtml'>" + title + "</a><br/>[[EOL]]";
+				}
 			}
+			result += "    </div>[[EOL]]";
 		}
-
-		result += "    </div>[[EOL]]";
 		result += "  </body>[[EOL]]";
 		result += "</html>[[EOL]]";
 		return result;

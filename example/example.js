@@ -63,13 +63,27 @@ for (var i = 0; i < 3; i++) {
 	lipsum = lipsum + lipsum;
 }
 
+// Optional override to replace auto-generated contents page.
+// If not required, just drop it from the 'var epub=' call below.
+var generateContentsPage = function (links, suggestedMarkup) {
+	var contents = "<h1>Chapters</h1>";
+	_.each(links, function (link) {
+		// Omit the contents page from the contents page markup.
+		// Front matter can be omitted anyway via a parameter when added.
+		if (link.itemType !== "contents") {
+			contents += "<a href='" + link.link + "'>" + link.title + "</a><br />";
+		}
+	});
+	return contents;
+};
+
 // Set up the EPUB basics.
-var epub = makepub.document(metadata, "../test/test-cover.png");
+var epub = makepub.document(metadata, "../test/test-cover.png", generateContentsPage);
 epub.addCSS("body{font-family:Verdana,Arial,Sans-Serif;font-size:11pt;}#title,#title h1,#title h2,#title h3{text-align:center;}h2{margin-bottom:2em;}");
 
 // Add some front matter.
 epub.addSection('Title Page', "<div id='title'><h1>[[TITLE]]</h1><h2>Book <strong>[[SEQUENCE]]</strong> of <em>[[SERIES]]</em></h2><h3>[[AUTHOR]]</h3><p> &nbsp;</p><p>&copy; [[COPYRIGHT]]</p></div>", true, true);
-epub.addSection('Copyright', copyright, true, true);
+epub.addSection('Copyright', copyright, false, true);
 
 // Add some content.
 epub.addSection('Chapter 1', "<h1>One</h1>" + lipsum);

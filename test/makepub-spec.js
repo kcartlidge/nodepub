@@ -99,6 +99,22 @@ describe("Create EPUB with a valid document", function () {
 		}).not.to.throw();
 	});
 
+	describe("With a generate contents callback provided", function () {
+
+		var providedContents = false;
+		var contentsCallback = function () {
+			providedContents = true;
+		};
+
+		it("should request contents markup when needed", function () {
+			epub = makepub.document(validMetadata, "test/test-cover.png", contentsCallback);
+			epub.addSection('Dummy Section.', lipsum);
+			files = epub.getFilesForEPUB();
+			expect(providedContents).to.equal(true);
+		});
+
+	});
+
 	describe("With added content", function () {
 
 		var files = [];
@@ -220,7 +236,6 @@ describe("Create EPUB with a valid document", function () {
 				files = epub.getFilesForEPUB();
 				var tocContent = ">Copyright<";
 				_.each(files, function (f) {
-					console.log(f.name);
 					if (f.name === "toc.xhtml") {
 						tocContent = f.content;
 					}
@@ -235,7 +250,6 @@ describe("Create EPUB with a valid document", function () {
 					files = epub.getFilesForEPUB();
 					var opfContent = "";
 					_.each(files, function (f) {
-						console.log(f.name);
 						if (f.name === "ebook.opf") {
 							opfContent = f.content;
 						}

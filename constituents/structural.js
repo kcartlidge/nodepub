@@ -1,7 +1,6 @@
-
 var structural = {
 
-	getContainer: function(document) {
+	getContainer: function (document) {
 		var result = "";
 		result += "<?xml version='1.0' encoding='UTF-8' ?>[[EOL]]";
 		result += "<container version='1.0' xmlns='urn:oasis:names:tc:opendocument:xmlns:container'>[[EOL]]";
@@ -12,7 +11,7 @@ var structural = {
 		return result;
 	},
 
-	getOPF: function(document) {
+	getOPF: function (document) {
 		var result = '';
 		result += "<?xml version='1.0' encoding='utf-8'?>[[EOL]]";
 		result += "<package xmlns='http://www.idpf.org/2007/opf' version='2.0' unique-identifier='BookId'>[[EOL]]";
@@ -92,7 +91,7 @@ var structural = {
 		return result;
 	},
 
-	getNCX: function(document) {
+	getNCX: function (document) {
 		var result = "";
 		var playOrder = 1;
 		result += "<?xml version='1.0' encoding='UTF-8'?>[[EOL]]";
@@ -117,6 +116,7 @@ var structural = {
 				if (document.sections[i - 1].isFrontMatter) {
 					var title = document.sections[i - 1].title;
 					var order = playOrder++;
+					document.filesForTOC.push({title: title, link: 's' + i + '.xhtml', itemType: "front"});
 					result += "  <navPoint class='section' id='s" + i + "' playOrder='" + order + "'>[[EOL]]";
 					result += "    <navLabel><text>" + title + "</text></navLabel>[[EOL]]";
 					result += "    <content src='s" + i + ".xhtml'/>[[EOL]]";
@@ -125,6 +125,7 @@ var structural = {
 			}
 		}
 
+		document.filesForTOC.push({title: document.metadata.contents, link: 'toc.xhtml', itemType: "contents"});
 		result += "  <navPoint class='toc' id='toc' playOrder='" + (playOrder++) + "'>[[EOL]]";
 		result += "    <navLabel><text>[[CONTENTS]]</text></navLabel>[[EOL]]";
 		result += "    <content src='toc.xhtml'/>[[EOL]]";
@@ -135,6 +136,7 @@ var structural = {
 				if (!document.sections[i - 1].isFrontMatter) {
 					var title = document.sections[i - 1].title;
 					var order = playOrder++;
+					document.filesForTOC.push({title: title, link: 's' + i + '.xhtml', itemType: "main"});
 					result += "  <navPoint class='section' id='s" + i + "' playOrder='" + order + "'>[[EOL]]";
 					result += "    <navLabel><text>" + title + "</text></navLabel>[[EOL]]";
 					result += "    <content src='s" + i + ".xhtml'/>[[EOL]]";

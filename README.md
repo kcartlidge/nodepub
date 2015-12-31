@@ -1,4 +1,4 @@
-# Nodepub v1.0.1
+# Nodepub v1.0.2
 ## Create valid EPUB (v2) ebooks with metadata, contents and cover image.
 
 [By K Cartlidge](http://www.kcartlidge.com).
@@ -12,7 +12,7 @@ A copy of the licence is within the package source.
 
 ## About Nodepub
 
-*This version introduces stability at the expense of minor breaking changes, consisting almost entirely of renames from *chapter* to *section* but with some of the pre-generated pages of earlier versions eliminated.*
+*This version introduces stability at the expense of minor breaking changes, consisting almost entirely of renames from chapter to section but with some of the pre-generated pages of earlier versions eliminated. The result is more abstracted but also more flexible, whilst also retaining most of it's simplicity.*
 
 Nodepub is a **Node** module which can be used to create **EPUB (v2)** documents.
 
@@ -41,9 +41,11 @@ That said, I *am* currently considering adding Markdown rendering for my own nee
 
 * Custom *CSS* can be provided.
 
+* **NEW** - There is now an option to provide a callback function for the generation of the HTML contents page. See the *Public Methods* area below for more details.
+
 * Sections can appear as *front matter*, before the contents page.
 
-* Sections can optionally be *excluded* from the contents page and metadata-based navigation.
+* Sections can optionally be *excluded* from the *pre-generated* contents page and metadata-based navigation.
 
 *If* you use the raw generated files to write the EPUB yourself, bear in mind that the **mimetype** file MUST be the first file in the archive and also MUST NOT be compressed. In simple terms, an EPUB is a renamed ZIP file where compression is optional apart from the mimetype file which should be added first using the 'store' option.
 
@@ -136,14 +138,50 @@ The following assumes the module has been required using the following statement
 var makepub = require("nodepub");
 ```
 
-### document ( metadata, coverImage )
+---
+
+### document ( metadata, coverImage, generateContentsCallback )
 
 This begins a new document with the given metadata (see below) and cover image (a *path* to a *PNG*).
 
-*Example:*
+If the *generateContentsCallback* function is provided then when the HTML markup is needed this function will be called. It will be given 2 parameters; an array of link objects and the pre-generated markup in case you want to just amend the default version rather than take full responsibility for it.
+
+*Simple Example:*
 ```javascript
 var epub = makepub.document(metadata, "./cover.png");
 ```
+
+*Callback Example 1:*
+```javascript
+var makeContents = function(links, defaultMarkup) {
+	return defaultMarkup.toUppercase();
+};
+var epub = makepub.document(metadata, "./cover.png", makeContents);
+```
+
+*Callback Example 2:*
+```javascript
+var makeContents = function(links, defaultMarkup) {
+	var contents = "<h1>Chapters</h1>";
+	_.each(links, function (link) {
+		if (link.itemType !== "contents") {
+			contents += "<a href='" + link.link + "'>" + link.title + "</a><br />";
+		}
+	});
+	return contents;
+};
+var epub = makepub.document(metadata, "./cover.png", makeContents);
+```
+
+The `links` array which is passed to the callback consists of objects with the following properties:
+
+* *title* - the title of the section to be linked to.
+* *link* - the relative `href` within the EPUB.
+* *itemType* - one of 3 types, those being *front* for front matter, *contents* for the contents page and *main* for the remaining sections.
+
+The callback should return a string of HTML which will be placed between the `body` and `/body` tags on the contents page.
+
+---
 
 ### addCSS ( content )
 
@@ -153,6 +191,8 @@ Adds your own custom *CSS* entries for use across *all* pages in the ebook. The 
 ``` javascript
 epub.addCSS("body { font-size: 14pt; }");
 ```
+
+---
 
 ### addSection ( title, content, excludeFromContents, isFrontMatter )
 
@@ -168,6 +208,8 @@ epub.addSection('Copyright', myCopyrightText, false, true);
 epub.addSection('Chapter 1', "<h1>One</h1><p>...</p>");
 ```
 
+---
+
 ### getSectionCount ( )
 
 Returns the quantity of sections currently added.
@@ -176,6 +218,8 @@ Returns the quantity of sections currently added.
 ``` javascript
 var qty = epub.getSectionCount();
 ```
+
+---
 
 ### getFilesForEPUB ( )
 
@@ -194,6 +238,8 @@ Each entry has the following properties:
 * *compress* - whether the file should be compressed - for a fully compliant EPUB this *must* be respected as it is a requirement for the *mimetype* (which will also be listed [and must be written] first).
 * *content* - the raw content to write.
 
+---
+
 ### writeFilesForEPUB ( folder )
 
 Creates the *folder* (if need be) then writes the files/folders in the order returned by *getFilesForEPUB*. This is ideal for debugging purposes or if you intend to manually/programmatically make changes.
@@ -204,6 +250,8 @@ Note that if you are creating your own EPUB from this set of files it is your ow
 ``` javascript
 var qty = epub.writeFilesForEPUB("./raw-files");
 ```
+
+---
 
 ### writeEPUB ( onError, folder, filename, onSuccess )
 
