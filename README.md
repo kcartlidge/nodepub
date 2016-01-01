@@ -58,6 +58,7 @@ As the use of this third output option is expected to be mutually exclusive of t
 ## Upcoming
 
 * *OEBPS and similar folders*. Whilst not actually required by the *spec* (other than for the *mimetype*), there is a certain expectation regarding internal folder structure. This should ideally be implemented before the addition of user-provided assets.
+
 * *Inline images and other assets*. You already have a cover image so the base functionality is there, but I will be adding an option to include an image or other asset (for example an embedded font).
 
 ## Requirements
@@ -348,5 +349,3 @@ This means you can re-use snippets of content across multiple books or refer to 
 ## Reminder
 
 *This is a utility module, not a user-facing one. In other words it is assumed that the caller has already validated the inputs. Only basic ommission checks are performed*
-
-

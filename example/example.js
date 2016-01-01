@@ -69,9 +69,11 @@ for (var i = 0; i < 3; i++) {
 var generateContentsPage = function (links, suggestedMarkup) {
 	var contents = "<h1>Chapters</h1>";
 	_.each(links, function (link) {
-		// Omit the contents page from the contents page markup.
-		// Front matter can be omitted anyway via a parameter when added.
-		if (link.itemType !== "contents") {
+		// Omit all but the main pages.
+		if (link.itemType === "main") {
+			if (link.title === "More Books to Read") {
+				contents += "<br />";
+			}
 			contents += "<a href='" + link.link + "'>" + link.title + "</a><br />";
 		}
 	});
@@ -80,7 +82,12 @@ var generateContentsPage = function (links, suggestedMarkup) {
 
 // Set up the EPUB basics.
 var epub = makepub.document(metadata, "../test/test-cover.png", generateContentsPage);
-epub.addCSS("body{font-family:Verdana,Arial,Sans-Serif;font-size:11pt;}#title,#title h1,#title h2,#title h3{text-align:center;}h2{margin-bottom:2em;}");
+epub.addCSS(`body { font-family:Verdana,Arial,Sans-Serif; font-size:11pt; }
+#title,#title h1,#title h2,#title h3 { text-align:center; }
+h1,h3,p { margin-bottom:1em; }
+h2 { margin-bottom:2em; }
+p { text-indent: 0; }
+p+p { text-indent: 0.75em; }`);
 
 // Add some front matter.
 epub.addSection('Title Page', "<div id='title'><h1>[[TITLE]]</h1><h2>Book <strong>[[SEQUENCE]]</strong> of <em>[[SERIES]]</em></h2><h3>[[AUTHOR]]</h3><p> &nbsp;</p><p>&copy; [[COPYRIGHT]]</p></div>", true, true);
@@ -90,7 +97,7 @@ epub.addSection('Copyright', copyright, false, true);
 epub.addSection('Chapter 1', "<h1>One</h1>" + lipsum);
 epub.addSection('Chapter 2', "<h1>Two</h1>" + lipsum);
 epub.addSection('Chapter 2a', "<h1>Two (A)</h1><p><strong>This chapter does not appear in the contents.</strong></p>" + lipsum, true);
-epub.addSection('Chapter 3', "<h1>Three</h1><ul><li>Sample list item one.</li><li>Sample list item two.</li><li>Sample list item three.</li></ul>" + lipsum);
+epub.addSection('Chapter 3', "<h1>Three</h1><p>Here is a sample list.</p><ul><li>Sample list item one.</li><li>Sample list item two.</li><li>Sample list item three.</li></ul>" + lipsum);
 epub.addSection('More Books to Read', more);
 epub.addSection('About the Author', about);
 
