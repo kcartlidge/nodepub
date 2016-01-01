@@ -16,7 +16,9 @@ A copy of the licence is within the package source.
 
 Nodepub is a **Node** module which can be used to create **EPUB (v2)** documents.
 
-The resultant files are designed to pass the [IDPF online validator](http://validator.idpf.org) and Sigil's preflight checks. They also open fine in IBooks, Adobe Digital Editions and Calibre.
+The resultant files are designed to pass the [IDPF online validator](http://validator.idpf.org) and Sigil's preflight checks. They also open fine in IBooks, Adobe Digital Editions and Calibre, plus the Kobo H20 ereader (a highly recommended *backlit* and *waterproof* e-ink device).
+
+They also pass *KindleGen* - although Amazon's `.mobi` files do not support the cover page HTML file the KindleGen tool strips it out so there is no need to make special allowance.
 
 Resultant EPUBs can be generated to one of three levels of completeness:
 
@@ -37,7 +39,7 @@ That said, I *am* currently considering adding Markdown rendering for my own nee
 
 * All *tests* pass.
 
-* *Cover images* are included (must be in PNG format). I recommend 600x800 or an alternative of the same aspect ratio.
+* *Cover images* are included (must be in PNG format). I recommend 600x800 or a larger alternative of the same aspect ratio.
 
 * Custom *CSS* can be provided.
 
@@ -55,9 +57,8 @@ As the use of this third output option is expected to be mutually exclusive of t
 
 ## Upcoming
 
-* *Inline images*. You can already have a cover image so the base functionality is there, but I will be adding an option to insert an image at any point in the text.
-
-* *Custom contents page*. It is expected that the caller will be able to provide a contents page callback handler to optionally override the built-in one. It will be provided with a list of the contents and expected to return HTML markup.
+* *OEBPS and similar folders*. Whilst not actually required by the *spec* (other than for the *mimetype*), there is a certain expectation regarding internal folder structure. This should ideally be implemented before the addition of user-provided assets.
+* *Inline images and other assets*. You already have a cover image so the base functionality is there, but I will be adding an option to include an image or other asset (for example an embedded font).
 
 ## Requirements
 
@@ -103,6 +104,8 @@ This generates a more complete example EPUB document than the test, and the code
 
 *You may find it easier just to look at the `example.js` file aforementioned.*
 
+*For viewing generated metadata I recommend opening the EPUB in Sigil and using it's Tools, Metadata option (F8).*
+
 Using **nodepub** is straightforward. The HTML you provide for chapter contents should be the body markup only (typically a sequence of *&lt;p>one paragraph of text&lt;/p>* lines or headers).
 
 The steps are:
@@ -147,11 +150,13 @@ This begins a new document with the given metadata (see below) and cover image (
 If the *generateContentsCallback* function is provided then when the HTML markup is needed this function will be called. It will be given 2 parameters; an array of link objects and the pre-generated markup in case you want to just amend the default version rather than take full responsibility for it.
 
 *Simple Example:*
+
 ```javascript
 var epub = makepub.document(metadata, "./cover.png");
 ```
 
 *Callback Example 1:*
+
 ```javascript
 var makeContents = function(links, defaultMarkup) {
 	return defaultMarkup.toUppercase();
@@ -160,6 +165,7 @@ var epub = makepub.document(metadata, "./cover.png", makeContents);
 ```
 
 *Callback Example 2:*
+
 ```javascript
 var makeContents = function(links, defaultMarkup) {
 	var contents = "<h1>Chapters</h1>";
@@ -203,6 +209,7 @@ Adds a section, which is usually something like a front matter page, a copyright
 * *isFrontMatter* - this option (default `false`) specifies that the section should appear *before* the contents page. This is often used for copyright pages or similar.
 
 *Example:*
+
 ``` javascript
 epub.addSection('Copyright', myCopyrightText, false, true);
 epub.addSection('Chapter 1', "<h1>One</h1><p>...</p>");
@@ -215,6 +222,7 @@ epub.addSection('Chapter 1', "<h1>One</h1><p>...</p>");
 Returns the quantity of sections currently added.
 
 *Example:*
+
 ``` javascript
 var qty = epub.getSectionCount();
 ```
@@ -247,6 +255,7 @@ Creates the *folder* (if need be) then writes the files/folders in the order ret
 Note that if you are creating your own EPUB from this set of files it is your own responsibility to ensure that the *mimetype* file appears first and is *uncompressed* (technically meaning *stored*).
 
 *Example:*
+
 ``` javascript
 var qty = epub.writeFilesForEPUB("./raw-files");
 ```
@@ -263,6 +272,7 @@ Creates a *version 2 EPUB* document.
 * *onSuccess* - an optional callback function (or `null`) which will be actioned upon document generation completion.
 
 *Example:*
+
 ``` javascript
 epub.writeEPUB(function (e) {
 	console.log("Error:", e);
@@ -290,7 +300,8 @@ var metadata = {
 	published: '2000-12-31',
 	language: 'en',
 	description: 'A test book.',
-	contents: 'Chapters'
+	contents: 'Chapters',
+	source: 'http://www.kcartlidge.com'
 };
 ```
 
@@ -310,6 +321,7 @@ The properties are:
 * *language* - the short *ISO* language name (e.g. *en* for English or *fr* for French).
 * *description* - the short description included within the book definition and shown in (for example) the list view in *iBooks*.
 * *contents* - the *title* of the auto-generated contents HTML page.
+* *source* - the derivation of the document, in this case a URL but it could also be an ISBN or similar if it is a derivative work.
 
 ## Substitutions
 
@@ -320,19 +332,21 @@ Basically, at any point in your section *content* you may include placeholders l
 For example, you could have a *Thanks for Reading* page at the end of your book which has the following markup:
 
 ``` html
-<p>Thanks for reading <strong>[[TITLE]]</strong> by [[AUTHOR]].</p>
+<p>Thanks for reading <strong>[[TITLE]]</strong> by <em>[[AUTHOR]]</em>.</p>
 ```
 
-When the EPUB is produced and opened it may then look more like:
+When the EPUB is produced and opened it will then look like:
 
 ----
 
-"Thanks for reading **The Hobbit** by JRR Tolkien."
+Thanks for reading **The Hobbit** by *JRR Tolkien*.
 
 ----
 
-This means you can re-use snippets of content across multiple books or refer to the author/title/series/whatever at any point within the book without worrying about consistency of spelling etc.
+This means you can re-use snippets of content across multiple books or refer to the author/title/series/whatever at any point within the book without worrying about consistency of spelling, naming conventions etcetera.
 
 ## Reminder
 
 *This is a utility module, not a user-facing one. In other words it is assumed that the caller has already validated the inputs. Only basic ommission checks are performed*
+
+
