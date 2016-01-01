@@ -33,7 +33,7 @@ var structural = {
 		result += "		<dc:publisher>[[PUBLISHER]]</dc:publisher>[[EOL]]";
 		result += "		<dc:description>[[DESCRIPTION]]</dc:description>[[EOL]]";
 		result += "		<dc:coverage></dc:coverage>[[EOL]]";
-		result += "		<dc:source></dc:source>[[EOL]]";
+		result += "		<dc:source>[[SOURCE]]</dc:source>[[EOL]]";
 		result += "		<dc:date opf:event='publication'>[[PUBLISHED]]</dc:date>[[EOL]]";
 		result += "		<dc:date opf:event='modification'>[[MODIFIED]]</dc:date>[[EOL]]";
 		result += "		<dc:rights>[[COPYRIGHT]]</dc:rights>[[EOL]]";

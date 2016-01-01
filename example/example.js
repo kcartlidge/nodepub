@@ -15,7 +15,8 @@ var metadata = {
 	published: '2000-12-31',
 	language: 'en',
 	description: 'A test book.',
-	contents: 'Chapters'
+	contents: 'Chapters',
+	source: 'http://www.kcartlidge.com'
 };
 
 var copyright = `<h1>[[TITLE]]</h1>

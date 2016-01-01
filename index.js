@@ -164,6 +164,7 @@ function replacements(document, original) {
 	result = tagReplace(result, 'GENRE', document.metadata.genre);
 	result = tagReplace(result, 'TAGS', document.metadata.tags);
 	result = tagReplace(result, 'CONTENTS', document.metadata.contents);
+	result = tagReplace(result, 'SOURCE', document.metadata.source);
 	result = tagReplace(result, 'MODIFIED', modified);
 	return result;
 }

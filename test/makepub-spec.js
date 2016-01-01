@@ -19,7 +19,8 @@ var validMetadata = {
 	published: '2000-12-31',
 	language: 'en',
 	description: 'A test book.',
-	contents: 'Contents'
+	contents: 'Contents',
+	source: 'http://www.kcartlidge.com'
 };
 
 var lipsum = "<h1>Chapter Title Goes Here</h1><p><em>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse mattis iaculis pharetra. Proin malesuada tortor ut nibh viverra eleifend.</em></p><p>Duis efficitur, arcu vitae viverra consectetur, nisi mi pharetra metus, vel egestas ex velit id leo. Curabitur non tortor nisi. Mauris ornare, tellus vel fermentum suscipit, ligula est eleifend dui, in elementum nunc risus in ipsum. Pellentesque finibus aliquet turpis sed scelerisque. Pellentesque gravida semper elit, ut consequat est mollis sit amet. Nulla facilisi.</p>";
