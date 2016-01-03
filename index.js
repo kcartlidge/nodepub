@@ -59,19 +59,19 @@ function document(metadata, coverImage, generateContentsCallback) {
 		// Required files.
 		files.push({name: 'mimetype', folder: '', compress: false, content: getMimetype()});
 		files.push({name: 'container.xml', folder: 'META-INF', compress: true, content: getContainer(self)});
-		files.push({name: 'ebook.opf', folder: '', compress: true, content: getOPF(self)});
-		files.push({name: 'navigation.ncx', folder: '', compress: true, content: getNCX(self)});
-		files.push({name: 'cover.xhtml', folder: '', compress: true, content: getCover(self)});
+		files.push({name: 'ebook.opf', folder: 'OEBPF', compress: true, content: getOPF(self)});
+		files.push({name: 'navigation.ncx', folder: 'OEBPF', compress: true, content: getNCX(self)});
+		files.push({name: 'cover.xhtml', folder: 'OEBPF', compress: true, content: getCover(self)});
 
 		// Optional files.
-		files.push({name: 'ebook.css', folder: '', compress: true, content: getCSS(self)});
-		files.push({name: 'cover.png', folder: '', compress: true, content: fs.readFileSync(coverImage)});
+		files.push({name: 'ebook.css', folder: 'OEBPF/css', compress: true, content: getCSS(self)});
+		files.push({name: 'cover.png', folder: 'OEBPF/images', compress: true, content: fs.readFileSync(coverImage)});
 		for (var i = 1; i <= self.sections.length; i++) {
-			files.push({name: 's' + i + '.xhtml', folder: '', compress: true, content: getSection(self, i)});
+			files.push({name: 's' + i + '.xhtml', folder: 'OEBPF/content', compress: true, content: getSection(self, i)});
 		}
 
 		// Table of contents markup.
-		files.push({name: 'toc.xhtml', folder: '', compress: true, content: getTOC(self)});
+		files.push({name: 'toc.xhtml', folder: 'OEBPF/content', compress: true, content: getTOC(self)});
 
 		return files;
 	};

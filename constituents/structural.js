@@ -5,7 +5,7 @@ var structural = {
 		result += "<?xml version='1.0' encoding='UTF-8' ?>[[EOL]]";
 		result += "<container version='1.0' xmlns='urn:oasis:names:tc:opendocument:xmlns:container'>[[EOL]]";
 		result += "  <rootfiles>[[EOL]]";
-		result += "    <rootfile full-path='ebook.opf' media-type='application/oebps-package+xml'/>[[EOL]]";
+		result += "    <rootfile full-path='OEBPF/ebook.opf' media-type='application/oebps-package+xml'/>[[EOL]]";
 		result += "  </rootfiles>[[EOL]]";
 		result += "</container>";
 		return result;
@@ -54,16 +54,16 @@ var structural = {
 		result += "		<meta name='cover' content='cover-image'/>[[EOL]]";
 		result += "	</metadata>[[EOL]]";
 		result += "	<manifest>[[EOL]]";
-		result += "		<item id='cover-image' media-type='image/png' href='cover.png'/>[[EOL]]";
+		result += "		<item id='cover-image' media-type='image/png' href='images/cover.png'/>[[EOL]]";
 		result += "		<item id='cover' media-type='application/xhtml+xml' href='cover.xhtml'/>[[EOL]]";
 		result += "		<item id='navigation' media-type='application/x-dtbncx+xml' href='navigation.ncx'/>[[EOL]]";
 
 		for (var i = 1; i <= document.sections.length; i++) {
-			result += "		<item id='s" + i + "' media-type='application/xhtml+xml' href='s" + i + ".xhtml'/>[[EOL]]";
+			result += "		<item id='s" + i + "' media-type='application/xhtml+xml' href='content/s" + i + ".xhtml'/>[[EOL]]";
 		}
 
-		result += "		<item id='toc' media-type='application/xhtml+xml' href='toc.xhtml'/>[[EOL]]";
-		result += "		<item id='css' media-type='text/css' href='ebook.css'/>[[EOL]]";
+		result += "		<item id='toc' media-type='application/xhtml+xml' href='content/toc.xhtml'/>[[EOL]]";
+		result += "		<item id='css' media-type='text/css' href='css/ebook.css'/>[[EOL]]";
 		result += "	</manifest>[[EOL]]";
 
 		result += "	<spine toc='navigation'>[[EOL]]";
@@ -85,7 +85,7 @@ var structural = {
 
 		result += "	</spine>[[EOL]]";
 		result += "	<guide>[[EOL]]";
-		result += "		<reference type='toc' title='Contents' href='toc.xhtml'></reference>[[EOL]]";
+		result += "		<reference type='toc' title='Contents' href='content/toc.xhtml'></reference>[[EOL]]";
 		result += "	</guide>[[EOL]]";
 		result += "</package>[[EOL]]";
 		return result;
@@ -119,7 +119,7 @@ var structural = {
 					document.filesForTOC.push({title: title, link: 's' + i + '.xhtml', itemType: "front"});
 					result += "  <navPoint class='section' id='s" + i + "' playOrder='" + order + "'>[[EOL]]";
 					result += "    <navLabel><text>" + title + "</text></navLabel>[[EOL]]";
-					result += "    <content src='s" + i + ".xhtml'/>[[EOL]]";
+					result += "    <content src='content/s" + i + ".xhtml'/>[[EOL]]";
 					result += "  </navPoint>[[EOL]]";
 				}
 			}
@@ -128,7 +128,7 @@ var structural = {
 		document.filesForTOC.push({title: document.metadata.contents, link: 'toc.xhtml', itemType: "contents"});
 		result += "  <navPoint class='toc' id='toc' playOrder='" + (playOrder++) + "'>[[EOL]]";
 		result += "    <navLabel><text>[[CONTENTS]]</text></navLabel>[[EOL]]";
-		result += "    <content src='toc.xhtml'/>[[EOL]]";
+		result += "    <content src='content/toc.xhtml'/>[[EOL]]";
 		result += "  </navPoint>[[EOL]]";
 
 		for (var i = 1; i <= document.sections.length; i++) {
@@ -139,7 +139,7 @@ var structural = {
 					document.filesForTOC.push({title: title, link: 's' + i + '.xhtml', itemType: "main"});
 					result += "  <navPoint class='section' id='s" + i + "' playOrder='" + order + "'>[[EOL]]";
 					result += "    <navLabel><text>" + title + "</text></navLabel>[[EOL]]";
-					result += "    <content src='s" + i + ".xhtml'/>[[EOL]]";
+					result += "    <content src='content/s" + i + ".xhtml'/>[[EOL]]";
 					result += "  </navPoint>[[EOL]]";
 				}
 			}

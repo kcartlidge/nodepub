@@ -72,9 +72,9 @@ var generateContentsPage = function (links, suggestedMarkup) {
 		// Omit all but the main pages.
 		if (link.itemType === "main") {
 			if (link.title === "More Books to Read") {
-				contents += "<br />";
+				contents += "<div> &nbsp;</div>";
 			}
-			contents += "<a href='" + link.link + "'>" + link.title + "</a><br />";
+			contents += "<div><a href='" + link.link + "'>" + link.title + "</a></div>";
 		}
 	});
 	return contents;
@@ -107,3 +107,6 @@ epub.writeEPUB(function (e) {
 }, '.', 'example', function () {
 	console.log("Okay.")
 });
+
+// Also write the structure both for debugging purposes and also to provide sample output in GitHub.
+epub.writeFilesForEPUB('./example-EPUB-files');

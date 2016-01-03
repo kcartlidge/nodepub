@@ -7,7 +7,7 @@ var markup = {
 		result += "<html xmlns='http://www.w3.org/1999/xhtml'>[[EOL]]";
 		result += "  <head>[[EOL]]";
 		result += "    <title>[[CONTENTS]]</title>[[EOL]]";
-		result += "    <link rel='stylesheet' type='text/css' href='ebook.css' />[[EOL]]";
+		result += "    <link rel='stylesheet' type='text/css' href='../css/ebook.css' />[[EOL]]";
 		result += "  </head>[[EOL]]";
 		result += "  <body>[[EOL]]";
 
@@ -44,7 +44,7 @@ var markup = {
 		result += "  </style>[[EOL]]";
 		result += "</head>[[EOL]]";
 		result += "<body>[[EOL]]";
-		result += "  <div class='cover'><img style='height: 100%;width: 100%;' src='cover.png' alt='Cover' /></div>[[EOL]]";
+		result += "  <div class='cover'><img style='height: 100%;width: 100%;' src='images/cover.png' alt='Cover' /></div>[[EOL]]";
 		result += "</body>[[EOL]]";
 		result += "</html>[[EOL]]";
 		return result;
@@ -75,7 +75,7 @@ var markup = {
 		result += "    <link rel='schema.DCTERMS' href='http://purl.org/dc/terms/' hreflang='en' />[[EOL]]";
 		result += "    <link rel='schema.DCTYPE' href='http://purl.org/dc/dcmitype/' hreflang='en' />[[EOL]]";
 		result += "    <link rel='schema.DCAM' href='http://purl.org/dc/dcam/' hreflang='en' />[[EOL]]";
-		result += "    <link rel='stylesheet' type='text/css' href='ebook.css' />[[EOL]]";
+		result += "    <link rel='stylesheet' type='text/css' href='../css/ebook.css' />[[EOL]]";
 		result += "    <base href='.' />[[EOL]]";
 		result += "  </head>[[EOL]]";
 		result += "  <body>[[EOL]]";

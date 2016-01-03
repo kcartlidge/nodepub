@@ -169,9 +169,9 @@ describe("Create EPUB with a valid document", function () {
 				stubMkdir.restore();
 			});
 
-			it("Should attempt to create a subfolder", function () {
+			it("Should attempt to create subfolders", function () {
 				epub.writeFilesForEPUB("test/test");
-				expect(fs.mkdirSync.callCount).to.equal(2);
+				expect(fs.mkdirSync.callCount).to.be.greaterThan(0);
 			});
 
 			it("Should attempt to write the correct quantity of files", function () {

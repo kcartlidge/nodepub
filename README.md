@@ -1,4 +1,4 @@
-# Nodepub v1.0.2
+# Nodepub v1.0.3
 ## Create valid EPUB (v2) ebooks with metadata, contents and cover image.
 
 [By K Cartlidge](http://www.kcartlidge.com).
@@ -49,6 +49,8 @@ That said, I *am* currently considering adding Markdown rendering for my own nee
 
 * Sections can optionally be *excluded* from the *pre-generated* contents page and metadata-based navigation.
 
+* **NEW** - OEBPS and suitable subfolders now created within the EPUB (not actually required by the *spec* other than for the *mimetype* but there is a certain expectation regarding internal folder structure).
+
 *If* you use the raw generated files to write the EPUB yourself, bear in mind that the **mimetype** file MUST be the first file in the archive and also MUST NOT be compressed. In simple terms, an EPUB is a renamed ZIP file where compression is optional apart from the mimetype file which should be added first using the 'store' option.
 
 ALL functions of the module are synchronous EXCEPT if you choose to use the option to create the complete EPUB (*writeEPUB*), which is internally synchronous whilst generating the file contents but for external purposes is asynchronous with a callback due to the nature of the *archiver* dependency used to create the final output.
@@ -56,8 +58,6 @@ ALL functions of the module are synchronous EXCEPT if you choose to use the opti
 As the use of this third output option is expected to be mutually exclusive of the other two, this latter one being asynchronous is not currently considered an issue.
 
 ## Upcoming
-
-* *OEBPS and similar folders*. Whilst not actually required by the *spec* (other than for the *mimetype*), there is a certain expectation regarding internal folder structure. This should ideally be implemented before the addition of user-provided assets.
 
 * *Inline images and other assets*. You already have a cover image so the base functionality is there, but I will be adding an option to include an image or other asset (for example an embedded font).
 
