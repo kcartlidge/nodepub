@@ -72,11 +72,14 @@ var structural = {
 			var imageExt = path.extname(image).toLowerCase();
 			var imageFile = path.basename(image);
 			var imageType = "";
+			imageType = (imageExt === ".svg") ? "image/svg+xml" : imageType;
 			imageType = (imageExt === ".png") ? "image/png" : imageType;
 			imageType = (imageExt === ".jpg" || imageExt === ".jpeg") ? "image/jpeg" : imageType;
 			imageType = (imageExt === ".gif") ? "image/gif" : imageType;
 			imageType = (imageExt === ".tif" || imageExt === ".tiff") ? "image/tiff" : imageType;
-			result += "		<item id='img" + i + "' media-type='" + imageType + "' href='images/" + imageFile + "'/>[[EOL]]";
+			if (imageType.length > 0) {
+				result += "		<item id='img" + i + "' media-type='" + imageType + "' href='images/" + imageFile + "'/>[[EOL]]";
+			}
 		}
 
 		result += "	</manifest>[[EOL]]";
