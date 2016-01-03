@@ -16,7 +16,8 @@ var metadata = {
 	language: 'en',
 	description: 'A test book.',
 	contents: 'Chapters',
-	source: 'http://www.kcartlidge.com'
+	source: 'http://www.kcartlidge.com',
+	images: ['../test/hat.png']
 };
 
 var copyright = `<h1>[[TITLE]]</h1>
@@ -55,6 +56,12 @@ var about = `<h1>About the Author</h1>
 </p>
 <p>
 	You can find more at the author's site.
+</p>
+<p>
+	Oh, and here's a picture of a hat:
+</p>
+<p>
+	<img src="../images/hat.png" alt="A hat." />
 </p>
 `;
 

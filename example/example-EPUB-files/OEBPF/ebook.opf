@@ -2,7 +2,7 @@
 <package xmlns='http://www.idpf.org/2007/opf' version='2.0' unique-identifier='BookId'>
 	<metadata xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:opf='http://www.idpf.org/2007/opf'>
 		<dc:title>Unnamed Document (My Series #1)</dc:title>
-		<dc:identifier id='BookId' opf:scheme='URI'>1451827674104</dc:identifier>
+		<dc:identifier id='BookId' opf:scheme='URI'>1451842502345</dc:identifier>
 		<dc:language>en</dc:language>
 		<dc:creator opf:role='aut' opf:file-as='Anonymous'>Anonymous</dc:creator>
 		<dc:publisher>My Fake Publisher</dc:publisher>
@@ -34,6 +34,7 @@
 		<item id='s8' media-type='application/xhtml+xml' href='content/s8.xhtml'/>
 		<item id='toc' media-type='application/xhtml+xml' href='content/toc.xhtml'/>
 		<item id='css' media-type='text/css' href='css/ebook.css'/>
+		<item id='img0' media-type='image/png' href='images/hat.png'/>
 	</manifest>
 	<spine toc='navigation'>
 		<itemref idref='cover' linear='yes' />

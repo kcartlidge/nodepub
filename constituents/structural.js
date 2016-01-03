@@ -1,3 +1,5 @@
+var path = require('path');
+
 var structural = {
 
 	getContainer: function (document) {
@@ -64,6 +66,19 @@ var structural = {
 
 		result += "		<item id='toc' media-type='application/xhtml+xml' href='content/toc.xhtml'/>[[EOL]]";
 		result += "		<item id='css' media-type='text/css' href='css/ebook.css'/>[[EOL]]";
+
+		for (var i = 0; i < document.metadata.images.length; i++) {
+			var image = document.metadata.images[i];
+			var imageExt = path.extname(image).toLowerCase();
+			var imageFile = path.basename(image);
+			var imageType = "";
+			imageType = (imageExt === ".png") ? "image/png" : imageType;
+			imageType = (imageExt === ".jpg" || imageExt === ".jpeg") ? "image/jpeg" : imageType;
+			imageType = (imageExt === ".gif") ? "image/gif" : imageType;
+			imageType = (imageExt === ".tif" || imageExt === ".tiff") ? "image/tiff" : imageType;
+			result += "		<item id='img" + i + "' media-type='" + imageType + "' href='images/" + imageFile + "'/>[[EOL]]";
+		}
+
 		result += "	</manifest>[[EOL]]";
 
 		result += "	<spine toc='navigation'>[[EOL]]";

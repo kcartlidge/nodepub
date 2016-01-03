@@ -1,4 +1,5 @@
 var fs = require('fs'),
+	path = require('path'),
 	zip = require('archiver'),
 	_ = require('underscore'),
 	moment = require('moment'),
@@ -9,6 +10,7 @@ function document(metadata, coverImage, generateContentsCallback) {
 	var self = this;
 	self.CSS = "";
 	self.sections = [];
+	self.images = [];
 	self.metadata = metadata;
 	self.generateContentsCallback = generateContentsCallback;
 	self.filesForTOC = [];
@@ -69,6 +71,12 @@ function document(metadata, coverImage, generateContentsCallback) {
 		for (var i = 1; i <= self.sections.length; i++) {
 			files.push({name: 's' + i + '.xhtml', folder: 'OEBPF/content', compress: true, content: getSection(self, i)});
 		}
+
+		// Extra images.
+		_.each(self.metadata.images, function(image) {
+			var imageFilename = path.basename(image);
+			files.push({name: imageFilename, folder: 'OEBPF/images', compress: true, content: fs.readFileSync(image)});
+		});
 
 		// Table of contents markup.
 		files.push({name: 'toc.xhtml', folder: 'OEBPF/content', compress: true, content: getTOC(self)});

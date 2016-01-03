@@ -20,7 +20,8 @@ var validMetadata = {
 	language: 'en',
 	description: 'A test book.',
 	contents: 'Contents',
-	source: 'http://www.kcartlidge.com'
+	source: 'http://www.kcartlidge.com',
+	images: []
 };
 
 var lipsum = "<h1>Chapter Title Goes Here</h1><p><em>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse mattis iaculis pharetra. Proin malesuada tortor ut nibh viverra eleifend.</em></p><p>Duis efficitur, arcu vitae viverra consectetur, nisi mi pharetra metus, vel egestas ex velit id leo. Curabitur non tortor nisi. Mauris ornare, tellus vel fermentum suscipit, ligula est eleifend dui, in elementum nunc risus in ipsum. Pellentesque finibus aliquet turpis sed scelerisque. Pellentesque gravida semper elit, ut consequat est mollis sit amet. Nulla facilisi.</p>";
@@ -37,35 +38,35 @@ describe("Create EPUB with invalid document metadata", function () {
 		expect(function () {
 			epub = makepub.document({title: "T", author: "A", genre: 'Non-Fiction'})
 		})
-			.to.throw(": id");
+		.to.throw(": id");
 	});
 
 	it("should throw an exception if no Title", function () {
 		expect(function () {
 			epub = makepub.document({id: "1", author: "A", genre: 'Non-Fiction'})
 		})
-			.to.throw(": title");
+		.to.throw(": title");
 	});
 
 	it("should throw an exception if no Author", function () {
 		expect(function () {
 			epub = makepub.document({id: "1", title: "T", genre: 'Non-Fiction'})
 		})
-			.to.throw(": author");
+		.to.throw(": author");
 	});
 
 	it("should throw an exception if no Cover", function () {
 		expect(function () {
 			epub = makepub.document({id: "1", title: "T", author: "A", genre: 'Non-Fiction'})
 		})
-			.to.throw("cover");
+		.to.throw("cover");
 	});
 
 	it("should throw an exception if a missing/invalid Cover is specified", function () {
 		expect(function () {
 			epub = makepub.document({id: "1", title: "T", author: "A", genre: 'Non-Fiction'}, 'missing-cover.png')
 		})
-			.to.throw("cover");
+		.to.throw("cover");
 	});
 
 });
@@ -100,6 +101,19 @@ describe("Create EPUB with a valid document", function () {
 		}).not.to.throw();
 	});
 
+	it("should include an image file asset", function() {
+		validMetadata.images.push("test/hat.png");
+		epub = makepub.document(validMetadata, "test/test-cover.png");
+		var files = epub.getFilesForEPUB();
+		var found = false;
+		_.each(files, function (f) {
+			if (f.name === 'hat.png') {
+				found = true;
+			}
+		});
+		expect(found).to.be.true;
+	});
+
 	describe("With a generate contents callback provided", function () {
 
 		var providedContents = false;
@@ -110,7 +124,7 @@ describe("Create EPUB with a valid document", function () {
 		it("should request contents markup when needed", function () {
 			epub = makepub.document(validMetadata, "test/test-cover.png", contentsCallback);
 			epub.addSection('Dummy Section.', lipsum);
-			files = epub.getFilesForEPUB();
+			var files = epub.getFilesForEPUB();
 			expect(providedContents).to.equal(true);
 		});
 
@@ -131,7 +145,7 @@ describe("Create EPUB with a valid document", function () {
 		describe("When the constituent files are requested", function () {
 
 			it("should return the correct number of files", function () {
-				expect(files.length).to.equal(11);
+				expect(files.length).to.equal(12);
 			});
 
 			it("should have a mimetype file", function () {
@@ -176,7 +190,7 @@ describe("Create EPUB with a valid document", function () {
 
 			it("Should attempt to write the correct quantity of files", function () {
 				epub.writeFilesForEPUB("test/test");
-				expect(fs.writeFileSync.callCount).to.equal(11);
+				expect(fs.writeFileSync.callCount).to.equal(12);
 			});
 
 		});
@@ -218,7 +232,7 @@ describe("Create EPUB with a valid document", function () {
 
 			it("should return the correct number of files", function () {
 				files = epub.getFilesForEPUB();
-				expect(files.length).to.equal(12);
+				expect(files.length).to.equal(13);
 			});
 
 			it("should not show the section in the NCX contents metadata", function () {

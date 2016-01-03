@@ -1,4 +1,4 @@
-# Nodepub v1.0.3
+# Nodepub v1.0.4
 ## Create valid EPUB (v2) ebooks with metadata, contents and cover image.
 
 [By K Cartlidge](http://www.kcartlidge.com).
@@ -43,6 +43,8 @@ That said, I *am* currently considering adding Markdown rendering for my own nee
 
 * Custom *CSS* can be provided.
 
+* **NEW** - Inline images within the EPUB.
+
 * **NEW** - There is now an option to provide a callback function for the generation of the HTML contents page. See the *Public Methods* area below for more details.
 
 * Sections can appear as *front matter*, before the contents page.
@@ -59,7 +61,7 @@ As the use of this third output option is expected to be mutually exclusive of t
 
 ## Upcoming
 
-* *Inline images and other assets*. You already have a cover image so the base functionality is there, but I will be adding an option to include an image or other asset (for example an embedded font).
+* *Other non-image assets*. You already have images so the base functionality is there, but I will be adding an option to include other assets (for example an embedded font).
 
 ## Requirements
 
@@ -302,7 +304,8 @@ var metadata = {
 	language: 'en',
 	description: 'A test book.',
 	contents: 'Chapters',
-	source: 'http://www.kcartlidge.com'
+	source: 'http://www.kcartlidge.com',
+	images: ["../test/hat.png"]
 };
 ```
 
@@ -323,6 +326,7 @@ The properties are:
 * *description* - the short description included within the book definition and shown in (for example) the list view in *iBooks*.
 * *contents* - the *title* of the auto-generated contents HTML page.
 * *source* - the derivation of the document, in this case a URL but it could also be an ISBN or similar if it is a derivative work.
+* *images* - embedded images for the document - specify them here as proper paths, and within the document markup href link to them as a file within a (flat) parent *images* folder. For example `~/Documents/book/images/hat.png` in the matadata whould then be linked to in the HTML as `../images/hat.png`.
 
 ## Substitutions
 
