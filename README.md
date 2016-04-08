@@ -1,4 +1,4 @@
-# Nodepub v1.0.4
+# Nodepub v1.0.5
 ## Create valid EPUB (v2) ebooks with metadata, contents and cover image.
 
 [By K Cartlidge](http://www.kcartlidge.com).
