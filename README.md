@@ -1,4 +1,4 @@
-# Nodepub v1.0.5
+# Nodepub v1.0.6
 ## Create valid EPUB (v2) ebooks with metadata, contents and cover image.
 
 [By K Cartlidge](http://www.kcartlidge.com).
@@ -150,15 +150,17 @@ var makepub = require("nodepub");
 
 This begins a new document with the given metadata (see below) and cover image (a *path* to a *PNG*).
 
-If the *generateContentsCallback* function is provided then when the HTML markup is needed this function will be called. It will be given 2 parameters; an array of link objects and the pre-generated markup in case you want to just amend the default version rather than take full responsibility for it.
+**Custom Table of Contents**
 
-*Simple Example:*
+If the *generateContentsCallback* function is provided then when the HTML markup for a table of contents is needed this function will be called. It will be given 2 parameters; an array of link objects for the contents page and the pre-generated markup in case you want to just amend the default version rather than take full responsibility for it.
+
+*Simple Example (Default TOC):*
 
 ```javascript
 var epub = makepub.document(metadata, "./cover.png");
 ```
 
-*Callback Example 1:*
+*Callback Example (Default TOC) 1:*
 
 ```javascript
 var makeContents = function(links, defaultMarkup) {
@@ -167,7 +169,7 @@ var makeContents = function(links, defaultMarkup) {
 var epub = makepub.document(metadata, "./cover.png", makeContents);
 ```
 
-*Callback Example 2:*
+*Callback Example (Custom TOC) 2:*
 
 ```javascript
 var makeContents = function(links, defaultMarkup) {
@@ -182,7 +184,29 @@ var makeContents = function(links, defaultMarkup) {
 var epub = makepub.document(metadata, "./cover.png", makeContents);
 ```
 
-The `links` array which is passed to the callback consists of objects with the following properties:
+*Callback Example (Custom TOC) 3:*
+
+This one is from [Harold Treen](https://github.com/haroldtreen) who raised a pull request which turned out to be unnecessary (my fault) because *I wasn't clear enough* about the purpose of this callback (I've adjusted the text above the examples to clarify this aspect; apologies).
+
+```javascript
+function makeToc(links) {
+        const tableOfContents = ['<h2>Table Of Contents</h2>', '<ol class="toc-items">'];
+
+        links.forEach((link) => {
+            if (link.itemType === 'main') {
+                tableOfContents.push(`<li><a href="${link.link}">${link.title}</a></li>`);
+            }
+        });
+
+        tableOfContents.push('</ol>');
+
+        return tableOfContents.join('\n');
+}
+
+const document = nodepub.document(metadata, coverPath, makeToc);
+```
+
+The `links` array which is passed to a callback consists of objects with the following properties:
 
 * *title* - the title of the section to be linked to.
 * *link* - the relative `href` within the EPUB.
