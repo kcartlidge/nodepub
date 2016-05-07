@@ -123,7 +123,6 @@ function document(metadata, coverImage, generateContentsCallback) {
 			// Write the file contents.
 			for (var i in files) {
 				if (files[i].folder.length > 0) {
-					archive.append(null, {name: files[i].folder + '/'});
 					archive.append(files[i].content, {name: files[i].folder + '/' + files[i].name, store: !files[i].compress});
 				} else {
 					archive.append(files[i].content, {name: files[i].name, store: !files[i].compress});
@@ -239,4 +238,3 @@ function makeFolder(path) {
 		if (e.code != 'EEXIST') throw e;
 	}
 }
-
