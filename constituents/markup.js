@@ -76,7 +76,6 @@ var markup = {
 		result += "    <link rel='schema.DCTYPE' href='http://purl.org/dc/dcmitype/' hreflang='en' />[[EOL]]";
 		result += "    <link rel='schema.DCAM' href='http://purl.org/dc/dcam/' hreflang='en' />[[EOL]]";
 		result += "    <link rel='stylesheet' type='text/css' href='../css/ebook.css' />[[EOL]]";
-		result += "    <base href='.' />[[EOL]]";
 		result += "  </head>[[EOL]]";
 		result += "  <body>[[EOL]]";
 		result += "    <div id='s" + sectionNumber + "'></div>[[EOL]]";
