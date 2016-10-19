@@ -55,7 +55,7 @@ var markup = {
 		var title = section.title;
 		var content = section.content;
 
-		result = "";
+		var result = "";
 		result += "<?xml version='1.0' encoding='utf-8'?>[[EOL]]";
 		result += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN' 'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'>[[EOL]]";
 		result += "<html xmlns='http://www.w3.org/1999/xhtml'>[[EOL]]";

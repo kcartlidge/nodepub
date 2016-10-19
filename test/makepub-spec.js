@@ -1,6 +1,5 @@
 var fs = require("fs"),
 	_ = require("underscore"),
-	assert = require('assert'),
 	expect = require('chai').expect,
 	makepub = require("../index"),
 	sinon = require("sinon");
@@ -28,6 +27,7 @@ var lipsum = "<h1>Chapter Title Goes Here</h1><p><em>Lorem ipsum dolor sit amet,
 
 describe("Create EPUB with invalid document metadata", function () {
 
+	var epub;
 	it("should throw an exception if null", function () {
 		expect(function () {
 			epub = makepub.document()

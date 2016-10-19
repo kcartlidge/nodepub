@@ -2,7 +2,7 @@ var path = require('path');
 
 var structural = {
 
-	getContainer: function (document) {
+	getContainer: function () {
 		var result = "";
 		result += "<?xml version='1.0' encoding='UTF-8' ?>[[EOL]]";
 		result += "<container version='1.0' xmlns='urn:oasis:names:tc:opendocument:xmlns:container'>[[EOL]]";
@@ -14,6 +14,7 @@ var structural = {
 	},
 
 	getOPF: function (document) {
+    var i;
 		var result = '';
 		result += "<?xml version='1.0' encoding='utf-8'?>[[EOL]]";
 		result += "<package xmlns='http://www.idpf.org/2007/opf' version='2.0' unique-identifier='BookId'>[[EOL]]";
@@ -43,7 +44,7 @@ var structural = {
 
 		if (document.metadata.tags) {
 			var tags = document.metadata.tags.split(',');
-			for (var i = 0; i < tags.length; i++) {
+			for (i = 0; i < tags.length; i++) {
 				result += "		<dc:subject>" + tags[i] + "</dc:subject>[[EOL]]";
 			}
 		}
@@ -60,14 +61,14 @@ var structural = {
 		result += "		<item id='cover' media-type='application/xhtml+xml' href='cover.xhtml'/>[[EOL]]";
 		result += "		<item id='navigation' media-type='application/x-dtbncx+xml' href='navigation.ncx'/>[[EOL]]";
 
-		for (var i = 1; i <= document.sections.length; i++) {
+		for (i = 1; i <= document.sections.length; i++) {
 			result += "		<item id='s" + i + "' media-type='application/xhtml+xml' href='content/s" + i + ".xhtml'/>[[EOL]]";
 		}
 
 		result += "		<item id='toc' media-type='application/xhtml+xml' href='content/toc.xhtml'/>[[EOL]]";
 		result += "		<item id='css' media-type='text/css' href='css/ebook.css'/>[[EOL]]";
 
-		for (var i = 0; i < document.metadata.images.length; i++) {
+		for (i = 0; i < document.metadata.images.length; i++) {
 			var image = document.metadata.images[i];
 			var imageExt = path.extname(image).toLowerCase();
 			var imageFile = path.basename(image);
@@ -87,7 +88,7 @@ var structural = {
 		result += "	<spine toc='navigation'>[[EOL]]";
 		result += "		<itemref idref='cover' linear='yes' />[[EOL]]";
 
-		for (var i = 1; i <= document.sections.length; i++) {
+		for (i = 1; i <= document.sections.length; i++) {
 			if (document.sections[i - 1].isFrontMatter) {
 				result += "		<itemref idref='s" + i + "' />[[EOL]]";
 			}
@@ -95,7 +96,7 @@ var structural = {
 
 		result += "		<itemref idref='toc'/>[[EOL]]";
 
-		for (var i = 1; i <= document.sections.length; i++) {
+		for (i = 1; i <= document.sections.length; i++) {
 			if (!(document.sections[i - 1].isFrontMatter)) {
 				result += "		<itemref idref='s" + i + "' />[[EOL]]";
 			}
@@ -110,6 +111,7 @@ var structural = {
 	},
 
 	getNCX: function (document) {
+    var i, title, order;
 		var result = "";
 		var playOrder = 1;
 		result += "<?xml version='1.0' encoding='UTF-8'?>[[EOL]]";
@@ -129,11 +131,11 @@ var structural = {
 		result += "    <content src='cover.xhtml'/>[[EOL]]";
 		result += "  </navPoint>[[EOL]]";
 
-		for (var i = 1; i <= document.sections.length; i++) {
+		for (i = 1; i <= document.sections.length; i++) {
 			if (!(document.sections[i - 1].excludeFromContents)) {
 				if (document.sections[i - 1].isFrontMatter) {
-					var title = document.sections[i - 1].title;
-					var order = playOrder++;
+					title = document.sections[i - 1].title;
+					order = playOrder++;
 					document.filesForTOC.push({title: title, link: 's' + i + '.xhtml', itemType: "front"});
 					result += "  <navPoint class='section' id='s" + i + "' playOrder='" + order + "'>[[EOL]]";
 					result += "    <navLabel><text>" + title + "</text></navLabel>[[EOL]]";
@@ -149,11 +151,11 @@ var structural = {
 		result += "    <content src='content/toc.xhtml'/>[[EOL]]";
 		result += "  </navPoint>[[EOL]]";
 
-		for (var i = 1; i <= document.sections.length; i++) {
+		for (i = 1; i <= document.sections.length; i++) {
 			if (!(document.sections[i - 1].excludeFromContents)) {
 				if (!document.sections[i - 1].isFrontMatter) {
-					var title = document.sections[i - 1].title;
-					var order = playOrder++;
+					title = document.sections[i - 1].title;
+					order = playOrder++;
 					document.filesForTOC.push({title: title, link: 's' + i + '.xhtml', itemType: "main"});
 					result += "  <navPoint class='section' id='s" + i + "' playOrder='" + order + "'>[[EOL]]";
 					result += "    <navLabel><text>" + title + "</text></navLabel>[[EOL]]";
