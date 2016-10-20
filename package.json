@@ -4,7 +4,7 @@
   "description": "Create valid EPUB (v2) ebooks with metadata, contents and cover image.",
   "main": "index.js",
   "scripts": {
-    "test": "jasmine-node test --verbose"
+    "test": "jasmine-node test --verbose --captureExceptions"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   "homepage": "https://github.com/kcartlidge/nodepub",
   "dependencies": {
     "archiver": "^0.14.2",
+    "async": "^2.1.2",
     "moment": "^2.10.6",
     "underscore": "1.8.x"
   },
