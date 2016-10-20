@@ -55,6 +55,8 @@ function document(metadata, coverImage, generateContentsCallback) {
 	// Gets the files needed for the EPUB, as an array of objects.
 	// Note that 'compress:false' MUST be respected for valid EPUB files.
 	self.getFilesForEPUB = function (cb) {
+		if (!cb) { throw new Error('getFilesForEPUB requires a callback.'); }
+
 		var syncFiles = [];
 		var asyncFiles = [];
 
@@ -80,9 +82,6 @@ function document(metadata, coverImage, generateContentsCallback) {
 			asyncFiles.push({name: imageFilename, folder: 'OEBPF/images', compress: true, content: image });
 		});
 
-		if (!cb) {
-			return syncFiles;
-		}
 		asyncJs.map(asyncFiles, function (file, asyncCb) {
 			fs.readFile(file.content, function(err, data) {
 				file.content = data;
@@ -124,37 +123,36 @@ function document(metadata, coverImage, generateContentsCallback) {
 	// Writes the EPUB. The filename should not have an extention.
 	self.writeEPUB = function (onError, folder, filename, onSuccess) {
 		try {
-			var files = self.getFilesForEPUB();
-			makeFolder(folder, function(err) {
-				if (err) { throw err; }
-				var output = fs.createWriteStream(folder + '/' + filename + '.epub');
-				var archive = zip('zip', {store: false});
+			self.getFilesForEPUB(function (err, files) {
+				makeFolder(folder, function(err) {
+					if (err) { throw err; }
+					var output = fs.createWriteStream(folder + '/' + filename + '.epub');
+					var archive = zip('zip', {store: false});
 
-				// Some end-state handlers.
-				output.on('close', function () {
-					if (typeof(onSuccess) == 'function') {
-						onSuccess(null);
+					// Some end-state handlers.
+					output.on('close', function () {
+						if (typeof(onSuccess) == 'function') {
+							onSuccess(null);
+						}
+					});
+					archive.on('error', function (err) {
+						throw err;
+					});
+					archive.pipe(output);
+
+					// Write the file contents.
+					for (var i in files) {
+						if (files[i].folder.length > 0) {
+							archive.append(files[i].content, {name: files[i].folder + '/' + files[i].name, store: !files[i].compress});
+						} else {
+							archive.append(files[i].content, {name: files[i].name, store: !files[i].compress});
+						}
 					}
-				});
-				archive.on('error', function (err) {
-					throw err;
-				});
-				archive.pipe(output);
 
-				// Write the file contents.
-				for (var i in files) {
-					if (files[i].folder.length > 0) {
-						archive.append(files[i].content, {name: files[i].folder + '/' + files[i].name, store: !files[i].compress});
-					} else {
-						archive.append(files[i].content, {name: files[i].name, store: !files[i].compress});
-					}
-				}
-
-				// Done.
-				archive.finalize();
+					// Done.
+					archive.finalize();
+				});
 			});
-
-			// Start a zip stream emitter.
 		} catch (err) {
 			if (typeof(onError) == 'function') {
 				onError(err);
