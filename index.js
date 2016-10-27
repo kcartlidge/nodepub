@@ -3,6 +3,7 @@ var fs = require('fs'),
 	zip = require('archiver'),
 	_ = require('underscore'),
 	moment = require('moment'),
+	asyncJs = require('async'),
 	structuralFiles = require('./constituents/structural.js'),
 	markupFiles = require('./constituents/markup.js');
 
@@ -23,9 +24,7 @@ function document(metadata, coverImage, generateContentsCallback) {
 		if (prop == null || typeof(prop) == "undefined" || prop.toString().trim() == "")
 			throw "Missing metadata: " + field;
 	});
-	try {
-		fs.statSync(coverImage).isFile();
-	} catch (e) {
+	if (typeof coverImage === "undefined") {
 		throw "Missing cover image"
 	}
 
@@ -55,82 +54,105 @@ function document(metadata, coverImage, generateContentsCallback) {
 
 	// Gets the files needed for the EPUB, as an array of objects.
 	// Note that 'compress:false' MUST be respected for valid EPUB files.
-	self.getFilesForEPUB = function () {
-		var files = [];
+	self.getFilesForEPUB = function (cb) {
+		if (!cb) { throw new Error('getFilesForEPUB requires a callback.'); }
+
+		var syncFiles = [];
+		var asyncFiles = [];
 
 		// Required files.
-		files.push({name: 'mimetype', folder: '', compress: false, content: getMimetype()});
-		files.push({name: 'container.xml', folder: 'META-INF', compress: true, content: getContainer(self)});
-		files.push({name: 'ebook.opf', folder: 'OEBPF', compress: true, content: getOPF(self)});
-		files.push({name: 'navigation.ncx', folder: 'OEBPF', compress: true, content: getNCX(self)});
-		files.push({name: 'cover.xhtml', folder: 'OEBPF', compress: true, content: getCover(self)});
+		syncFiles.push({name: 'mimetype', folder: '', compress: false, content: getMimetype()});
+		syncFiles.push({name: 'container.xml', folder: 'META-INF', compress: true, content: getContainer(self)});
+		syncFiles.push({name: 'ebook.opf', folder: 'OEBPF', compress: true, content: getOPF(self)});
+		syncFiles.push({name: 'navigation.ncx', folder: 'OEBPF', compress: true, content: getNCX(self)});
+		syncFiles.push({name: 'cover.xhtml', folder: 'OEBPF', compress: true, content: getCover(self)});
 
 		// Optional files.
-		files.push({name: 'ebook.css', folder: 'OEBPF/css', compress: true, content: getCSS(self)});
-		files.push({name: 'cover.png', folder: 'OEBPF/images', compress: true, content: fs.readFileSync(coverImage)});
+		syncFiles.push({name: 'ebook.css', folder: 'OEBPF/css', compress: true, content: getCSS(self)});
 		for (var i = 1; i <= self.sections.length; i++) {
-			files.push({name: 's' + i + '.xhtml', folder: 'OEBPF/content', compress: true, content: getSection(self, i)});
+			syncFiles.push({name: 's' + i + '.xhtml', folder: 'OEBPF/content', compress: true, content: getSection(self, i)});
 		}
+		// Table of contents markup.
+		syncFiles.push({name: 'toc.xhtml', folder: 'OEBPF/content', compress: true, content: getTOC(self)});
 
 		// Extra images.
+		asyncFiles.push({name: 'cover.png', folder: 'OEBPF/images', compress: true, content: coverImage });
 		_.each(self.metadata.images, function(image) {
 			var imageFilename = path.basename(image);
-			files.push({name: imageFilename, folder: 'OEBPF/images', compress: true, content: fs.readFileSync(image)});
+			asyncFiles.push({name: imageFilename, folder: 'OEBPF/images', compress: true, content: image });
 		});
 
-		// Table of contents markup.
-		files.push({name: 'toc.xhtml', folder: 'OEBPF/content', compress: true, content: getTOC(self)});
-
-		return files;
+		asyncJs.map(asyncFiles, function (file, asyncCb) {
+			fs.readFile(file.content, function(err, data) {
+				file.content = data;
+				asyncCb(err, file);
+			})
+		}, function (err, results) {
+			if (err) {
+				cb(err);
+			} else {
+				var files = syncFiles.concat(results);
+				cb(null, files);
+			}
+		});
 	};
 
 	// Writes the files needed for the EPUB into a folder structure.
 	// Note that for valid EPUB files the 'mimetype' MUST be the first entry in an EPUB and uncompressed.
-	self.writeFilesForEPUB = function (folder) {
-		var files = self.getFilesForEPUB();
-		makeFolder(folder);
-		for (var i in files) {
-			if (files[i].folder.length > 0) {
-				makeFolder(folder + '/' + files[i].folder);
-				fs.writeFileSync(folder + '/' + files[i].folder + '/' + files[i].name, files[i].content);
-			} else {
-				fs.writeFileSync(folder + '/' + files[i].name, files[i].content);
-			}
-		}
+	self.writeFilesForEPUB = function (folder, cb) {
+		if (!cb) { throw new Error('writeFilesForEPUB requires a callback.'); }
+		self.getFilesForEPUB(function (filesErr, files) {
+			if (filesErr) { cb(filesErr); }
+			makeFolder(folder, function(folderErr) {
+				if (folderErr) { cb(folderErr); }
+				asyncJs.each(files, function (file, asyncDone) {
+					if (file.folder.length > 0) {
+						makeFolder(folder + '/' + file.folder, function() {
+							fs.writeFile(folder + '/' + file.folder + '/' + file.name, file.content, asyncDone);
+						});
+					} else {
+						fs.writeFile(folder + '/' + file.name, file.content, asyncDone);
+					}
+				}, function(err) {
+						cb(err);
+				});
+			});
+		});
 	};
 
 	// Writes the EPUB. The filename should not have an extention.
 	self.writeEPUB = function (onError, folder, filename, onSuccess) {
 		try {
-			var files = self.getFilesForEPUB();
-			makeFolder(folder);
+			self.getFilesForEPUB(function (err, files) {
+				makeFolder(folder, function(err) {
+					if (err) { throw err; }
+					var output = fs.createWriteStream(folder + '/' + filename + '.epub');
+					var archive = zip('zip', {store: false});
 
-			// Start a zip stream emitter.
-			var output = fs.createWriteStream(folder + '/' + filename + '.epub');
-			var archive = zip('zip', {store: false});
+					// Some end-state handlers.
+					output.on('close', function () {
+						if (typeof(onSuccess) == 'function') {
+							onSuccess(null);
+						}
+					});
+					archive.on('error', function (err) {
+						throw err;
+					});
+					archive.pipe(output);
 
-			// Some end-state handlers.
-			output.on('close', function () {
-				if (typeof(onSuccess) == 'function') {
-					onSuccess(null);
-				}
+					// Write the file contents.
+					for (var i in files) {
+						if (files[i].folder.length > 0) {
+							archive.append(files[i].content, {name: files[i].folder + '/' + files[i].name, store: !files[i].compress});
+						} else {
+							archive.append(files[i].content, {name: files[i].name, store: !files[i].compress});
+						}
+					}
+
+					// Done.
+					archive.finalize();
+				});
 			});
-			archive.on('error', function (err) {
-				throw err;
-			});
-			archive.pipe(output);
-
-			// Write the file contents.
-			for (var i in files) {
-				if (files[i].folder.length > 0) {
-					archive.append(files[i].content, {name: files[i].folder + '/' + files[i].name, store: !files[i].compress});
-				} else {
-					archive.append(files[i].content, {name: files[i].name, store: !files[i].compress});
-				}
-			}
-
-			// Done.
-			archive.finalize();
 		} catch (err) {
 			if (typeof(onError) == 'function') {
 				onError(err);
@@ -231,10 +253,13 @@ function getSection(document, sectionNumber) {
 
 // Create a folder, throwing an error only if the error is not that
 // the folder already exists. Effectively creates if not found.
-function makeFolder(path) {
-	try {
-		fs.mkdirSync(path);
-	} catch (e) {
-		if (e.code != 'EEXIST') throw e;
+function makeFolder(path, cb) {
+	if (cb) {
+		fs.mkdir(path, function(err) {
+			if (err && err.code != 'EEXIST') {
+				throw err;
+			}
+			cb();
+		});
 	}
 }

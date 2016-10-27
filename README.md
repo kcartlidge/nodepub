@@ -256,14 +256,15 @@ var qty = epub.getSectionCount();
 
 ---
 
-### getFilesForEPUB ( )
+### getFilesForEPUB (callback)
 
-Returns an array of objects for the files needed to create an EPUB as defined so far. Writing these files in the sequence given and respecting all the properties provided should give a valid EPUB document.
+Invokes callback with an array of objects for the files needed to create an EPUB as defined so far. Writing these files in the sequence given and respecting all the properties provided should give a valid EPUB document.
 
 *Example:*
 ``` javascript
-var files = epub.getFilesForEPUB();
-console.log("Files needed:", files.length);
+epub.getFilesForEPUB(function(err, files) {
+	console.log("Files needed:", files.length);
+});
 ```
 
 Each entry has the following properties:
@@ -275,7 +276,7 @@ Each entry has the following properties:
 
 ---
 
-### writeFilesForEPUB ( folder )
+### writeFilesForEPUB ( folder, callback )
 
 Creates the *folder* (if need be) then writes the files/folders in the order returned by *getFilesForEPUB*. This is ideal for debugging purposes or if you intend to manually/programmatically make changes.
 
@@ -284,7 +285,11 @@ Note that if you are creating your own EPUB from this set of files it is your ow
 *Example:*
 
 ``` javascript
-var qty = epub.writeFilesForEPUB("./raw-files");
+var qty = epub.writeFilesForEPUB("./raw-files", function(err) {
+	if (!err) {
+		console.log('Files written!');
+	}
+});
 ```
 
 ---
