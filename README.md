@@ -1,4 +1,4 @@
-# Nodepub v1.0.7
+# Nodepub v2.0.7
 ## Create valid EPUB (v2) ebooks with metadata, contents and cover image.
 
 [By K Cartlidge](http://www.kcartlidge.com).
@@ -12,13 +12,19 @@ A copy of the licence is within the package source.
 
 ## About Nodepub
 
-*This version introduces stability at the expense of minor breaking changes, consisting almost entirely of renames from chapter to section but with some of the pre-generated pages of earlier versions eliminated. The result is more abstracted but also more flexible, whilst also retaining most of it's simplicity.*
-
 Nodepub is a **Node** module which can be used to create **EPUB (v2)** documents.
 
 The resultant files are designed to pass the [IDPF online validator](http://validator.idpf.org) and Sigil's preflight checks. They also open fine in IBooks, Adobe Digital Editions and Calibre, plus the Kobo H20 ereader (a highly recommended *backlit* and *waterproof* e-ink device).
 
 They also pass *KindleGen* - although Amazon's `.mobi` files do not support the cover page HTML file the KindleGen tool strips it out so there is no need to make special allowance.
+
+#### Recent Changes
+
+* v2.0.7 - Thanks to [Harold Treen](https://github.com/haroldtreen) the API has switched to being asynchronous. See the examples below for the usage of the callbacks.
+
+* v1.0.7 - *This version introduces stability at the expense of minor breaking changes, consisting almost entirely of renames from chapter to section but with some of the pre-generated pages of earlier versions eliminated. The result is more abstracted but also more flexible, whilst also retaining most of it's simplicity.*
+
+#### Notes on the EPUBs
 
 Resultant EPUBs can be generated to one of three levels of completeness:
 
@@ -28,8 +34,6 @@ Resultant EPUBs can be generated to one of three levels of completeness:
 
 
 The module has no concept of how the original content is obtained; it is passed a metadata object at creation after which content is added sequentially by the caller. There is no automatic pre-processing of content files such as Markdown as the module expects to be given *HTML* to work with and it is trivial for the caller to pre-process in advance by requiring a Markdown module, the Jade rendering engine or similar.
-
-That said, I *am* currently considering adding Markdown rendering for my own needs.
 
 ## Current Status
 
@@ -54,10 +58,6 @@ That said, I *am* currently considering adding Markdown rendering for my own nee
 * **NEW** - OEBPS and suitable subfolders now created within the EPUB (not actually required by the *spec* other than for the *mimetype* but there is a certain expectation regarding internal folder structure).
 
 *If* you use the raw generated files to write the EPUB yourself, bear in mind that the **mimetype** file MUST be the first file in the archive and also MUST NOT be compressed. In simple terms, an EPUB is a renamed ZIP file where compression is optional apart from the mimetype file which should be added first using the 'store' option.
-
-ALL functions of the module are synchronous EXCEPT if you choose to use the option to create the complete EPUB (*writeEPUB*), which is internally synchronous whilst generating the file contents but for external purposes is asynchronous with a callback due to the nature of the *archiver* dependency used to create the final output.
-
-As the use of this third output option is expected to be mutually exclusive of the other two, this latter one being asynchronous is not currently considered an issue.
 
 ## Upcoming
 
