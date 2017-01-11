@@ -16,13 +16,15 @@ var markup = {
 		} else {
 			result += "    <div class='contents'>[[EOL]]";
 			result += "      <h1>[[CONTENTS]]</h1>[[EOL]]";
+            result += "      <ol>[[EOL]]";
 			for (var i = 1; i <= document.sections.length; i++) {
 				var section = document.sections[i - 1];
 				if (!section.excludeFromContents) {
 					var title = section.title;
-					result += "      <a href='s" + i + ".xhtml'>" + title + "</a><br/>[[EOL]]";
+					result += "      <li class='toc-item'><a href='s" + i + ".xhtml'>" + title + "</a></li>[[EOL]]";
 				}
 			}
+            result += "      </ol>[[EOL]]"
 			result += "    </div>[[EOL]]";
 		}
 		result += "  </body>[[EOL]]";
