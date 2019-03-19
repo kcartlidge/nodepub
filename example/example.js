@@ -1,23 +1,25 @@
-var makepub = require("../index.js"), _ = require("underscore");
+/* eslint-disable no-console */
+var nodepub = require("../src/index.js"),
+  _ = require("lodash");
 
 // Metadata example.
 var metadata = {
-	id: Date.now(),
-	title: 'Unnamed Document',
-	series: 'My Series',
-	sequence: 1,
-	author: 'Anonymous',
-	fileAs: 'Anonymous',
-	genre: 'Non-Fiction',
-	tags: 'Sample,Example,Test',
-	copyright: 'Anonymous, 1980',
-	publisher: 'My Fake Publisher',
-	published: '2000-12-31',
-	language: 'en',
-	description: 'A test book.',
-	contents: 'Chapters',
-	source: 'http://www.kcartlidge.com',
-	images: ['../test/hat.png']
+  id: '278-123456789',
+  title: 'Unnamed Document',
+  series: 'My Series',
+  sequence: 1,
+  author: 'Anonymous',
+  fileAs: 'Anonymous',
+  genre: 'Non-Fiction',
+  tags: 'Sample,Example,Test',
+  copyright: 'Anonymous, 1980',
+  publisher: 'My Fake Publisher',
+  published: '2000-12-31',
+  language: 'en',
+  description: 'A test book.',
+  contents: 'Chapters',
+  source: 'http://www.kcartlidge.com',
+  images: ['test/hat.png']
 };
 
 var copyright = `<h1>[[TITLE]]</h1>
@@ -68,27 +70,27 @@ var about = `<h1>About the Author</h1>
 // Dummy text (lorem ipsum).
 var lipsum = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse mattis iaculis pharetra. Proin malesuada tortor ut nibh viverra eleifend.</p><p>Duis efficitur, arcu vitae viverra consectetur, nisi mi pharetra metus, vel egestas ex velit id leo. Curabitur non tortor nisi. Mauris ornare, tellus vel fermentum suscipit, ligula est eleifend dui, in elementum nunc risus in ipsum. Pellentesque finibus aliquet turpis sed scelerisque. Pellentesque gravida semper elit, ut consequat est mollis sit amet. Nulla facilisi.</p>";
 for (var i = 0; i < 3; i++) {
-	lipsum = lipsum + lipsum;
+  lipsum = lipsum + lipsum;
 }
 
 // Optional override to replace auto-generated contents page.
 // If not required, just drop it from the 'var epub=' call below.
-var generateContentsPage = function (links, suggestedMarkup) {
-	var contents = "<h1>Chapters</h1>";
-	_.each(links, function (link) {
-		// Omit all but the main pages.
-		if (link.itemType === "main") {
-			if (link.title === "More Books to Read") {
-				contents += "<div> &nbsp;</div>";
-			}
-			contents += "<div><a href='" + link.link + "'>" + link.title + "</a></div>";
-		}
-	});
-	return contents;
+var generateContentsPage = function (links) {
+  var contents = "<h1>Chapters</h1>";
+  _.each(links, function (link) {
+    // Omit all but the main pages.
+    if (link.itemType === "main") {
+      if (link.title === "More Books to Read") {
+        contents += "<div> &nbsp;</div>";
+      }
+      contents += "<div><a href='" + link.link + "'>" + link.title + "</a></div>";
+    }
+  });
+  return contents;
 };
 
 // Set up the EPUB basics.
-var epub = makepub.document(metadata, "../test/test-cover.png", generateContentsPage);
+var epub = nodepub.document(metadata, "test/test-cover.png", generateContentsPage);
 epub.addCSS(`body { font-family:Verdana,Arial,Sans-Serif; font-size:11pt; }
 #title,#title h1,#title h2,#title h3 { text-align:center; }
 h1,h3,p { margin-bottom:1em; }
@@ -109,11 +111,15 @@ epub.addSection('More Books to Read', more);
 epub.addSection('About the Author', about);
 
 // Generate the result.
-epub.writeEPUB(function (e) {
-	console.log(e);
-}, '.', 'example', function () {
-	console.log("Okay.")
-});
+epub.writeEPUB(
+  function (e) { console.log("Error:", e); },
+  'example', 'example',
+  function () { console.log("No errors. See the 'example' subfolder.") }
+);
 
 // Also write the structure both for debugging purposes and also to provide sample output in GitHub.
-epub.writeFilesForEPUB('./example-EPUB-files');
+epub.writeFilesForEPUB('example/example-EPUB-files', (err) => {
+  if (err) {
+    console.log(err);
+  }
+});

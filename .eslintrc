@@ -1,7 +1,10 @@
 {
-    "env": {
-        "node": "true",
-        "jasmine": "true"
-    },
-    "extends": "eslint:recommended"
+  "env": {
+    "node": true,
+    "mocha": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 6
+  }
 }

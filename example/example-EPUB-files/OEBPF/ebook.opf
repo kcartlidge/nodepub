@@ -2,7 +2,7 @@
 <package xmlns='http://www.idpf.org/2007/opf' version='2.0' unique-identifier='BookId'>
 	<metadata xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:opf='http://www.idpf.org/2007/opf'>
 		<dc:title>Unnamed Document (My Series #1)</dc:title>
-		<dc:identifier id='BookId' opf:scheme='URI'>1451842502345</dc:identifier>
+		<dc:identifier id='BookId' opf:scheme='URI'>278-123456789</dc:identifier>
 		<dc:language>en</dc:language>
 		<dc:creator opf:role='aut' opf:file-as='Anonymous'>Anonymous</dc:creator>
 		<dc:publisher>My Fake Publisher</dc:publisher>
@@ -10,7 +10,7 @@
 		<dc:coverage></dc:coverage>
 		<dc:source>http://www.kcartlidge.com</dc:source>
 		<dc:date opf:event='publication'>2000-12-31</dc:date>
-		<dc:date opf:event='modification'>2016-01-03</dc:date>
+		<dc:date opf:event='modification'>2019-03-20</dc:date>
 		<dc:rights>Anonymous, 1980</dc:rights>
 		<dc:subject>Non-Fiction</dc:subject>
 		<dc:subject>Sample</dc:subject>
