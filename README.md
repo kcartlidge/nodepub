@@ -1,5 +1,6 @@
 # Nodepub v2.0.7
-## Create valid EPUB (v2) ebooks with metadata, contents and cover image.
+
+## Create valid EPUB (v2) ebooks with metadata, contents and cover image
 
 [By K Cartlidge](http://www.kcartlidge.com).
 
@@ -18,20 +19,19 @@ The resultant files are designed to pass the [IDPF online validator](http://vali
 
 They also pass *KindleGen* - although Amazon's `.mobi` files do not support the cover page HTML file the KindleGen tool strips it out so there is no need to make special allowance.
 
-#### Recent Changes
+### Recent Changes
 
 * v2.0.7 - Thanks to [Harold Treen](https://github.com/haroldtreen) the API has switched to being asynchronous. See the examples below for the usage of the callbacks.
 
 * v1.0.7 - *This version introduces stability at the expense of minor breaking changes, consisting almost entirely of renames from chapter to section but with some of the pre-generated pages of earlier versions eliminated. The result is more abstracted but also more flexible, whilst also retaining most of it's simplicity.*
 
-#### Notes on the EPUBs
+### Notes on the EPUBs
 
 Resultant EPUBs can be generated to one of three levels of completeness:
 
 1. *Either* a complete .epub file ready for distribution
 2. *Or* a folder containing all the files necessary to build the final EPUB
 3. *Or* a Javascript object containing all the filenames and content needed for the final EPUB
-
 
 The module has no concept of how the original content is obtained; it is passed a metadata object at creation after which content is added sequentially by the caller. There is no automatic pre-processing of content files such as Markdown as the module expects to be given *HTML* to work with and it is trivial for the caller to pre-process in advance by requiring a Markdown module, the Jade rendering engine or similar.
 
@@ -85,7 +85,7 @@ To run the tests, in the top folder (containing the *package.json* file) run the
 npm test
 ```
 
-*Important Note about the Tests*
+### Important Note about the Tests
 
 The tests mostly stub *fs* where used. However at one point they do actually write a final EPUB document as this also serves as one *example* of the resulting files.
 
@@ -114,27 +114,28 @@ Using **nodepub** is straightforward. The HTML you provide for chapter contents 
 The steps are:
 
 * *Require* the module and call *document()* with a metadata object detailing your book plus the path of a cover image:
+
 ``` javascript
 var epub = makepub.document(metadata, "cover.png");
 ```
 
 * Optionally add some *CSS* definitions:
+
 ``` javascript
 epub.addCSS(myCSS);
 ```
 
 * Repeatedly call *addSection()* with a title and HTML contents, plus options for whether to exclude from the contents list and/or use as front matter:
+
 ``` javascript
 epub.addSection('Chapter 1', "<h1>One</h1><p>...</p>");
 ```
 
-* Produce *one* of the following outputs:
+* Call `getFilesForEPUB()` if you want a simple array of file description and contents for storing in a database or further working through. This array will contain all needed files for a valid EPUB, along with their name, subfolder (if any) and a flag as to whether they should be compressed (a value of *false* should **not** be ignored).
 
-	* Call `getFilesForEPUB()` if you want a simple array of file description and contents for storing in a database or further working through. This array will contain all needed files for a valid EPUB, along with their name, subfolder (if any) and a flag as to whether they should be compressed (a value of *false* should **not** be ignored).
+* Call `writeFilesForEPUB()` if you want to create a folder containing the complete files as mentioned above. You can edit these and produce an EPUB; simply zip the files and change the extention. For a valid EPUB the *mimetype* file **must** be added first and *must not* be compressed. Some validators will pass the file anyway; some ereaders will fail to read it.
 
-	* Call `writeFilesForEPUB()` if you want to create a folder containing the complete files as mentioned above. You can edit these and produce an EPUB; simply zip the files and change the extention. For a valid EPUB the *mimetype* file **must** be added first and *must not* be compressed. Some validators will pass the file anyway; some ereaders will fail to read it.
-
-	* Call `writeEPUB()`. This is the easiest way and also the only one guaranteed to produce valid EPUB output simply because the other two methods allow for changes and compression issues.
+* Call `writeEPUB()`. This is the easiest way and also the only one guaranteed to produce valid EPUB output simply because the other two methods allow for changes and compression issues.
 
 ## Public Methods
 
@@ -150,7 +151,7 @@ var makepub = require("nodepub");
 
 This begins a new document with the given metadata (see below) and cover image (a *path* to a *PNG*).
 
-**Custom Table of Contents**
+#### Custom Table of Contents
 
 If the *generateContentsCallback* function is provided then when the HTML markup for a table of contents is needed this function will be called. It will be given 2 parameters; an array of link objects for the contents page and the pre-generated markup in case you want to just amend the default version rather than take full responsibility for it.
 
@@ -164,7 +165,7 @@ var epub = makepub.document(metadata, "./cover.png");
 
 ```javascript
 var makeContents = function(links, defaultMarkup) {
-	return defaultMarkup.toUppercase();
+  return defaultMarkup.toUppercase();
 };
 var epub = makepub.document(metadata, "./cover.png", makeContents);
 ```
@@ -173,13 +174,13 @@ var epub = makepub.document(metadata, "./cover.png", makeContents);
 
 ```javascript
 var makeContents = function(links, defaultMarkup) {
-	var contents = "<h1>Chapters</h1>";
-	_.each(links, function (link) {
-		if (link.itemType !== "contents") {
-			contents += "<a href='" + link.link + "'>" + link.title + "</a><br />";
-		}
-	});
-	return contents;
+  var contents = "<h1>Chapters</h1>";
+  _.each(links, function (link) {
+    if (link.itemType !== "contents") {
+      contents += "<a href='" + link.link + "'>" + link.title + "</a><br />";
+    }
+  });
+  return contents;
 };
 var epub = makepub.document(metadata, "./cover.png", makeContents);
 ```
@@ -221,6 +222,7 @@ The callback should return a string of HTML which will be placed between the `bo
 Adds your own custom *CSS* entries for use across *all* pages in the ebook. The default CSS is empty.
 
 *Example:*
+
 ``` javascript
 epub.addCSS("body { font-size: 14pt; }");
 ```
@@ -261,9 +263,10 @@ var qty = epub.getSectionCount();
 Invokes callback with an array of objects for the files needed to create an EPUB as defined so far. Writing these files in the sequence given and respecting all the properties provided should give a valid EPUB document.
 
 *Example:*
+
 ``` javascript
 epub.getFilesForEPUB(function(err, files) {
-	console.log("Files needed:", files.length);
+  console.log("Files needed:", files.length);
 });
 ```
 
@@ -286,9 +289,9 @@ Note that if you are creating your own EPUB from this set of files it is your ow
 
 ``` javascript
 var qty = epub.writeFilesForEPUB("./raw-files", function(err) {
-	if (!err) {
-		console.log('Files written!');
-	}
+  if (!err) {
+    console.log('Files written!');
+  }
 });
 ```
 
@@ -307,9 +310,9 @@ Creates a *version 2 EPUB* document.
 
 ``` javascript
 epub.writeEPUB(function (e) {
-	console.log("Error:", e);
+  console.log("Error:", e);
 }, './output', 'example-ebook', function () {
-	console.log("EPUB created.")
+  console.log("EPUB created.")
 });
 ```
 
@@ -319,22 +322,22 @@ The metadata object passed into the `document` method should look like this:
 
 ``` javascript
 var metadata = {
-	id: Date.now(),
-	title: 'Unnamed Document',
-	series: 'My Series',
-	sequence: 1,
-	author: 'Anonymous',
-	fileAs: 'Anonymous',
-	genre: 'Non-Fiction',
-	tags: 'Sample,Example,Test',
-	copyright: 'Anonymous, 1980',
-	publisher: 'My Fake Publisher',
-	published: '2000-12-31',
-	language: 'en',
-	description: 'A test book.',
-	contents: 'Chapters',
-	source: 'http://www.kcartlidge.com',
-	images: ["../test/hat.png"]
+  id: Date.now(),
+  title: 'Unnamed Document',
+  series: 'My Series',
+  sequence: 1,
+  author: 'Anonymous',
+  fileAs: 'Anonymous',
+  genre: 'Non-Fiction',
+  tags: 'Sample,Example,Test',
+  copyright: 'Anonymous, 1980',
+  publisher: 'My Fake Publisher',
+  published: '2000-12-31',
+  language: 'en',
+  description: 'A test book.',
+  contents: 'Chapters',
+  source: 'http://www.kcartlidge.com',
+  images: ["../test/hat.png"]
 };
 ```
 
@@ -371,14 +374,14 @@ For example, you could have a *Thanks for Reading* page at the end of your book 
 
 When the EPUB is produced and opened it will then look like:
 
-----
+---
 
 Thanks for reading **The Hobbit** by *JRR Tolkien*.
 
-----
+---
 
 This means you can re-use snippets of content across multiple books or refer to the author/title/series/whatever at any point within the book without worrying about consistency of spelling, naming conventions etcetera.
 
 ## Reminder
 
-*This is a utility module, not a user-facing one. In other words it is assumed that the caller has already validated the inputs. Only basic ommission checks are performed*
+This is a utility module, not a user-facing one. In other words it is assumed that the caller has already validated the inputs. Only basic ommission checks are performed.
