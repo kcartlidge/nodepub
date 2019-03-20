@@ -2,7 +2,7 @@
   "name": "nodepub",
   "version": "2.1.0",
   "description": "Create valid EPUB (v2) ebooks with metadata, contents and cover image.",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "mocha",
     "lint": "eslint --fix src",
