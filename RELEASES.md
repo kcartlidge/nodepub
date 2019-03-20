@@ -1,5 +1,9 @@
 # Releases
 
+## v2.1.1 - 2019/03/20
+
+* Updated `package.json` to add `src` folder to `start` entry
+
 ## v2.1.0 - 2019/03/20
 
 * Updated dependencies

@@ -1,4 +1,4 @@
-# Nodepub v2.1.0
+# Nodepub v2.1.1
 
 Create valid EPUB (v2) ebooks with metadata, contents and cover image.
 
