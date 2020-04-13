@@ -27,3 +27,5 @@ build/Release
 node_modules
 nodepub-*.tgz
 *.mobi
+
+example-EPUB-files/
