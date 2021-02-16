@@ -181,8 +181,8 @@ describe("Create EPUB with a valid document", function () {
       var stubMkdir, stubWrite;
 
       beforeEach(function () {
-        stubMkdir = sinon.stub(fs, "mkdir", function (path, cb) { cb(null); });
-        stubWrite = sinon.stub(fs, "writeFile", function (path, content, cb) { cb(null); });
+        stubMkdir = sinon.stub(fs, "mkdir").callsFake(function (path, cb) { cb(null); });
+        stubWrite = sinon.stub(fs, "writeFile").callsFake(function (path, content, cb) { cb(null); });
       });
       afterEach(function () {
         stubWrite.restore();

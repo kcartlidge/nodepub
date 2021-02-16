@@ -1,4 +1,4 @@
-# Nodepub v2.2.0
+# Nodepub v2.2.1
 
 Create valid EPUB (v2) ebooks with metadata, contents and cover image.
 
@@ -18,6 +18,9 @@ Nodepub is a **Node** module which can be used to create **EPUB (v2)** documents
 * Front matter before the contents page
 * Exclude sections from auto contents page and metadata-based navigation
 * OEBPS and other 'expected' subfolders within the EPUB
+
+Development is done against Node v15.6.0 since v2.2.1 (February 2021).
+Relatively recent earlier Node versions should work fine.
 
 ## Installing Nodepub
 
@@ -221,6 +224,16 @@ This will auto-fix what it can. You will have less issues if your editor/IDE als
 * You may find it helpful to look at the `example/example.js` file.
 
 * For viewing generated metadata and content both Microsoft Edge and Calibre have good EPUB readers.
+
+## Automatic upgrading of dependencies to the latest
+
+Remember to run the tests and to check the generated books using (at least) the IDPF validator before committing.
+
+``` sh
+npm install -g npm-check-updates
+ncu -u
+npm i
+```
 
 ## Reminder
 

@@ -1,5 +1,11 @@
 # CHANGE LOG
 
+## 2021-02-16 - v2.2.1
+
+- Now developed against Node v15.6.0
+- Updated dependencies
+  - Updated Sinon stub syntax in tests
+
 ## 2020-04-14
 
 - Merged `RELEASES.md` into here
