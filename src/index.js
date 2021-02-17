@@ -7,7 +7,7 @@ var fs = require('fs'),
   structuralFiles = require('./constituents/structural.js'),
   markupFiles = require('./constituents/markup.js');
 
-function document(metadata, coverImage, generateContentsCallback) {
+function document(metadata, generateContentsCallback) {
   var self = this;
   self.CSS = "";
   self.sections = [];
@@ -15,18 +15,19 @@ function document(metadata, coverImage, generateContentsCallback) {
   self.metadata = metadata;
   self.generateContentsCallback = generateContentsCallback;
   self.filesForTOC = [];
+  self.coverImage = '';
 
   // Basic validation.
-  var required = ["id", "title", "author", "genre"];
+  var required = ["id", "title", "author", "genre", "cover"];
   if (metadata == null) throw "Missing metadata";
   _.each(required, function (field) {
     var prop = metadata[field];
     if (prop == null || typeof (prop) == "undefined" || prop.toString().trim() == "")
-      throw `Missing metadata: ${  field}`;
+      throw `Missing metadata: ${  field  }`;
+    if (field == "cover") {
+      self.coverImage = prop;
+    }
   });
-  if (typeof coverImage === "undefined") {
-    throw "Missing cover image"
-  }
 
   /* PUBLIC */
 
@@ -76,7 +77,9 @@ function document(metadata, coverImage, generateContentsCallback) {
     syncFiles.push({ name: 'toc.xhtml', folder: 'OEBPF/content', compress: true, content: getTOC(self) });
 
     // Extra images.
-    asyncFiles.push({ name: 'cover.png', folder: 'OEBPF/images', compress: true, content: coverImage });
+    var coverFilename = path.basename(self.coverImage);
+    asyncFiles.push({ name: coverFilename, folder: 'OEBPF/images', compress: true, content: self.coverImage });
+
     _.each(self.metadata.images, function (image) {
       var imageFilename = path.basename(image);
       asyncFiles.push({ name: imageFilename, folder: 'OEBPF/images', compress: true, content: image });
@@ -235,7 +238,7 @@ function getTOC(document) {
 
 // Provide the contents of the cover HTML enclosure.
 function getCover(document) {
-  var content = markupFiles.getCover();
+  var content = markupFiles.getCover(document);
   return replacements(document, replacements(document, content));
 }
 

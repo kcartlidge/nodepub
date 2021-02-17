@@ -5,6 +5,7 @@ var nodepub = require("../src/index.js"),
 // Metadata example.
 var metadata = {
   id: '278-123456789',
+  cover: 'test/test-cover.png',
   title: 'Unnamed Document',
   series: 'My Series',
   sequence: 1,
@@ -90,7 +91,7 @@ var generateContentsPage = function (links) {
 };
 
 // Set up the EPUB basics.
-var epub = nodepub.document(metadata, "test/test-cover.png", generateContentsPage);
+var epub = nodepub.document(metadata, generateContentsPage);
 epub.addCSS(`body { font-family:Verdana,Arial,Sans-Serif; font-size:11pt; }
 #title,#title h1,#title h2,#title h3 { text-align:center; }
 h1,h3,p { margin-bottom:1em; }
@@ -114,7 +115,7 @@ epub.addSection('About the Author', about);
 epub.writeEPUB(
   function (e) { console.log("Error:", e); },
   'example', 'example',
-  function () { console.log("No errors. See the 'example' subfolder.") }
+  function () { console.log("See the 'example' subfolder.") }
 );
 
 // Also write the structure both for debugging purposes and also to provide sample output in GitHub.

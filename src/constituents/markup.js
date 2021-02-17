@@ -1,3 +1,5 @@
+var path = require('path');
+
 var markup = {
 
   getContents: function (document, overrideContents) {
@@ -30,7 +32,8 @@ var markup = {
     return result;
   },
 
-  getCover: function () {
+  getCover: function (document) {
+    var coverFilename = path.basename(document.coverImage);
     var result = "";
     result += "<?xml version='1.0' encoding='UTF-8' ?>[[EOL]]";
     result += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN'  'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'>[[EOL]]";
@@ -44,7 +47,7 @@ var markup = {
     result += "  </style>[[EOL]]";
     result += "</head>[[EOL]]";
     result += "<body>[[EOL]]";
-    result += "  <div class='cover'><img style='height: 100%;width: 100%;' src='images/cover.png' alt='Cover' /></div>[[EOL]]";
+    result += `  <div class='cover'><img style='height: 100%;width: 100%;' src='images/${  coverFilename  }' alt='Cover' /></div>[[EOL]]`;
     result += "</body>[[EOL]]";
     result += "</html>[[EOL]]";
     return result;

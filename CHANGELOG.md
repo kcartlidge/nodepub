@@ -1,10 +1,13 @@
 # CHANGE LOG
 
-## 2021-02-16 - v2.2.1
+## 2021-02-17 - v3.0.0
 
 - Now developed against Node v15.6.0
 - Updated dependencies
   - Updated Sinon stub syntax in tests
+- Moved `cover` into document metadata (**BREAKING CHANGE**)
+  - Now supports multiple image types (`png`, `jpg`, etc)
+  - Any type whose file extention fits a mimetype like `image/png` or `image/jpg`
 
 ## 2020-04-14
 

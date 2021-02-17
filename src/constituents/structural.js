@@ -14,6 +14,8 @@ var structural = {
   },
 
   getOPF: function (document) {
+    var coverFilename = path.basename(document.coverImage);
+    var coverExt = path.extname(coverFilename).replace(".", "");
     var i;
     var result = '';
     result += "<?xml version='1.0' encoding='utf-8'?>[[EOL]]";
@@ -57,7 +59,7 @@ var structural = {
     result += "		<meta name='cover' content='cover-image'/>[[EOL]]";
     result += "	</metadata>[[EOL]]";
     result += "	<manifest>[[EOL]]";
-    result += "		<item id='cover-image' media-type='image/png' href='images/cover.png'/>[[EOL]]";
+    result += `		<item id='cover-image' media-type='image/${  coverExt  }' href='images/${  coverFilename  }'/>[[EOL]]`;
     result += "		<item id='cover' media-type='application/xhtml+xml' href='cover.xhtml'/>[[EOL]]";
     result += "		<item id='navigation' media-type='application/x-dtbncx+xml' href='navigation.ncx'/>[[EOL]]";
 

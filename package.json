@@ -1,12 +1,12 @@
 {
   "name": "nodepub",
-  "version": "2.2.1",
+  "version": "3.0.0",
   "description": "Create valid EPUB (v2) ebooks with metadata, contents and cover image.",
   "main": "src/index.js",
   "scripts": {
     "test": "mocha",
     "lint": "eslint --fix src",
-    "example": "node example/example.js"
+    "example": "node --trace-uncaught example/example.js"
   },
   "repository": {
     "type": "git",

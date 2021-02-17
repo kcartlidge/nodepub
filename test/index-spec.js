@@ -6,6 +6,7 @@ var fs = require("fs"),
 
 var validMetadata = {
   id: Date.now(),
+  cover: 'test/test-cover.png',
   title: 'Test Document',
   series: 'My Series',
   sequence: 1,
@@ -58,7 +59,7 @@ describe("Create EPUB with invalid document metadata", function () {
 
   it("should not throw an exception if a Cover is specified", function () {
     expect(function () {
-      nodepub.document({ id: "1", title: "T", author: "A", genre: 'Non-Fiction' }, 'cover.png')
+      nodepub.document({ id: "1", title: "T", author: "A", genre: 'Non-Fiction', cover: 'a-cover' })
     }).not.to.throw("cover");
   });
 
@@ -75,7 +76,7 @@ describe("Create EPUB with a valid document", function () {
   var epub;
 
   beforeEach(function () {
-    epub = nodepub.document(validMetadata, "test/test-cover.png");
+    epub = nodepub.document(validMetadata);
   });
 
   it("should not throw an exception when addSection is called", function () {
@@ -102,7 +103,7 @@ describe("Create EPUB with a valid document", function () {
 
   it("should include an image file asset", function (done) {
     validMetadata.images.push("test/hat.png");
-    epub = nodepub.document(validMetadata, "test/test-cover.png");
+    epub = nodepub.document(validMetadata);
     epub.getFilesForEPUB(function (err, files) {
       var found = false;
       _.each(files, function (f) {
@@ -123,7 +124,7 @@ describe("Create EPUB with a valid document", function () {
     };
 
     it("should request contents markup when needed", function (done) {
-      epub = nodepub.document(validMetadata, "test/test-cover.png", contentsCallback);
+      epub = nodepub.document(validMetadata, contentsCallback);
       epub.addSection('Dummy Section.', lipsum);
       epub.getFilesForEPUB(function (err) {
         expect(providedContents).to.equal(true);
@@ -138,7 +139,7 @@ describe("Create EPUB with a valid document", function () {
     var files = [];
 
     beforeEach(function (done) {
-      epub = nodepub.document(validMetadata, "test/test-cover.png");
+      epub = nodepub.document(validMetadata);
       epub.addSection('Chapter 1', lipsum);
       epub.addSection('Chapter 2', lipsum);
       epub.addSection('Chapter 3', lipsum);
@@ -233,7 +234,7 @@ describe("Create EPUB with a valid document", function () {
     describe("With a section excluded from the contents", function () {
 
       beforeEach(function () {
-        epub = nodepub.document(validMetadata, "test/test-cover.png");
+        epub = nodepub.document(validMetadata);
         epub.addSection('Copyright', "<h1>Copyright Page</h1>", true, true);
         epub.addSection('Chapter 1', lipsum);
         epub.addSection('Chapter 2', lipsum);

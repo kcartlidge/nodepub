@@ -1,17 +1,17 @@
-# Nodepub v2.2.1
+# Nodepub v3.0.0
 
-Create valid EPUB (v2) ebooks with metadata, contents and cover image.
+Create valid EPUB 2 ebooks with metadata, contents and cover image.
 
 ## About Nodepub
 
-Nodepub is a **Node** module which can be used to create **EPUB (v2)** documents.
+Nodepub is a **Node** module which can be used to create **EPUB 2** documents.
 
 * Files pass the [IDPF online validator](http://validator.idpf.org)
 * Files meet Sigil's preflight checks
 * Files open fine in iBooks, Adobe Digital Editions and Calibre
 * Files open fine with the Kobo H20 ereader
 * Files are fine as *KindleGen* input
-* PNG cover images - recommend 600x800, 600x900, or similar as minimum
+* PNG/JPG cover images - recommend 600x800, 600x900, or similar as minimum
 * Custom CSS can be provided
 * Inline images within the EPUB
 * Optionally generate your own contents page
@@ -19,11 +19,20 @@ Nodepub is a **Node** module which can be used to create **EPUB (v2)** documents
 * Exclude sections from auto contents page and metadata-based navigation
 * OEBPS and other 'expected' subfolders within the EPUB
 
-Development is done against Node v15.6.0 since v2.2.1 (February 2021).
+Development is done against Node v15.6.0 since v3.0.0 (February 2021).
 Relatively recent earlier Node versions should work fine.
+
+**There is a breaking change over v2 - however the change should be trivial to your codebase.**
+
+* In v2 the cover image was specified as a parameter when the document is first constructed.
+* In v3 that parameter is removed and becomes a `cover` metadata entry instead.
+As a bonus, cover images should now work for `jpg` and `gif` as well as `png`.
+
+[You can view the change log here.](./CHANGELOG.md)
 
 ## Installing Nodepub
 
+It's on npm at [https://www.npmjs.com/package/nodepub](https://www.npmjs.com/package/nodepub).
 Add it as with any other module:
 
 ``` sh
@@ -49,6 +58,7 @@ Here's some sample metadata:
 ``` javascript
 var metadata = {
   id: '278-123456789',
+  cover: '../test/cover.jpg',
   title: 'Unnamed Document',
   series: 'My Series',
   sequence: 1,
@@ -67,6 +77,7 @@ var metadata = {
 };
 ```
 
+* The `cover` should be an image as described in the bullet points above.
 * The `series` and `sequence` are not recognised by many readers (the *Calibre* properties are used).
 * The `tags` become subjects in the final EPUB.
 * For `published` note the year-month-day format.
@@ -75,10 +86,10 @@ var metadata = {
 
 ### Populating EPUBs
 
-Call `document` with a metadata object detailing your book plus the path of a cover image.
+Call `document` with a metadata object detailing your book (previous versions needed the path of a cover image; no longer).
 
 ``` javascript
-var epub = makepub.document(metadata, "./cover.png");
+var epub = makepub.document(metadata);
 ```
 
 #### Choose to make your own contents page
@@ -93,7 +104,7 @@ var makeContentsPage = function(links) {
   });
   return contents;
 };
-var epub = makepub.document(metadata, "./cover.png", makeContentsPage);
+var epub = makepub.document(metadata, makeContentsPage);
 ```
 
 The `links` array which is passed to a callback consists of objects with the following properties:
@@ -237,4 +248,4 @@ npm i
 
 ## Reminder
 
-This is a utility module, not a user-facing one. In other words it is assumed that the caller has already validated the inputs. Only basic ommission checks are performed.
+This is a utility module, not a user-facing one. In other words it is assumed that the caller has already validated the inputs. Only basic omission checks are performed.
