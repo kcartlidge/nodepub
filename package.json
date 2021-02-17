@@ -5,7 +5,10 @@
   "main": "src/index.js",
   "scripts": {
     "test": "mocha",
-    "lint": "eslint --fix src",
+    "lint": "npm run lint-src && npm run lint-example && npm run lint-test",
+    "lint-src": "eslint \"src/**/*.js\" --fix",
+    "lint-example": "eslint \"example/**/*.js\" --fix",
+    "lint-test": "eslint \"test/**/*.js\" --fix",
     "example": "node --trace-uncaught example/example.js"
   },
   "repository": {
@@ -16,7 +19,7 @@
     "epub",
     "ebook"
   ],
-  "author": "K Cartlidge (http://www.kcartlidge.com)",
+  "author": "K Cartlidge (https://kcartlidge.com)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kcartlidge/nodepub/issues"
@@ -31,6 +34,8 @@
   "devDependencies": {
     "chai": "4.3.x",
     "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
     "mocha": "^8.3.0",
     "sinon": "9.2.x"
   }
