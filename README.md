@@ -1,6 +1,6 @@
 # Nodepub v3.0.0
 
-Create valid EPUB 2 ebooks with metadata, contents and cover image.
+Create valid EPUB 2 ebooks with metadata, contents, and cover image.
 
 ## About Nodepub
 
@@ -20,15 +20,16 @@ Nodepub is a **Node** module which can be used to create **EPUB 2** documents.
 * OEBPS and other 'expected' subfolders within the EPUB
 
 Development is done against Node v15.6.0 since v3.0.0 (February 2021).
-Relatively recent earlier Node versions should work fine.
+Relatively recent earlier Node versions (6+) should work fine.
 
 **There is a breaking change over v2 - however the change should be trivial to your codebase.**
 
 * In v2 the cover image was specified as a parameter when the document is first constructed.
 * In v3 that parameter is removed and becomes a `cover` metadata entry instead.
-As a bonus, cover images should now work for `jpg` and `gif` as well as `png`.
+* As a bonus, cover images should now work for `jpg` and `gif` as well as `png`.
 
-[You can view the change log here.](./CHANGELOG.md)
+- [You can view the change log here.](./CHANGELOG.md)
+- [Developers of Nodepub itself can see some helpful information here.](./DEVELOPERS.md)
 
 ## Installing Nodepub
 
@@ -49,9 +50,9 @@ var nodepub = require("nodepub");
 
 ### Creating your content
 
-Your document will consist of *metadata* and *sections*.
-Metadata is an object with various properties detailing the book.
-Sections are chunks of HTML that can be thought of as chapters.
+* Documents consist of *metadata* and *sections*.
+* Metadata is an object with various properties detailing the book.
+* Sections are chunks of HTML that can be thought of as chapters.
 
 Here's some sample metadata:
 
@@ -86,13 +87,17 @@ var metadata = {
 
 ### Populating EPUBs
 
-Call `document` with a metadata object detailing your book (previous versions needed the path of a cover image; no longer).
+Call the `document` method with a metadata object detailing your book (previous versions needed the path of a cover image as a call parameter; this is no longer the case as it is now part of the metadata itself).
 
 ``` javascript
-var epub = makepub.document(metadata);
+var epub = nodepub.document(metadata);
 ```
 
 #### Choose to make your own contents page
+
+A standard contents page is included.
+
+You can create your own by passing a second parameter, a function which is called when the contents page is being constructed. That function will be given details of all the links, and is expected to return HTML to use for the contents page.
 
 ```javascript
 var makeContentsPage = function(links) {
@@ -104,7 +109,7 @@ var makeContentsPage = function(links) {
   });
   return contents;
 };
-var epub = makepub.document(metadata, makeContentsPage);
+var epub = nodepub.document(metadata, makeContentsPage);
 ```
 
 The `links` array which is passed to a callback consists of objects with the following properties:
@@ -117,13 +122,17 @@ The callback should return a string of HTML which will form the body of the cont
 
 #### Optionally add some CSS
 
+You can inject basic CSS into your book.
+
 ``` javascript
 epub.addCSS(`p { text-indent: 0; } p+p { text-indent: 0.75em; }`);
 ```
 
 #### Fill in the actual content
 
-Call `addSection` with a title and HTML contents for each section (usually a chapter) plus options for whether to exclude it from the contents page list and/or to use it as front matter.
+The bulk of the work is adding your content.
+
+Call `addSection` with a title and the HTML contents for each section (usually a chapter) plus options for whether to exclude it from the contents page list and/or to use it as front matter.
 
 ``` javascript
 epub.addSection('Copyright', copyright, false, true);
@@ -132,7 +141,7 @@ epub.addSection('Chapter 1', "<h1>One</h1><p>...</p>");
 
 Excluding from the contents page list allows you to add content which does not appear either in the auto-generated HTML table of contents or the metadata contents used directly by ereaders/software. This is handy for example when adding a page just after the cover containing the title and author - a common page which does not usually appear in the book contents.
 
-### Creating a complete EPUB file ready for distribution
+### Option 1 - Creating a complete EPUB file ready for distribution
 
 This is the simplest option.
 
@@ -144,9 +153,9 @@ epub.writeEPUB(
 );
 ```
 
-### Creating a folder containing all the files necessary to build the final EPUB yourself
+### Option 2 - Creating a folder containing all the files necessary to build the final EPUB yourself
 
-If you need to do further work on your EPUB, this option writes the entire constituent files into a folder. When you write your EPUB out, it should consist of this folder's contents zipped up and renamed, with the sole proviso that the first file in the zip should be the `mimetype` file stored uncompressed.
+If you need to do further work on your EPUB, this option writes the entire constituent files into a folder. When you create your EPUB, it should consist of this folder's contents zipped up and renamed, with the sole proviso that the first file in the zip should be the `mimetype` file (stored uncompressed, not zipped).
 
 ``` javascript
 epub.writeFilesForEPUB(
@@ -155,9 +164,9 @@ epub.writeFilesForEPUB(
 );
 ```
 
-### Creating a Javascript object containing all the filenames and content needed for the final EPUB
+### Option 3 - Creating a Javascript object containing all the filenames and content needed for the final EPUB
 
-Finally in a similar manner to the previous folder of files you can have the same set of content returned to you directly for you to do what you want with.
+In a similar manner to the previous folder of files, you can have the same set of content returned to you directly for you to do what you want with.
 
 ``` javascript
 epub.getFilesForEPUB(
@@ -169,7 +178,7 @@ epub.getFilesForEPUB(
 
 ---
 
-## Substitutions
+## Substitutions within your book content
 
 A simple form of text substitution is supported. At any point in your section's content you may include placeholders like `[[COPYRIGHT]]`. When the EPUB is generated any such placeholders which match the *capitalised* name of a *metadata* entry are replaced with the corresponding metadata value.
 
@@ -179,7 +188,7 @@ For example, you could have a "Thanks for Reading" page at the end of your book 
 <p>Thanks for reading <strong>[[TITLE]]</strong> by <em>[[AUTHOR]]</em>.</p>
 ```
 
-When the EPUB is produced and opened, if your metadata was set as per the book "The Hobbit" by "JRR Tolkien" it will look like:
+When the EPUB is produced and opened, if your metadata was set as per the book "The Hobbit" by "JRR Tolkien", then it will look like this:
 
 ---
 
@@ -187,7 +196,7 @@ Thanks for reading **The Hobbit** by *JRR Tolkien*.
 
 ---
 
-This means you can re-use content across multiple books or refer to the author/title/series/whatever at any point within the book without worrying about consistency or maintenance.
+This means you can re-use content across multiple books, or refer to the author/title/series/whatever at any point within the book without worrying about consistency or maintenance.
 
 ## An example
 
@@ -198,53 +207,6 @@ npm run example
 ```
 
 This will generate various outputs and advise you of the location.
-
----
-
----
-
-## For nodepub developers only
-
-### Tests and example
-
-In the top folder (containing the *package.json* file) run one of the following.
-
-``` javascript
-npm test
-npm run example
-```
-
-### Code quality
-
-In addition to the tests I use **ES Lint** and **Editor Config**. Make sure your editor/ide has support for the `.editorconfig` file, and when changing code do the following afterwards.
-
-``` javascript
-npm run lint
-```
-
-This will auto-fix what it can. You will have less issues if your editor/IDE also has an ES Lint integration.
-
-*Visual Studio Code* has both of the above via plugins.
-
-### Notes
-
-* The tests mostly stub *fs* where used. However at one point they do actually write a final EPUB document. This means that (a) the test process needs write access to the test folder and (b) an actual file is generated.
-
-* Whilst the *process* of generating EPUBs is tested, the *final EPUB* is not; I have manually tested it via the [IDPF Validator](http://validator.idpf.org/). The actual testing of an EPUB file is already sufficiently covered by the *epubcheck* tool which that site uses, and I have not added it as an integration test.
-
-* You may find it helpful to look at the `example/example.js` file.
-
-* For viewing generated metadata and content both Microsoft Edge and Calibre have good EPUB readers.
-
-## Automatic upgrading of dependencies to the latest
-
-Remember to run the tests and to check the generated books using (at least) the IDPF validator before committing.
-
-``` sh
-npm install -g npm-check-updates
-ncu -u
-npm i
-```
 
 ## Reminder
 
