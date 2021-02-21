@@ -1,29 +1,19 @@
 const fs = require('fs');
-const _ = require('lodash');
+const fsPromises = require('fs').promises;
 const { expect, assert } = require('chai');
 const sinon = require('sinon');
+
 const nodepub = require('../src/index');
 
-const validMetadata = {
-  id: Date.now(),
-  cover: 'test/test-cover.png',
-  title: 'Test Document',
-  series: 'My Series',
-  sequence: 1,
-  author: 'Nodepub',
-  fileAs: 'Nodepub',
-  genre: 'Non-Fiction',
-  tags: 'Sample,Example,Test',
-  copyright: 'Nodepub, 1980',
-  publisher: 'My Fake Publisher',
-  published: '2000-12-31',
-  language: 'en',
-  description: 'A test book.',
-  contents: 'Contents',
-  source: 'http://www.kcartlidge.com',
-  images: [],
-};
 const lipsum = '<h1>Chapter Title Goes Here</h1><p><em>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse mattis iaculis pharetra. Proin malesuada tortor ut nibh viverra eleifend.</em></p><p>Duis efficitur, arcu vitae viverra consectetur, nisi mi pharetra metus, vel egestas ex velit id leo. Curabitur non tortor nisi. Mauris ornare, tellus vel fermentum suscipit, ligula est eleifend dui, in elementum nunc risus in ipsum. Pellentesque finibus aliquet turpis sed scelerisque. Pellentesque gravida semper elit, ut consequat est mollis sit amet. Nulla facilisi.</p>';
+
+const find = (collection, condition) => {
+  const result = [];
+  collection.forEach((f) => {
+    if (condition(f)) result.push(f);
+  });
+  return result;
+};
 
 describe('Create EPUB with invalid document metadata', () => {
   it('should throw an exception if null', () => {
@@ -34,19 +24,25 @@ describe('Create EPUB with invalid document metadata', () => {
 
   it('should throw an exception if no ID', () => {
     expect(() => {
-      nodepub.document({ title: 'T', author: 'A', genre: 'Non-Fiction' });
+      nodepub.document({
+        title: 'T', author: 'A', genre: 'Non-Fiction', cover: 'cover.png',
+      });
     }).to.throw(': id');
   });
 
   it('should throw an exception if no Title', () => {
     expect(() => {
-      nodepub.document({ id: '1', author: 'A', genre: 'Non-Fiction' });
+      nodepub.document({
+        id: '1', author: 'A', genre: 'Non-Fiction', cover: 'cover.png',
+      });
     }).to.throw(': title');
   });
 
   it('should throw an exception if no Author', () => {
     expect(() => {
-      nodepub.document({ id: '1', title: 'T', genre: 'Non-Fiction' });
+      nodepub.document({
+        id: '1', title: 'T', genre: 'Non-Fiction', cover: 'cover.png',
+      });
     }).to.throw(': author');
   });
 
@@ -55,30 +51,34 @@ describe('Create EPUB with invalid document metadata', () => {
       nodepub.document({
         id: '1', title: 'T', author: 'A', genre: 'Non-Fiction',
       });
-    }).to.throw('cover');
-  });
-
-  it('should not throw an exception if a Cover is specified', () => {
-    expect(() => {
-      nodepub.document({
-        id: '1', title: 'T', author: 'A', genre: 'Non-Fiction', cover: 'a-cover',
-      });
-    }).not.to.throw('cover');
-  });
-
-  it('should throw an exception if a missing Cover is specified', () => {
-    expect(() => {
-      nodepub.document({
-        id: '1', title: 'T', author: 'A', genre: 'Non-Fiction',
-      }, undefined);
-    }).to.throw('cover');
+    }).to.throw(': cover');
   });
 });
 
 describe('Create EPUB with a valid document', () => {
+  let validMetadata;
   let epub;
 
   beforeEach(() => {
+    validMetadata = {
+      id: Date.now(),
+      cover: 'test/test-cover.png',
+      title: 'Test Document',
+      series: 'My Series',
+      sequence: 1,
+      author: 'Nodepub',
+      fileAs: 'Nodepub',
+      genre: 'Non-Fiction',
+      tags: 'Sample,Example,Test',
+      copyright: 'Nodepub, 1980',
+      publisher: 'My Fake Publisher',
+      published: '2000-12-31',
+      language: 'en',
+      description: 'A test book.',
+      contents: 'Contents',
+      source: 'http://www.kcartlidge.com',
+      images: [],
+    };
     epub = nodepub.document(validMetadata);
   });
 
@@ -107,16 +107,17 @@ describe('Create EPUB with a valid document', () => {
   it('should include an image file asset', (done) => {
     validMetadata.images.push('test/hat.png');
     epub = nodepub.document(validMetadata);
-    epub.getFilesForEPUB((err, files) => {
-      let found = false;
-      _.each(files, (f) => {
-        if (f.name === 'hat.png') {
-          found = true;
-        }
+    epub.getFilesForEPUB()
+      .then((files) => {
+        let found = false;
+        files.forEach((f) => {
+          if (f.name === 'hat.png') {
+            found = true;
+          }
+        });
+        assert(found);
+        done();
       });
-      assert(found);
-      done();
-    });
   });
 
   describe('With a generate contents callback provided', () => {
@@ -128,75 +129,67 @@ describe('Create EPUB with a valid document', () => {
     it('should request contents markup when needed', (done) => {
       epub = nodepub.document(validMetadata, contentsCallback);
       epub.addSection('Dummy Section.', lipsum);
-      epub.getFilesForEPUB((err) => {
-        expect(providedContents).to.equal(true);
-        done(err);
-      });
+      epub.getFilesForEPUB()
+        .then(() => {
+          expect(providedContents).to.equal(true);
+          done();
+        });
     });
   });
 
   describe('With added content', () => {
     let files = [];
 
-    beforeEach((done) => {
+    beforeEach(async () => {
       epub = nodepub.document(validMetadata);
       epub.addSection('Chapter 1', lipsum);
       epub.addSection('Chapter 2', lipsum);
       epub.addSection('Chapter 3', lipsum);
-      epub.getFilesForEPUB((err, epubFiles) => {
-        files = epubFiles;
-        done();
-      });
+      files = await epub.getFilesForEPUB();
     });
 
     describe('When the constituent files are requested', () => {
       it('should return the correct number of files', () => {
-        expect(files.length).to.equal(12);
+        expect(files.length).to.equal(11);
       });
 
       it('should have a mimetype file', () => {
-        const metadata = _.find(files, (f) => f.name === 'mimetype');
+        const metadata = find(files, (f) => f.name === 'mimetype');
         assert(metadata !== null);
       });
 
       it('should have an uncompressed mimetype file', () => {
-        const metadata = _.find(files, (f) => f.name === 'mimetype');
-        expect(metadata.compress).to.equal(false);
+        const metadata = find(files, (f) => f.name === 'mimetype');
+        expect(metadata[0].compress).to.equal(false);
       });
 
       it('should have all other files compressed', () => {
-        const metadata = _.find(files, (f) => f.name !== 'mimetype' && f.compress === false);
-        assert(metadata === undefined);
+        const metadata = find(files, (f) => f.name !== 'mimetype' && f.compress === false);
+        assert(metadata.length === 0);
       });
     });
 
     describe('When the constituent files are to be written to a folder', () => {
-      let stubMkdir; let
-        stubWrite;
+      let stubMkdir;
+      let stubWrite;
 
       beforeEach(() => {
-        stubMkdir = sinon.stub(fs, 'mkdir').callsFake((path, cb) => { cb(null); });
-        stubWrite = sinon.stub(fs, 'writeFile').callsFake((path, content, cb) => { cb(null); });
+        stubMkdir = sinon.stub(fsPromises, 'mkdir').resolves(() => { });
+        stubWrite = sinon.stub(fsPromises, 'writeFile').resolves(() => { });
       });
       afterEach(() => {
         stubWrite.restore();
         stubMkdir.restore();
       });
 
-      it('Should attempt to create subfolders', (done) => {
-        epub.writeFilesForEPUB('test/test', (err) => {
-          assert(err === null);
-          expect(fs.mkdir.callCount).to.be.greaterThan(0);
-          done();
-        });
+      it('Should attempt to create subfolders', async () => {
+        await epub.writeFilesForEPUB('test/test');
+        expect(fsPromises.mkdir.callCount).to.equal(11);
       });
 
-      it('Should attempt to write the correct quantity of files', (done) => {
-        epub.writeFilesForEPUB('test/test', (err) => {
-          assert(err === null);
-          expect(fs.writeFile.callCount).to.equal(12);
-          done();
-        });
+      it('Should attempt to write the correct quantity of files', async () => {
+        await epub.writeFilesForEPUB('test/test');
+        expect(fsPromises.writeFile.callCount).to.equal(11);
       });
     });
 
@@ -209,78 +202,64 @@ describe('Create EPUB with a valid document', () => {
         }
       });
 
-      it('the file should now exist', (done) => {
-        epub.writeEPUB(done, 'test', 'test-book', () => {
-          try {
-            const result = fs.statSync('test/test-book.epub').isFile();
-            if (!result) done(new Error('EPUB not created or not a File.'));
-          } catch (e) {
-            done(new Error('EPUB not created.'));
-          }
-          done();
-        });
+      it('the file should now exist', async () => {
+        await epub.writeEPUB('test', 'test-book');
+        const result = fs.statSync('test/test-book.epub').isFile();
+        expect(result).to.equal(true);
       });
     });
 
     describe('With a section excluded from the contents', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         epub = nodepub.document(validMetadata);
         epub.addSection('Copyright', '<h1>Copyright Page</h1>', true, true);
         epub.addSection('Chapter 1', lipsum);
         epub.addSection('Chapter 2', lipsum);
         epub.addSection('Chapter 3', lipsum);
+        files = await epub.getFilesForEPUB();
       });
 
-      it('should return the correct number of files', (done) => {
-        files = epub.getFilesForEPUB((err, knownFiles) => {
-          assert(err === null);
-          expect(knownFiles.length).to.equal(13);
-          done();
-        });
+      it('should return the correct number of files', async () => {
+        files = await epub.getFilesForEPUB();
+        expect(files.length).to.equal(12);
       });
 
-      it('should not show the section in the NCX contents metadata', (done) => {
-        epub.getFilesForEPUB((err, knownFiles) => {
-          let ncxContent = '>Copyright<';
-          _.each(knownFiles, (f) => {
-            if (f.name === 'navigation.ncx') {
-              ncxContent = f.content;
-            }
-          });
-          const copyrightPageInNCX = ncxContent.indexOf('>Copyright<') > -1;
-          expect(copyrightPageInNCX).to.equal(false);
-          done();
+      it('should not show the section in the NCX contents metadata', async () => {
+        files = await epub.getFilesForEPUB();
+        let ncxContent = '>Copyright<';
+        files.forEach((f) => {
+          if (f.name === 'navigation.ncx') {
+            ncxContent = f.content;
+          }
         });
+        const copyrightPageInNCX = ncxContent.indexOf('>Copyright<') > -1;
+        expect(copyrightPageInNCX).to.equal(false);
       });
 
-      it('should not show the section in the HTML contents area', (done) => {
-        epub.getFilesForEPUB((err, knownFiles) => {
-          let tocContent = '>Copyright<';
-          _.each(knownFiles, (f) => {
-            if (f.name === 'toc.xhtml') {
-              tocContent = f.content;
-            }
-          });
-          const copyrightPageInTOC = tocContent.indexOf('Copyright') > -1;
-          expect(copyrightPageInTOC).to.equal(false);
-          done();
+      it('should not show the section in the HTML contents area', async () => {
+        files = await epub.getFilesForEPUB();
+        let tocContent = '>Copyright<';
+        files.forEach((f) => {
+          if (f.name === 'toc.xhtml') {
+            tocContent = f.content;
+          }
         });
+        const copyrightPageInTOC = tocContent.indexOf('Copyright') > -1;
+        expect(copyrightPageInTOC).to.equal(false);
       });
 
       describe('With the excluded section being front-matter', () => {
-        it('should place the section before the HTML contents page', (done) => {
-          files = epub.getFilesForEPUB((err, knownFiles) => {
-            let opfContent = '';
-            _.each(knownFiles, (f) => {
-              if (f.name === 'ebook.opf') {
-                opfContent = f.content;
-              }
-            });
-            const copyrightPageInOPF = opfContent.indexOf("<itemref idref='s1' />");
-            const contentsPageInOPF = opfContent.indexOf("<itemref idref='toc'/>");
-            expect(copyrightPageInOPF).to.be.lessThan(contentsPageInOPF);
-            done();
+        it('should place the section before the HTML contents page', async () => {
+          files = await epub.getFilesForEPUB();
+          let opfContent = '';
+          files.forEach((f) => {
+            if (f.name === 'ebook.opf') {
+              opfContent = f.content;
+            }
           });
+          const copyrightPageInOPF = opfContent.indexOf("<itemref idref='s1' />");
+          const contentsPageInOPF = opfContent.indexOf("<itemref idref='toc'/>");
+          expect(copyrightPageInOPF).to.be.lessThan(contentsPageInOPF);
         });
       });
     });

@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-const _ = require('lodash');
 const nodepub = require('../src/index.js');
 
 // Metadata example.
@@ -78,7 +77,7 @@ for (let i = 0; i < 3; i += 1) {
 // If not required, just drop it from the 'var epub=' call below.
 const generateContentsPage = (links) => {
   let contents = '<h1>Chapters</h1>';
-  _.each(links, (link) => {
+  links.forEach((link) => {
     // Omit all but the main pages.
     if (link.itemType === 'main') {
       if (link.title === 'More Books to Read') {
@@ -112,15 +111,23 @@ epub.addSection('More Books to Read', more);
 epub.addSection('About the Author', about);
 
 // Generate the result.
-epub.writeEPUB(
-  (e) => { console.log('Error:', e); },
-  'example', 'example',
-  () => { console.log("See the 'example' subfolder."); },
-);
+(async () => {
+  try {
+    console.log('Generating a stand-alone EPUB.');
+    await epub.writeEPUB('example', 'example');
+  } catch (e) {
+    console.log('ERROR');
+    console.log(e);
+  }
+})();
 
 // Also write the structure both for debugging purposes and also to provide sample output in GitHub.
-epub.writeFilesForEPUB('example/example-EPUB-files', (err) => {
-  if (err) {
-    console.log(err);
+(async () => {
+  try {
+    console.log('Generating a collection of EPUB constituent files.');
+    await epub.writeFilesForEPUB('example/example-EPUB-files');
+  } catch (e) {
+    console.log('ERROR');
+    console.log(e);
   }
-});
+})();

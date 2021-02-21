@@ -1,22 +1,29 @@
 const fs = require('fs');
+const fsPromises = require('fs').promises;
 const path = require('path');
 const zip = require('archiver');
-const _ = require('lodash');
-const asyncJs = require('async');
+const { resolve } = require('path');
 const structuralFiles = require('./constituents/structural.js');
 const markupFiles = require('./constituents/markup.js');
 
+// Asynchronous forEach variant.
+const forEachAsync = async (arr, cb) => {
+  for (let index = 0; index < arr.length; index += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    await cb(arr[index], index, arr);
+  }
+};
+
 // Create a folder, throwing an error only if the error is not that
 // the folder already exists. Effectively creates if not found.
-const makeFolder = (topPath, cb) => {
-  if (cb) {
-    fs.mkdir(topPath, (err) => {
+const makeFolder = async (topPath) => {
+  await fsPromises.mkdir(topPath)
+    .catch((err) => {
       if (err && err.code !== 'EEXIST') {
         throw err;
       }
-      cb();
+      resolve();
     });
-  }
 };
 
 // Construct a new document.
@@ -33,7 +40,7 @@ const document = (metadata, generateContentsCallback) => {
   // Basic validation.
   const required = ['id', 'title', 'author', 'genre', 'cover'];
   if (metadata == null) throw new Error('Missing metadata');
-  _.each(required, (field) => {
+  required.forEach((field) => {
     const prop = metadata[field];
     if (prop == null || typeof (prop) === 'undefined' || prop.toString().trim() === '') throw new Error(`Missing metadata: ${field}`);
     if (field === 'cover') {
@@ -63,9 +70,7 @@ const document = (metadata, generateContentsCallback) => {
 
   // Gets the files needed for the EPUB, as an array of objects.
   // Note that 'compress:false' MUST be respected for valid EPUB files.
-  self.getFilesForEPUB = (cb) => {
-    if (!cb) { throw new Error('getFilesForEPUB requires a callback.'); }
-
+  self.getFilesForEPUB = async () => {
     const syncFiles = [];
     const asyncFiles = [];
 
@@ -106,7 +111,7 @@ const document = (metadata, generateContentsCallback) => {
     asyncFiles.push({
       name: coverFilename, folder: 'OEBPF/images', compress: true, content: self.coverImage,
     });
-    _.each(self.metadata.images, (image) => {
+    self.metadata.images.forEach((image) => {
       const imageFilename = path.basename(image);
       asyncFiles.push({
         name: imageFilename, folder: 'OEBPF/images', compress: true, content: image,
@@ -114,85 +119,63 @@ const document = (metadata, generateContentsCallback) => {
     });
 
     // Now async map to get the file contents.
-    asyncJs.map(asyncFiles, (file, asyncCb) => {
-      fs.readFile(file.content, (err, data) => {
-        const loaded = {
-          name: file.name, folder: file.folder, compress: file.compress, content: data,
-        };
-        asyncCb(err, loaded);
-      });
-    }, (err, results) => {
-      if (err) {
-        cb(err);
-      } else {
-        const files = syncFiles.concat(results);
-        cb(null, files);
-      }
+    await forEachAsync(asyncFiles, async (file) => {
+      const data = await fsPromises.readFile(file.content);
+      const loaded = {
+        name: file.name, folder: file.folder, compress: file.compress, content: data,
+      };
+      syncFiles.push(loaded);
     });
+
+    // Return with the files.
+    return syncFiles;
   };
 
   // Writes the files needed for the EPUB into a folder structure.
   // For valid EPUB files the 'mimetype' MUST be the first entry in an EPUB and uncompressed.
-  self.writeFilesForEPUB = (folder, cb) => {
-    if (!cb) { throw new Error('writeFilesForEPUB requires a callback.'); }
-    self.getFilesForEPUB((filesErr, files) => {
-      if (filesErr) { cb(filesErr); }
-      makeFolder(folder, (folderErr) => {
-        if (folderErr) { cb(folderErr); }
-        asyncJs.each(files, (file, asyncDone) => {
-          if (file.folder.length > 0) {
-            makeFolder(`${folder}/${file.folder}`, () => {
-              fs.writeFile(`${folder}/${file.folder}/${file.name}`, file.content, asyncDone);
-            });
-          } else {
-            fs.writeFile(`${folder}/${file.name}`, file.content, asyncDone);
-          }
-        }, (err) => {
-          cb(err);
-        });
-      });
+  self.writeFilesForEPUB = async (folder) => {
+    const files = await self.getFilesForEPUB();
+    await makeFolder(folder);
+    await forEachAsync(files, async (file) => {
+      if (file.folder.length > 0) {
+        const f = `${folder}/${file.folder}`;
+        await makeFolder(f);
+        await fsPromises.writeFile(`${f}/${file.name}`, file.content);
+      } else {
+        await fsPromises.writeFile(`${folder}/${file.name}`, file.content);
+      }
     });
   };
 
   // Writes the EPUB. The filename should not have an extention.
-  self.writeEPUB = (onError, folder, filename, onSuccess) => {
-    try {
-      self.getFilesForEPUB((err, files) => {
-        makeFolder(folder, (folderErr) => {
-          if (folderErr) { throw folderErr; }
-          const output = fs.createWriteStream(`${folder}/${filename}.epub`);
-          const archive = zip('zip', { store: false });
+  self.writeEPUB = async (folder, filename) => {
+    const files = await self.getFilesForEPUB();
 
-          // Some end-state handlers.
-          output.on('close', () => {
-            if (typeof (onSuccess) === 'function') {
-              onSuccess(null);
-            }
-          });
-          archive.on('error', (archiveErr) => {
-            throw archiveErr;
-          });
-          archive.pipe(output);
+    // Start creating the zip.
+    await makeFolder(folder);
+    const output = fs.createWriteStream(`${folder}/${filename}.epub`);
+    const archive = zip('zip', { store: false });
 
-          // Write the file contents.
-          files.forEach((file) => {
-            if (file.folder.length > 0) {
-              archive.append(file.content, { name: `${file.folder}/${file.name}`, store: !file.compress });
-            } else {
-              archive.append(file.content, { name: file.name, store: !file.compress });
-            }
-          });
+    // Some end-state handlers.
+    output.on('close', () => resolve());
+    archive.on('error', (archiveErr) => {
+      throw archiveErr;
+    });
+    archive.pipe(output);
 
-          // Done.
-          archive.finalize();
-        });
-      });
-    } catch (err) {
-      if (typeof (onError) === 'function') {
-        onError(err);
+    // Write the file contents.
+    files.forEach((file) => {
+      if (file.folder.length > 0) {
+        archive.append(file.content, { name: `${file.folder}/${file.name}`, store: !file.compress });
+      } else {
+        archive.append(file.content, { name: file.name, store: !file.compress });
       }
-    }
+    });
+
+    // Done.
+    await archive.finalize();
   };
+
   return self;
 };
 

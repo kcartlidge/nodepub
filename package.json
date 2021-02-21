@@ -27,8 +27,6 @@
   "homepage": "https://github.com/kcartlidge/nodepub",
   "dependencies": {
     "archiver": "^5.2.0",
-    "async": "^3.2.0",
-    "lodash": "^4.17.20",
     "moment": "^2.29.1"
   },
   "devDependencies": {
