@@ -1,5 +1,10 @@
 # CHANGE LOG
 
+## 2021-02-21
+
+  - Included [Wallaby.js](https://wallabyjs.com/) configuration
+    - Contributors can use a free OSS license (I have a paid one, it's worth supporting)
+
 ## 2021-02-17 - v3.0.0
 
 - Now developed against Node v15.6.0
