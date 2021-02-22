@@ -2,7 +2,7 @@
 ![Wallaby.js](https://img.shields.io/badge/wallaby.js-configured-success.svg)
 ![IDPF](https://img.shields.io/badge/idpf-valid-success)
 
-# Nodepub v3.0.0
+# Nodepub v3.0.1
 
 Create valid EPUB 2 ebooks with metadata, contents, and cover image.
 
