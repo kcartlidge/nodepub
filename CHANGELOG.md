@@ -1,5 +1,26 @@
 # CHANGE LOG
 
+## 2021-02-21
+
+  - Included [Wallaby.js](https://wallabyjs.com/) configuration
+    - Contributors can use a free OSS license (I have a paid one, it's worth supporting)
+  - Switched to `async`/`await` rather than callbacks
+
+## 2021-02-17 - v3.0.0
+
+- Now developed against Node v15.6.0
+- Updated dependencies
+  - Updated Sinon stub syntax in tests
+- Moved `cover` into document metadata
+  - Now supports multiple image types (`png`, `jpg`, etc)
+  - Any type whose file extention fits a mimetype like `image/png` or `image/jpg`
+
+---
+
+## BREAKING CHANGES
+
+---
+
 ## 2020-04-14
 
 - Merged `RELEASES.md` into here

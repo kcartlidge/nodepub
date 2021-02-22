@@ -28,4 +28,5 @@ node_modules
 nodepub-*.tgz
 *.mobi
 
+.vscode/
 example-EPUB-files/
