@@ -1,14 +1,16 @@
 # CHANGE LOG
 
-## 2021-02-21
+## 2021-02-22 - v3.0.0
 
   - Included [Wallaby.js](https://wallabyjs.com/) configuration
     - Contributors can use a free OSS license (I have a paid one, it's worth supporting)
   - Switched to `async`/`await` rather than callbacks
+  - Updated documentation
 
-## 2021-02-17 - v3.0.0
+## 2021-02-17
 
 - Now developed against Node v15.6.0
+  - Node v10.3 or later should work fine
 - Updated dependencies
   - Updated Sinon stub syntax in tests
 - Moved `cover` into document metadata

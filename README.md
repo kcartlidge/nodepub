@@ -12,7 +12,7 @@ Nodepub is a **Node** module which can be used to create **EPUB 2** documents.
 
 * Files pass the [IDPF online validator](http://validator.idpf.org)
 * Files meet Sigil's preflight checks
-* Files open fine in iBooks, Adobe Digital Editions and Calibre
+* Files open fine in iBooks, Adobe Digital Editions, and Calibre
 * Files open fine with the Kobo H20 ereader
 * Files are fine as *KindleGen* input
 * PNG/JPG cover images - recommend 600x800, 600x900, or similar as minimum
@@ -28,12 +28,12 @@ Development is done against Node v15.6.0 since v3.0.0 (February 2021).
 
 ## Breaking changes over v2
 
-* In v2 the cover image was specified as a parameter when the document is first constructed.
-  * In v3 that parameter is removed and becomes a `cover` metadata entry instead.
-  * As a bonus, cover images should now work for `jpg` and `gif` as well as `png`.
-* It now uses *async/await* and so requires newer versions of Node.
-  * Public methods are therefore called slightly differently.
-  * The actual content of generated EPUBs remains the same.
+* In v2 the cover image was specified as a parameter when the document is first constructed
+  * In v3 that parameter is removed and becomes a `cover` metadata entry instead
+  * As a bonus, cover images should now work for `jpg` and `gif` as well as `png`
+* It now uses *async/await* and so requires newer versions of Node
+  * Public methods are therefore called slightly differently
+  * The actual content of generated EPUBs remains the same
 
 * [You can view the change log here.](./CHANGELOG.md)
 * [Developers of Nodepub itself can see some helpful information here.](./DEVELOPERS.md)
@@ -47,7 +47,7 @@ Add it as with any other module:
 npm i nodepub
 ```
 
-Import it for use:
+Then import it for use:
 
 ``` javascript
 var nodepub = require("nodepub");
@@ -55,9 +55,9 @@ var nodepub = require("nodepub");
 
 ## Defining your EPUB
 
-* Documents consist of *metadata* and *sections*.
-  * Metadata is an object with various properties detailing the book.
-  * Sections are chunks of HTML that can be thought of as chapters.
+* Documents consist of *metadata* and *sections*
+  * Metadata is an object with various properties detailing the book
+  * Sections are chunks of HTML that can be thought of as chapters
 
 Here's some sample metadata:
 
@@ -83,12 +83,12 @@ var metadata = {
 };
 ```
 
-* The `cover` should be an image as described in the bullet points at the top of this document.
-* The `series` and `sequence` are not recognised by many readers (the *Calibre* properties are used).
-* The `tags` become subjects in the final EPUB.
-* For `published` note the *year-month-day* format.
-* The `language` is the short *ISO* language name (`en`, `fr`, `de` etc).
-* The `images` array is where you refer to all images used inside the book. Within your section HTML you always link to one all-containing flat folder: `<img src="../images/hat.png" />`.
+* The `cover` should be an image as described in the bullet points at the top of this document
+* The `series` and `sequence` are not recognised by many readers (the *Calibre* properties are used)
+* The `tags` become subjects in the final EPUB
+* For `published` note the *year-month-day* format
+* The `language` is the short *ISO* language name (`en`, `fr`, `de` etc)
+* The `images` array is where you refer to all images used inside the book. Within your section HTML you always link to one all-containing flat folder: `<img src="../images/hat.png" />`
 
 Call the `document` method with the aforementioned metadata object detailing your book (previous versions needed the path of a cover image as a call parameter; this is no longer the case as it is now part of the metadata itself).
 
@@ -100,16 +100,16 @@ var epub = nodepub.document(metadata);
 
 The bulk of the work is adding your content.
 
-Call `addSection` with a title and the HTML contents for each section (usually a chapter) plus options for whether to *exclude it from the contents page list* and/or to *use it as front matter*.
+Call `addSection` with a title and the HTML contents for each section (usually a chapter), plus options for whether to *exclude it from the contents page list* and/or to *use it as front matter*.
 
 ``` javascript
 epub.addSection('Copyright', copyright, false, true);
 epub.addSection('Chapter 1', "<h1>One</h1><p>...</p>");
 ```
 
-Excluding from the contents page list allows you to add content which does not appear either in the auto-generated HTML table of contents or the metadata contents used directly by ereaders/software. This is handy for example when adding a page just after the cover containing the title and author - a common page which does not usually appear in the book contents.
+*Excluding from the contents page list* allows you to add content which does not appear either in the auto-generated HTML table of contents or the metadata contents used directly by ereaders/software. This is handy for example when adding a page at the end of the book with details of your other books - a common page which may not appear in the book contents.
 
-Flagging as front matter still includes it but passes that flag into any custom content page generation function you may choose to provide. Front matter will also appear in your book ahead of the contents page when read linearly. Useful for dedication pages, for example.
+*Flagging as front matter* still includes it but passes that flag into any custom content page generation function you may choose to provide. Front matter will also appear in your book ahead of the contents page when read linearly. Useful for dedication pages, for example.
 
 ### Optionally add some extra CSS
 
@@ -123,7 +123,7 @@ epub.addCSS(`p { text-indent: 0; } p+p { text-indent: 0.75em; }`);
 
 *A standard contents page is included automatically, but can be overridden.*
 
-You can create your own by passing a second parameter when creating a *document*, a function which is called when the contents page is being constructed. That function will be given details of all the links, and is expected to return HTML to use for the contents page.
+You can create your own by passing a second parameter when creating a *document* - a function which is called when the contents page is being constructed. That function will be given details of all the links, and is expected to return HTML to use for the contents page.
 
 ```javascript
 var makeContentsPage = (links) => {
@@ -140,20 +140,37 @@ var epub = nodepub.document(metadata, makeContentsPage);
 
 The `links` array which is passed to your callback function consists of objects with the following properties:
 
-* *title* - the title of the section being linked to.
-* *link* - the relative `href` within the EPUB.
-* *itemType* - one of 3 types, those being *front* for front matter, *contents* for the contents page, and *main* for the remaining sections.
-  * You can use this to omit front matter from the contents page if required.
+* *title* - the title of the section being linked to
+* *link* - the relative `href` within the EPUB
+* *itemType* - one of 3 types, those being *front* for front matter, *contents* for the contents page, and *main* for the remaining sections
+  * You can use this to omit front matter from the contents page if required
 
 Your callback function should return a string of HTML which will form the body of the contents page.
 The `example.js` mentioned in the next section shows this in action.
 
 ## Generating your EPUB
 
-Note that the two methods for writing your EPUB are *asynchronous*.
-They should be actioned using the `async`/`await` pattern.
+Note that Nodepub is *asynchronous*, actionable using `async`/`await`.
 
-[For an example, see example.js](./example/example.js).
+``` javascript
+// DEFAULT: Using Nodepub when your code IS asynchronous.
+await epub.writeEPUB('/folder', 'filename-without-extention');
+```
+
+``` javascript
+// EDGE CASE: Using Nodepub when your code IS NOT asynchronous.
+(async () => {
+  try {
+    await epub.writeEPUB('example', 'example');
+  } catch (e) {
+    console.log(e);
+  }
+})();
+```
+
+[For a full example, see example.js](./example/example.js), which uses Nodepub from *synchronous* code.
+
+---
 
 ### Option 1 - Creating a complete EPUB file ready for distribution
 
@@ -162,6 +179,8 @@ This is the simplest option.
 ``` javascript
 await epub.writeEPUB('/folder', 'filename-without-extention');
 ```
+
+---
 
 ### Option 2 - Creating a folder containing all the files necessary to build the final EPUB yourself
 
@@ -172,9 +191,11 @@ When you create your EPUB it should consist of this folder's contents zipped up 
 await epub.writeFilesForEPUB('/folder-for-constituent-files');
 ```
 
+---
+
 ### Option 3 - Creating a Javascript object containing all the filenames and content needed for the final EPUB
 
-Finally, you can have the same set of content files returned to you directly for you to do what you want with (e.g. to store in a database).
+Finally, you can have the same set of content files returned to you directly for you to do what you want with (e.g. to store in a database). This is *not*
 
 ``` javascript
 const files = await epub.getFilesForEPUB();
@@ -191,7 +212,9 @@ const files = [{
 The `content` may be HTML or plain text, or byte arrays for images. It is in a complete and final form.
 Writing these files to a `zip` file, honouring the `compress` flag and with `mimetype` first, gives an EPUB.
 
-## An example
+---
+
+## The full example
 
 In the top folder (containing the *package.json* file) run the following.
 
