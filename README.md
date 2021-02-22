@@ -1,7 +1,10 @@
+![Mocha](https://img.shields.io/badge/mocha-passing-success)
+![Wallaby.js](https://img.shields.io/badge/wallaby.js-configured-success.svg)
+![IDPF](https://img.shields.io/badge/idpf-valid-success)
+
 # Nodepub v3.0.0
 
 Create valid EPUB 2 ebooks with metadata, contents, and cover image.
-
 
 ## About Nodepub
 
