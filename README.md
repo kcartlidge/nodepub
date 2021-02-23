@@ -195,7 +195,7 @@ await epub.writeFilesForEPUB('/folder-for-constituent-files');
 
 ### Option 3 - Creating a Javascript object containing all the filenames and content needed for the final EPUB
 
-Finally, you can have the same set of content files returned to you directly for you to do what you want with (e.g. to store in a database). This is *not*
+Finally, you can have the same set of content files returned to you directly for you to do what you want with (e.g. to store in a database).
 
 ``` javascript
 const files = await epub.getFilesForEPUB();
@@ -209,14 +209,14 @@ const files = [{
 }];
 ```
 
-The `content` may be HTML or plain text, or byte arrays for images. It is in a complete and final form.
-Writing these files to a `zip` file, honouring the `compress` flag and with `mimetype` first, gives an EPUB.
+The `content` may be HTML, plain text, or byte arrays for images. It is in a complete and final form.
+Writing these to a renamed `zip` file, honouring the `compress` flag, with `mimetype` first, gives an EPUB.
 
 ---
 
 ## The full example
 
-In the top folder (containing the *package.json* file) run the following.
+In the top folder (containing the `package.json` file) run the following.
 
 ``` javascript
 npm run example
