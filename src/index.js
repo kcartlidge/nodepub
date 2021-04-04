@@ -149,31 +149,33 @@ const document = (metadata, generateContentsCallback) => {
 
   // Writes the EPUB. The filename should not have an extention.
   self.writeEPUB = async (folder, filename) => {
-    const files = await self.getFilesForEPUB();
+    return new Promise(async (resolve, reject) => {
+      const files = await self.getFilesForEPUB();
 
-    // Start creating the zip.
-    await makeFolder(folder);
-    const output = fs.createWriteStream(`${folder}/${filename}.epub`);
-    const archive = zip('zip', { store: false });
+      // Start creating the zip.
+      await makeFolder(folder);
+      const output = fs.createWriteStream(`${folder}/${filename}.epub`);
+      const archive = zip('zip', { store: false });
 
-    // Some end-state handlers.
-    output.on('close', () => resolve());
-    archive.on('error', (archiveErr) => {
-      throw archiveErr;
+      // Some end-state handlers.
+      output.on('close', () => resolve());
+      archive.on('error', (archiveErr) => {
+        reject(archiveErr);
+      });
+      archive.pipe(output);
+
+      // Write the file contents.
+      files.forEach((file) => {
+        if (file.folder.length > 0) {
+          archive.append(file.content, { name: `${file.folder}/${file.name}`, store: !file.compress });
+        } else {
+          archive.append(file.content, { name: file.name, store: !file.compress });
+        }
+      });
+
+      // Done.
+      await archive.finalize();
     });
-    archive.pipe(output);
-
-    // Write the file contents.
-    files.forEach((file) => {
-      if (file.folder.length > 0) {
-        archive.append(file.content, { name: `${file.folder}/${file.name}`, store: !file.compress });
-      } else {
-        archive.append(file.content, { name: file.name, store: !file.compress });
-      }
-    });
-
-    // Done.
-    await archive.finalize();
   };
 
   return self;
