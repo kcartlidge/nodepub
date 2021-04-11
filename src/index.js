@@ -155,25 +155,27 @@ const document = (metadata, generateContentsCallback) => {
     await makeFolder(folder);
     const output = fs.createWriteStream(`${folder}/${filename}.epub`);
     const archive = zip('zip', { store: false });
-
-    // Some end-state handlers.
-    output.on('close', () => resolve());
     archive.on('error', (archiveErr) => {
       throw archiveErr;
     });
-    archive.pipe(output);
 
-    // Write the file contents.
-    files.forEach((file) => {
-      if (file.folder.length > 0) {
-        archive.append(file.content, { name: `${file.folder}/${file.name}`, store: !file.compress });
-      } else {
-        archive.append(file.content, { name: file.name, store: !file.compress });
-      }
+    await new Promise((resolveWrite) => {
+      // Wait for file descriptor to be written.
+      archive.pipe(output);
+      output.on('close', () => resolveWrite());
+
+      // Write the file contents.
+      files.forEach((file) => {
+        if (file.folder.length > 0) {
+          archive.append(file.content, { name: `${file.folder}/${file.name}`, store: !file.compress });
+        } else {
+          archive.append(file.content, { name: file.name, store: !file.compress });
+        }
+      });
+
+      // Done.
+      archive.finalize();
     });
-
-    // Done.
-    await archive.finalize();
   };
 
   return self;

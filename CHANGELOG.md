@@ -1,12 +1,16 @@
 # CHANGE LOG
 
+## 2021-04-11 - v3.0.2
+
+- Wait for file descriptor before returning from writeEPUB
+
 ## 2021-02-22 - v3.0.0, v3.0.1
 
-  - Included [Wallaby.js](https://wallabyjs.com/) configuration
-    - Contributors can use a free OSS license (I have a paid one, it's worth supporting)
-  - Switched to `async`/`await` rather than callbacks
-  - Updated documentation
-  - Bumped version to update the documentation on *npm*
+- Included [Wallaby.js](https://wallabyjs.com/) configuration
+  - Contributors can use a free OSS license (I have a paid one, it's worth supporting)
+- Switched to `async`/`await` rather than callbacks
+- Updated documentation
+- Bumped version to update the documentation on *npm*
 
 ## 2021-02-17
 
