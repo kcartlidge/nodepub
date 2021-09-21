@@ -2,6 +2,18 @@
 const path = require('path');
 const replacements = require('./replacements');
 
+// Get the image mimetype based on the file name.
+const getImageType = (filename) => {
+  const imageExt = path.extname(filename).toLowerCase();
+  let imageType = '';
+  imageType = (imageExt === '.svg') ? 'image/svg+xml' : imageType;
+  imageType = (imageExt === '.png') ? 'image/png' : imageType;
+  imageType = (imageExt === '.jpg' || imageExt === '.jpeg') ? 'image/jpeg' : imageType;
+  imageType = (imageExt === '.gif') ? 'image/gif' : imageType;
+  imageType = (imageExt === '.tif' || imageExt === '.tiff') ? 'image/tiff' : imageType;
+  return imageType;
+};
+
 const structural = {
 
   // Provide the contents of the mimetype file (which should not be compressed).
@@ -22,7 +34,6 @@ const structural = {
   // Provide the contents of the OPF (spine) file.
   getOPF: (document) => {
     const coverFilename = path.basename(document.coverImage);
-    const coverExt = path.extname(coverFilename).replace('.', '');
     let i;
     let result = '';
     result += "<?xml version='1.0' encoding='utf-8'?>[[EOL]]";
@@ -66,7 +77,7 @@ const structural = {
     result += "    <meta name='cover' content='cover-image'/>[[EOL]]";
     result += '  </metadata>[[EOL]]';
     result += '  <manifest>[[EOL]]';
-    result += `    <item id='cover-image' media-type='image/${coverExt}' href='images/${coverFilename}'/>[[EOL]]`;
+    result += `    <item id='cover-image' media-type='${getImageType(coverFilename)}' href='images/${coverFilename}'/>[[EOL]]`;
     result += "    <item id='cover' media-type='application/xhtml+xml' href='cover.xhtml'/>[[EOL]]";
     result += "    <item id='navigation' media-type='application/x-dtbncx+xml' href='navigation.ncx'/>[[EOL]]";
 
@@ -79,14 +90,8 @@ const structural = {
 
     for (i = 0; i < document.metadata.images.length; i += 1) {
       const image = document.metadata.images[i];
-      const imageExt = path.extname(image).toLowerCase();
       const imageFile = path.basename(image);
-      let imageType = '';
-      imageType = (imageExt === '.svg') ? 'image/svg+xml' : imageType;
-      imageType = (imageExt === '.png') ? 'image/png' : imageType;
-      imageType = (imageExt === '.jpg' || imageExt === '.jpeg') ? 'image/jpeg' : imageType;
-      imageType = (imageExt === '.gif') ? 'image/gif' : imageType;
-      imageType = (imageExt === '.tif' || imageExt === '.tiff') ? 'image/tiff' : imageType;
+      const imageType = getImageType(image);
       if (imageType.length > 0) {
         result += `    <item id='img${i}' media-type='${imageType}' href='images/${imageFile}'/>[[EOL]]`;
       }
