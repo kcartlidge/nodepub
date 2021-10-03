@@ -1,6 +1,6 @@
 # CHANGE LOG
 
-## 2021-10-03 - v3.0.3
+## 2021-10-03 - v3.0.4
 
 - Correct the mimetype for `.jpg` cover images
   - Thanks to bmaupin
