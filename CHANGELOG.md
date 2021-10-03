@@ -1,5 +1,13 @@
 # CHANGE LOG
 
+## 2021-10-03 - v3.0.3
+
+- Correct the mimetype for `.jpg` cover images
+  - Thanks to bmaupin
+- `npm audit` updates for transitive dependencies
+  - Avoid `lodash` command injection
+  - Avoid regex denials of service
+
 ## 2021-04-11 - v3.0.2
 
 - Wait for file descriptor before returning from writeEPUB
