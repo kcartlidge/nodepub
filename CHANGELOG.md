@@ -1,5 +1,11 @@
 # CHANGE LOG
 
+## 2021-10-04 - v3.0.5
+
+- `Genre` now optional
+- Image collection now optional
+  - Cover still required
+
 ## 2021-10-03 - v3.0.4
 
 - Correct the mimetype for `.jpg` cover images

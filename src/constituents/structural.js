@@ -60,7 +60,10 @@ const structural = {
     result += "    <dc:date opf:event='publication'>[[PUBLISHED]]</dc:date>[[EOL]]";
     result += "    <dc:date opf:event='modification'>[[MODIFIED]]</dc:date>[[EOL]]";
     result += '    <dc:rights>[[COPYRIGHT]]</dc:rights>[[EOL]]';
-    result += '    <dc:subject>[[GENRE]]</dc:subject>[[EOL]]';
+
+    if (document.metadata.genre) {
+      result += '    <dc:subject>[[GENRE]]</dc:subject>[[EOL]]';
+    }
 
     if (document.metadata.tags) {
       const tags = document.metadata.tags.split(',');
@@ -88,12 +91,14 @@ const structural = {
     result += "    <item id='toc' media-type='application/xhtml+xml' href='content/toc.xhtml'/>[[EOL]]";
     result += "    <item id='css' media-type='text/css' href='css/ebook.css'/>[[EOL]]";
 
-    for (i = 0; i < document.metadata.images.length; i += 1) {
-      const image = document.metadata.images[i];
-      const imageFile = path.basename(image);
-      const imageType = getImageType(image);
-      if (imageType.length > 0) {
-        result += `    <item id='img${i}' media-type='${imageType}' href='images/${imageFile}'/>[[EOL]]`;
+    if (document.metadata.images) {
+      for (i = 0; i < document.metadata.images.length; i += 1) {
+        const image = document.metadata.images[i];
+        const imageFile = path.basename(image);
+        const imageType = getImageType(image);
+        if (imageType.length > 0) {
+          result += `    <item id='img${i}' media-type='${imageType}' href='images/${imageFile}'/>[[EOL]]`;
+        }
       }
     }
 

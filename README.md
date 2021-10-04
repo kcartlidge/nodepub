@@ -2,7 +2,7 @@
 ![Wallaby.js](https://img.shields.io/badge/wallaby.js-configured-success.svg)
 ![IDPF](https://img.shields.io/badge/idpf-valid-success)
 
-# Nodepub v3.0.4
+# Nodepub v3.0.5
 
 Create valid EPUB 2 ebooks with metadata, contents, and cover image.
 
@@ -85,7 +85,8 @@ var metadata = {
 
 * The `cover` should be an image as described in the bullet points at the top of this document
 * The `series` and `sequence` are not recognised by many readers (the *Calibre* properties are used)
-* The `tags` become subjects in the final EPUB
+* The `genre` becomes the main subject in the final EPUB
+* The `tags` also become subjects in the final EPUB
 * For `published` note the *year-month-day* format
 * The `language` is the short *ISO* language name (`en`, `fr`, `de` etc)
 * The `images` array is where you refer to all images used inside the book. Within your section HTML you always link to one all-containing flat folder: `<img src="../images/hat.png" />`

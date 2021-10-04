@@ -38,7 +38,7 @@ const document = (metadata, generateContentsCallback) => {
   self.coverImage = '';
 
   // Basic validation.
-  const required = ['id', 'title', 'author', 'genre', 'cover'];
+  const required = ['id', 'title', 'author', 'cover'];
   if (metadata == null) throw new Error('Missing metadata');
   required.forEach((field) => {
     const prop = metadata[field];
@@ -111,12 +111,14 @@ const document = (metadata, generateContentsCallback) => {
     asyncFiles.push({
       name: coverFilename, folder: 'OEBPF/images', compress: true, content: self.coverImage,
     });
-    self.metadata.images.forEach((image) => {
-      const imageFilename = path.basename(image);
-      asyncFiles.push({
-        name: imageFilename, folder: 'OEBPF/images', compress: true, content: image,
+    if (self.metadata.images) {
+      self.metadata.images.forEach((image) => {
+        const imageFilename = path.basename(image);
+        asyncFiles.push({
+          name: imageFilename, folder: 'OEBPF/images', compress: true, content: image,
+        });
       });
-    });
+    }
 
     // Now async map to get the file contents.
     await forEachAsync(asyncFiles, async (file) => {
