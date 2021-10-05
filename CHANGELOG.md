@@ -1,5 +1,10 @@
 # CHANGE LOG
 
+## 2021-10-05 - v3.0.7
+
+- Contents page can be suppressed
+  - New `showContents` metadata item
+
 ## 2021-10-05 - v3.0.6
 
 - Section filename override

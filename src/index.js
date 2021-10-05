@@ -2,29 +2,9 @@ const fs = require('fs');
 const fsPromises = require('fs').promises;
 const path = require('path');
 const zip = require('archiver');
-const { resolve } = require('path');
 const structuralFiles = require('./constituents/structural.js');
 const markupFiles = require('./constituents/markup.js');
-
-// Asynchronous forEach variant.
-const forEachAsync = async (arr, cb) => {
-  for (let index = 0; index < arr.length; index += 1) {
-    // eslint-disable-next-line no-await-in-loop
-    await cb(arr[index], index, arr);
-  }
-};
-
-// Create a folder, throwing an error only if the error is not that
-// the folder already exists. Effectively creates if not found.
-const makeFolder = async (topPath) => {
-  await fsPromises.mkdir(topPath)
-    .catch((err) => {
-      if (err && err.code !== 'EEXIST') {
-        throw err;
-      }
-      resolve();
-    });
-};
+const util = require('./utility.js');
 
 // Construct a new document.
 const document = (metadata, generateContentsCallback) => {
@@ -34,6 +14,7 @@ const document = (metadata, generateContentsCallback) => {
   self.images = [];
   self.metadata = metadata;
   self.generateContentsCallback = generateContentsCallback;
+  self.showContents = true;
   self.filesForTOC = [];
   self.coverImage = '';
 
@@ -47,6 +28,9 @@ const document = (metadata, generateContentsCallback) => {
       self.coverImage = prop;
     }
   });
+  if (metadata.showContents !== null && typeof (metadata.showContents) !== 'undefined') {
+    self.showContents = metadata.showContents;
+  }
 
   // Add a new section entry (usually a chapter) with the given title and
   // (HTML) body content. Optionally excludes it from the contents page.
@@ -112,9 +96,11 @@ const document = (metadata, generateContentsCallback) => {
     }
 
     // Table of contents markup.
-    syncFiles.push({
-      name: 'toc.xhtml', folder: 'OEBPF/content', compress: true, content: markupFiles.getTOC(self),
-    });
+    if (self.showContents) {
+      syncFiles.push({
+        name: 'toc.xhtml', folder: 'OEBPF/content', compress: true, content: markupFiles.getTOC(self),
+      });
+    }
 
     // Extra images - add filename into content property and prepare for async handling.
     const coverFilename = path.basename(self.coverImage);
@@ -131,7 +117,7 @@ const document = (metadata, generateContentsCallback) => {
     }
 
     // Now async map to get the file contents.
-    await forEachAsync(asyncFiles, async (file) => {
+    await util.forEachAsync(asyncFiles, async (file) => {
       const data = await fsPromises.readFile(file.content);
       const loaded = {
         name: file.name, folder: file.folder, compress: file.compress, content: data,
@@ -147,11 +133,11 @@ const document = (metadata, generateContentsCallback) => {
   // For valid EPUB files the 'mimetype' MUST be the first entry in an EPUB and uncompressed.
   self.writeFilesForEPUB = async (folder) => {
     const files = await self.getFilesForEPUB();
-    await makeFolder(folder);
-    await forEachAsync(files, async (file) => {
+    await util.makeFolder(folder);
+    await util.forEachAsync(files, async (file) => {
       if (file.folder.length > 0) {
         const f = `${folder}/${file.folder}`;
-        await makeFolder(f);
+        await util.makeFolder(f);
         await fsPromises.writeFile(`${f}/${file.name}`, file.content);
       } else {
         await fsPromises.writeFile(`${folder}/${file.name}`, file.content);
@@ -164,7 +150,7 @@ const document = (metadata, generateContentsCallback) => {
     const files = await self.getFilesForEPUB();
 
     // Start creating the zip.
-    await makeFolder(folder);
+    await util.makeFolder(folder);
     const output = fs.createWriteStream(`${folder}/${filename}.epub`);
     const archive = zip('zip', { store: false });
     archive.on('error', (archiveErr) => {

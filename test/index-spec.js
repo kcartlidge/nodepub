@@ -137,6 +137,27 @@ describe('Create EPUB with a valid document', () => {
     });
   });
 
+  describe('when the presence of a contents page is specified', () => {
+    it('should have a `toc` when the contents page is not skipped', async () => {
+      epub = nodepub.document(validMetadata);
+      epub.addSection('Chapter 1', lipsum);
+      const files = await epub.getFilesForEPUB();
+
+      const metadata = find(files, (f) => f.name === 'toc.xhtml');
+      assert(metadata.length === 1, 'Expected a table of contents (toc)');
+    });
+
+    it('should not have a `toc` when the contents page is skipped', async () => {
+      validMetadata.showContents = false;
+      epub = nodepub.document(validMetadata);
+      epub.addSection('Chapter 1', lipsum);
+      const files = await epub.getFilesForEPUB();
+
+      const metadata = find(files, (f) => f.name === 'toc.xhtml');
+      assert(metadata.length === 0, 'Expected not to find a table of contents (toc)');
+    });
+  });
+
   describe('With added content', () => {
     let files = [];
 

@@ -1,18 +1,7 @@
 /* eslint-disable no-plusplus */
 const path = require('path');
 const replacements = require('./replacements');
-
-// Get the image mimetype based on the file name.
-const getImageType = (filename) => {
-  const imageExt = path.extname(filename).toLowerCase();
-  let imageType = '';
-  imageType = (imageExt === '.svg') ? 'image/svg+xml' : imageType;
-  imageType = (imageExt === '.png') ? 'image/png' : imageType;
-  imageType = (imageExt === '.jpg' || imageExt === '.jpeg') ? 'image/jpeg' : imageType;
-  imageType = (imageExt === '.gif') ? 'image/gif' : imageType;
-  imageType = (imageExt === '.tif' || imageExt === '.tiff') ? 'image/tiff' : imageType;
-  return imageType;
-};
+const util = require('../utility.js');
 
 const structural = {
 
@@ -80,7 +69,7 @@ const structural = {
     result += "    <meta name='cover' content='cover-image'/>[[EOL]]";
     result += '  </metadata>[[EOL]]';
     result += '  <manifest>[[EOL]]';
-    result += `    <item id='cover-image' media-type='${getImageType(coverFilename)}' href='images/${coverFilename}'/>[[EOL]]`;
+    result += `    <item id='cover-image' media-type='${util.getImageType(coverFilename)}' href='images/${coverFilename}'/>[[EOL]]`;
     result += "    <item id='cover' media-type='application/xhtml+xml' href='cover.xhtml'/>[[EOL]]";
     result += "    <item id='navigation' media-type='application/x-dtbncx+xml' href='navigation.ncx'/>[[EOL]]";
 
@@ -89,14 +78,16 @@ const structural = {
       result += `    <item id='s${i}' media-type='application/xhtml+xml' href='content/${fname}'/>[[EOL]]`;
     }
 
-    result += "    <item id='toc' media-type='application/xhtml+xml' href='content/toc.xhtml'/>[[EOL]]";
+    if (document.showContents) {
+      result += "    <item id='toc' media-type='application/xhtml+xml' href='content/toc.xhtml'/>[[EOL]]";
+    }
     result += "    <item id='css' media-type='text/css' href='css/ebook.css'/>[[EOL]]";
 
     if (document.metadata.images) {
       for (i = 0; i < document.metadata.images.length; i += 1) {
         const image = document.metadata.images[i];
         const imageFile = path.basename(image);
-        const imageType = getImageType(image);
+        const imageType = util.getImageType(image);
         if (imageType.length > 0) {
           result += `    <item id='img${i}' media-type='${imageType}' href='images/${imageFile}'/>[[EOL]]`;
         }
@@ -114,7 +105,9 @@ const structural = {
       }
     }
 
-    result += "    <itemref idref='toc'/>[[EOL]]";
+    if (document.showContents) {
+      result += "    <itemref idref='toc'/>[[EOL]]";
+    }
 
     for (i = 1; i <= document.sections.length; i += 1) {
       if (!(document.sections[i - 1].isFrontMatter)) {
@@ -123,11 +116,14 @@ const structural = {
     }
 
     result += '  </spine>[[EOL]]';
-    result += '  <guide>[[EOL]]';
-    result += "    <reference type='toc' title='Contents' href='content/toc.xhtml'></reference>[[EOL]]";
-    result += '  </guide>[[EOL]]';
-    result += '</package>[[EOL]]';
 
+    if (document.showContents) {
+      result += '  <guide>[[EOL]]';
+      result += "    <reference type='toc' title='Contents' href='content/toc.xhtml'></reference>[[EOL]]";
+      result += '  </guide>[[EOL]]';
+    }
+
+    result += '</package>[[EOL]]';
     return replacements(document, replacements(document, result));
   },
 
@@ -170,11 +166,13 @@ const structural = {
       }
     }
 
-    document.filesForTOC.push({ title: document.metadata.contents, link: 'toc.xhtml', itemType: 'contents' });
-    result += `  <navPoint class='toc' id='toc' playOrder='${playOrder++}'>[[EOL]]`;
-    result += '    <navLabel><text>[[CONTENTS]]</text></navLabel>[[EOL]]';
-    result += "    <content src='content/toc.xhtml'/>[[EOL]]";
-    result += '  </navPoint>[[EOL]]';
+    if (document.showContents) {
+      document.filesForTOC.push({ title: document.metadata.contents, link: 'toc.xhtml', itemType: 'contents' });
+      result += `  <navPoint class='toc' id='toc' playOrder='${playOrder++}'>[[EOL]]`;
+      result += '    <navLabel><text>[[CONTENTS]]</text></navLabel>[[EOL]]';
+      result += "    <content src='content/toc.xhtml'/>[[EOL]]";
+      result += '  </navPoint>[[EOL]]';
+    }
 
     for (i = 1; i <= document.sections.length; i += 1) {
       if (!(document.sections[i - 1].excludeFromContents)) {

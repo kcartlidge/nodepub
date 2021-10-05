@@ -2,7 +2,7 @@
 ![Wallaby.js](https://img.shields.io/badge/wallaby.js-configured-success.svg)
 ![IDPF](https://img.shields.io/badge/idpf-valid-success)
 
-# Nodepub v3.0.6
+# Nodepub v3.0.7
 
 Create valid EPUB 2 ebooks with metadata, contents, and cover image.
 
@@ -50,7 +50,7 @@ npm i nodepub
 Then import it for use:
 
 ``` javascript
-var nodepub = require("nodepub");
+var nodepub = require('nodepub');
 ```
 
 ## Defining your EPUB
@@ -77,9 +77,10 @@ var metadata = {
   published: '2000-12-31',
   language: 'en',
   description: 'A test book.',
+  showContents: false,
   contents: 'Table of Contents',
   source: 'http://www.kcartlidge.com',
-  images: ["../test/hat.png"]
+  images: ['../test/hat.png']
 };
 ```
 
@@ -89,19 +90,36 @@ var metadata = {
 * The `tags` also become subjects in the final EPUB
 * For `published` note the *year-month-day* format
 * The `language` is the short *ISO* language name (`en`, `fr`, `de` etc)
+* The `showContents` option (default is `true`) lets you suppress the contents page
 * The `images` array is where you refer to all images used inside the book. Within your section HTML you always link to one all-containing flat folder: `<img src="../images/hat.png" />`
 
-Call the `document` method with the aforementioned metadata object detailing your book (previous versions needed the path of a cover image as a call parameter; this is no longer the case as it is now part of the metadata itself).
+Call the `document` method with the aforementioned metadata object detailing your book.
 
 ``` javascript
 var epub = nodepub.document(metadata);
 ```
 
+You also have the option to generate your own contents page. Full details on this are shown further down the page.
+
 ### Fill in the content
 
 The bulk of the work is adding your content.
 
-Call `addSection` with a title and the HTML contents for each section (usually a chapter), plus options for whether to *exclude it from the contents page list*, and/or to *use it as front matter*, and/or to *override the filename within the generated EPUB*.
+Call `addSection` on your new document with a title and the HTML contents for each section in turn (usually a section is a chapter), plus extra options as follows.
+
+``` javascript
+epub.addSection(title, content, excludeFromContents, isFrontMatter, overrideFilename);
+```
+
+| PARAMETER           | PURPOSE                          | DEFAULT |
+| ------------------- | -------------------------------- | ------- |
+| title (required)    | Table of contents entry          |         |
+| content (required)  | HTML body text                   | -       |
+| excludeFromContents | Hide from contents/navigation    | false   |
+| isFrontMatter       | Places before any contents page  | false   |
+| overrideFilename    | Section filename inside the EPUB |         |
+
+For example:
 
 ``` javascript
 epub.addSection('Copyright', copyright, false, true);
@@ -128,6 +146,7 @@ epub.addCSS(`p { text-indent: 0; } p+p { text-indent: 0.75em; }`);
 ### You can also choose to make your own custom contents page
 
 *A standard contents page is included automatically, but can be overridden.*
+*You can also suppress the contents page entirely; see the metadata section above.*
 
 You can create your own by passing a second parameter when creating a *document* - a function which is called when the contents page is being constructed. That function will be given details of all the links, and is expected to return HTML to use for the contents page.
 
