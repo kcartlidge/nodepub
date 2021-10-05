@@ -51,12 +51,21 @@ const document = (metadata, generateContentsCallback) => {
   // Add a new section entry (usually a chapter) with the given title and
   // (HTML) body content. Optionally excludes it from the contents page.
   // If it is Front Matter then it will appear before the contents page.
-  self.addSection = (title, content, excludeFromContents, isFrontMatter) => {
+  // The overrideFilename is optional and refers to the name used inside the epub.
+  // by default the filenames are auto-numbered. No extention should be given.
+  self.addSection = (title, content, excludeFromContents, isFrontMatter, overrideFilename) => {
+    let filename = overrideFilename;
+    if (filename == null || typeof (filename) === 'undefined' || filename.toString().trim() === '') {
+      const i = self.sections.length + 1;
+      filename = `s${i}`;
+    }
+    filename = `${filename}.xhtml`;
     self.sections.push({
       title,
       content,
       excludeFromContents: excludeFromContents || false,
       isFrontMatter: isFrontMatter || false,
+      filename,
     });
   };
 
@@ -96,8 +105,9 @@ const document = (metadata, generateContentsCallback) => {
       name: 'ebook.css', folder: 'OEBPF/css', compress: true, content: markupFiles.getCSS(self),
     });
     for (let i = 1; i <= self.sections.length; i += 1) {
+      const fname = self.sections[i - 1].filename;
       syncFiles.push({
-        name: `s${i}.xhtml`, folder: 'OEBPF/content', compress: true, content: markupFiles.getSection(self, i),
+        name: `${fname}`, folder: 'OEBPF/content', compress: true, content: markupFiles.getSection(self, i),
       });
     }
 

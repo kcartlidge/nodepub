@@ -100,11 +100,11 @@ p+p { text-indent: 0.75em; }`);
 
 // Add some front matter.
 epub.addSection('Title Page', "<div id='title'><h1>[[TITLE]]</h1><h2>Book <strong>[[SEQUENCE]]</strong> of <em>[[SERIES]]</em></h2><h3>[[AUTHOR]]</h3><p> &nbsp;</p><p>&copy; [[COPYRIGHT]]</p></div>", true, true);
-epub.addSection('Copyright', copyright, false, true);
+epub.addSection('Copyright', copyright, false, true, 'copyright-page');
 
 // Add some content.
-epub.addSection('Chapter 1', `<h1>One</h1>${lipsum}`);
-epub.addSection('Chapter 2', `<h1>Two</h1>${lipsum}`);
+epub.addSection('Chapter 1', `<h1>One</h1>${lipsum}<p><a href='chapter2.xhtml'>A test internal link</a>.</p>`);
+epub.addSection('Chapter 2', `<h1>Two</h1>${lipsum}`, false, false, 'chapter2');
 epub.addSection('Chapter 2a', `<h1>Two (A)</h1><p><strong>This chapter does not appear in the contents.</strong></p>${lipsum}`, true);
 epub.addSection('Chapter 3', `<h1>Three</h1><p>Here is a sample list.</p><ul><li>Sample list item one.</li><li>Sample list item two.</li><li>Sample list item three.</li></ul>${lipsum}`);
 epub.addSection('More Books to Read', more);

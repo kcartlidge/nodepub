@@ -144,7 +144,7 @@ describe('Create EPUB with a valid document', () => {
       epub = nodepub.document(validMetadata);
       epub.addSection('Chapter 1', lipsum);
       epub.addSection('Chapter 2', lipsum);
-      epub.addSection('Chapter 3', lipsum);
+      epub.addSection('Chapter 3', lipsum, false, false, 'chapter-3');
       files = await epub.getFilesForEPUB();
     });
 
@@ -166,6 +166,11 @@ describe('Create EPUB with a valid document', () => {
       it('should have all other files compressed', () => {
         const metadata = find(files, (f) => f.name !== 'mimetype' && f.compress === false);
         assert(metadata.length === 0);
+      });
+
+      it('should have the correct filename when a section overrides it', () => {
+        const metadata = find(files, (f) => f.name === 'chapter-3.xhtml');
+        assert(metadata.length === 1, 'Expected a renamed section');
       });
     });
 

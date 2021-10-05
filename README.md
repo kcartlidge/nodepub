@@ -2,7 +2,7 @@
 ![Wallaby.js](https://img.shields.io/badge/wallaby.js-configured-success.svg)
 ![IDPF](https://img.shields.io/badge/idpf-valid-success)
 
-# Nodepub v3.0.5
+# Nodepub v3.0.6
 
 Create valid EPUB 2 ebooks with metadata, contents, and cover image.
 
@@ -101,16 +101,21 @@ var epub = nodepub.document(metadata);
 
 The bulk of the work is adding your content.
 
-Call `addSection` with a title and the HTML contents for each section (usually a chapter), plus options for whether to *exclude it from the contents page list* and/or to *use it as front matter*.
+Call `addSection` with a title and the HTML contents for each section (usually a chapter), plus options for whether to *exclude it from the contents page list*, and/or to *use it as front matter*, and/or to *override the filename within the generated EPUB*.
 
 ``` javascript
 epub.addSection('Copyright', copyright, false, true);
 epub.addSection('Chapter 1', "<h1>One</h1><p>...</p>");
+epub.addSection('Chapter 2', "<h1>One</h1><p>...</p>", false, false, 'chapter-2');
 ```
 
 *Excluding from the contents page list* allows you to add content which does not appear either in the auto-generated HTML table of contents or the metadata contents used directly by ereaders/software. This is handy for example when adding a page at the end of the book with details of your other books - a common page which may not appear in the book contents.
 
 *Flagging as front matter* still includes it but passes that flag into any custom content page generation function you may choose to provide. Front matter will also appear in your book ahead of the contents page when read linearly. Useful for dedication pages, for example.
+
+*Override the filename within the generated EPUB* allows the filename (don't provide an extention) to be specified manually, which enhances internal linking across sections. This was always possible using the auto-generated filenames (eg `s2.xhtml`) but, whilst the naming was predictable, inserting a new section bumped further sections further along the sequence (so `s2` becomes `s3` instead), breaking internal links. Using a manually named section prevents that breakage.
+
+This should only be relevant if you are doing those internal cross-section links; general works of fiction for example won't usually need this facility. See the end of chapter one's content and the definition of content two in the example folder for sample usage.
 
 ### Optionally add some extra CSS
 

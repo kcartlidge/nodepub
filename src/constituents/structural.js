@@ -85,7 +85,8 @@ const structural = {
     result += "    <item id='navigation' media-type='application/x-dtbncx+xml' href='navigation.ncx'/>[[EOL]]";
 
     for (i = 1; i <= document.sections.length; i += 1) {
-      result += `    <item id='s${i}' media-type='application/xhtml+xml' href='content/s${i}.xhtml'/>[[EOL]]`;
+      const fname = document.sections[i - 1].filename;
+      result += `    <item id='s${i}' media-type='application/xhtml+xml' href='content/${fname}'/>[[EOL]]`;
     }
 
     result += "    <item id='toc' media-type='application/xhtml+xml' href='content/toc.xhtml'/>[[EOL]]";
@@ -132,8 +133,9 @@ const structural = {
 
   // Provide the contents of the NCX file.
   getNCX: (document) => {
-    let i; let title; let
-      order;
+    let i;
+    let title;
+    let order;
     let result = '';
     let playOrder = 1;
     result += "<?xml version='1.0' encoding='UTF-8'?>[[EOL]]";
@@ -156,12 +158,13 @@ const structural = {
     for (i = 1; i <= document.sections.length; i += 1) {
       if (!(document.sections[i - 1].excludeFromContents)) {
         if (document.sections[i - 1].isFrontMatter) {
+          const fname = document.sections[i - 1].filename;
           title = document.sections[i - 1].title;
           order = playOrder++;
-          document.filesForTOC.push({ title, link: `s${i}.xhtml`, itemType: 'front' });
+          document.filesForTOC.push({ title, link: `${fname}`, itemType: 'front' });
           result += `  <navPoint class='section' id='s${i}' playOrder='${order}'>[[EOL]]`;
           result += `    <navLabel><text>${title}</text></navLabel>[[EOL]]`;
-          result += `    <content src='content/s${i}.xhtml'/>[[EOL]]`;
+          result += `    <content src='content/${fname}'/>[[EOL]]`;
           result += '  </navPoint>[[EOL]]';
         }
       }
@@ -176,12 +179,13 @@ const structural = {
     for (i = 1; i <= document.sections.length; i += 1) {
       if (!(document.sections[i - 1].excludeFromContents)) {
         if (!document.sections[i - 1].isFrontMatter) {
+          const fname = document.sections[i - 1].filename;
           title = document.sections[i - 1].title;
           order = playOrder++;
-          document.filesForTOC.push({ title, link: `s${i}.xhtml`, itemType: 'main' });
+          document.filesForTOC.push({ title, link: `${fname}`, itemType: 'main' });
           result += `  <navPoint class='section' id='s${i}' playOrder='${order}'>[[EOL]]`;
           result += `    <navLabel><text>${title}</text></navLabel>[[EOL]]`;
-          result += `    <content src='content/s${i}.xhtml'/>[[EOL]]`;
+          result += `    <content src='content/${fname}'/>[[EOL]]`;
           result += '  </navPoint>[[EOL]]';
         }
       }

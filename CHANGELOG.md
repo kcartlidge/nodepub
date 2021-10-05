@@ -1,5 +1,11 @@
 # CHANGE LOG
 
+## 2021-10-05 - v3.0.6
+
+- Section filename override
+  - Optionally rename content files
+  - Allows internal linking
+
 ## 2021-10-04 - v3.0.5
 
 - `Genre` now optional
