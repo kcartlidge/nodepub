@@ -1,5 +1,11 @@
 # CHANGE LOG
 
+## 2022-03-03 - v3.0.8
+
+- #23 indent breaks `pre` tag
+  - Removed automatic indent
+- Updated dependencies
+
 ## 2021-10-05 - v3.0.7
 
 - Contents page can be suppressed

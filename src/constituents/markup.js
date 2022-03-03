@@ -107,7 +107,7 @@ const markup = {
     const lines = content.split('\n');
     lines.forEach((line) => {
       if (line.length > 0) {
-        result += `      ${line}[[EOL]]`;
+        result += `${line}[[EOL]]`;
       }
     });
 
