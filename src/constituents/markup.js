@@ -23,8 +23,8 @@ const markup = {
       for (let i = 1; i <= document.sections.length; i += 1) {
         const section = document.sections[i - 1];
         if (!section.excludeFromContents) {
-          const { title } = section;
-          result += `      <a href='s${i}.xhtml'>${title}</a><br/>[[EOL]]`;
+          const { title, filename } = section;
+          result += `      <a href='${filename}'>${title}</a><br/>[[EOL]]`;
         }
       }
       result += '    </div>[[EOL]]';
