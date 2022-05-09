@@ -182,6 +182,14 @@ metadata.images = ['../test/hat.png'];
 This part of the metadata is an array of filenames which locate the source images on your system.
 (I strongly recommend you use relative paths in order to allow for documents being produced on different systems having different folder layouts.)
 
+Alternatively, an image may be an object containing name and data:
+
+``` javascript
+metadata.images = [ { name: 'hat.png', content: hat_image_data } ];
+```
+
+This may be useful when using images sourced from somewhere other than the local filesystem. The cover image may also be an object of this form.
+
 These images are automatically added into the EPUB when it is generated. They always go in an `images` folder internally. As they all go into the same folder they *should have unique filenames*.
 
 To include the images in your content the HTML should refer to this internal folder rather than the original source folder, so for example `<img src="../images/hat.png" />` in the above example.
