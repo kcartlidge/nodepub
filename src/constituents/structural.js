@@ -22,7 +22,7 @@ const structural = {
 
   // Provide the contents of the OPF (spine) file.
   getOPF: (document) => {
-    const coverFilename = path.basename(document.coverImage);
+    const coverFilename = path.basename(util.getImageName(document.coverImage));
     let i;
     let result = '';
     result += "<?xml version='1.0' encoding='utf-8'?>[[EOL]]";
@@ -86,8 +86,8 @@ const structural = {
     if (document.metadata.images) {
       for (i = 0; i < document.metadata.images.length; i += 1) {
         const image = document.metadata.images[i];
-        const imageFile = path.basename(image);
-        const imageType = util.getImageType(image);
+        const imageFile = path.basename(util.getImageName(image));
+        const imageType = util.getImageType(util.getImageName(image));
         if (imageType.length > 0) {
           result += `    <item id='img${i}' media-type='${imageType}' href='images/${imageFile}'/>[[EOL]]`;
         }

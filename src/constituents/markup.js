@@ -1,5 +1,6 @@
 const path = require('path');
 const replacements = require('./replacements');
+const util = require('../utility');
 
 const markup = {
 
@@ -48,7 +49,7 @@ const markup = {
 
   // Provide the contents of the cover HTML enclosure.
   getCover: (document) => {
-    const coverFilename = path.basename(document.coverImage);
+    const coverFilename = path.basename(util.getImageName(document.coverImage));
     let result = '';
     result += "<?xml version='1.0' encoding='UTF-8' ?>[[EOL]]";
     result += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN'  'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'>[[EOL]]";

@@ -103,26 +103,24 @@ const document = (metadata, generateContentsCallback) => {
     }
 
     // Extra images - add filename into content property and prepare for async handling.
+    const coverFilename = path.basename(util.getImageName(self.coverImage));
     if ((typeof self.coverImage) === 'string') {
-      const coverFilename = path.basename(self.coverImage);
       asyncFiles.push({
         name: coverFilename, folder: 'OEBPF/images', compress: true, content: self.coverImage,
       });
     } else {
-      const coverFilename = path.basename(self.coverImage.name);
       syncFiles.push({
         name: coverFilename, folder: 'OEBPF/images', compress: true, content: self.coverImage.content,
       });
     }
     if (self.metadata.images) {
       self.metadata.images.forEach((image) => {
+        const imageFilename = path.basename(util.getImageName(image));
         if ((typeof image) === 'string') {
-          const imageFilename = path.basename(image);
           asyncFiles.push({
             name: imageFilename, folder: 'OEBPF/images', compress: true, content: image,
           });
         } else {
-          const imageFilename = path.basename(image.name);
           syncFiles.push({
             name: imageFilename, folder: 'OEBPF/images', compress: true, content: image.content,
           });

@@ -34,8 +34,16 @@ const getImageType = (filename) => {
   return imageType;
 };
 
+const getImageName = (image) => {
+  if ((typeof image) === 'string') {
+    return image;
+  }
+  return image.name;
+};
+
 module.exports = {
   forEachAsync,
   makeFolder,
   getImageType,
+  getImageName,
 };
