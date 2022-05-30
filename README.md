@@ -4,6 +4,8 @@
 
 # Nodepub
 
+**Deprecated. Stable and working but will receive no further updates. Consider a fork.**
+
 Create valid EPUB 2 ebooks with metadata, contents, cover, and images.
 
 *This is a utility module, not a user-facing one. In other words it is assumed that the caller has already validated the inputs. Only basic sanity checks are performed.*
