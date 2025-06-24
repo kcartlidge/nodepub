@@ -1,11 +1,11 @@
 module.exports = () => ({
   files: [
     'test/*.png',
-    'src/**/*.js',
+    'src/**/*.js'
   ],
 
   tests: [
-    'test/**/*spec.js',
+    'test/**/*spec.js'
   ],
 
   testFramework: 'mocha',
@@ -13,12 +13,12 @@ module.exports = () => ({
 
   env: {
     type: 'node',
-    runner: 'node',
+    runner: 'node'
   },
 
   workers: {
     restart: true,
     initial: 6,
-    regular: 2,
-  },
-});
+    regular: 2
+  }
+})
