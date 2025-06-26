@@ -3,7 +3,12 @@ const replacements = require('./replacements')
 
 const markup = {
 
-  // Provide the contents page.
+  /**
+   * Provide the contents page.
+   * @param {Object} document - the EPUB document
+   * @param {Boolean} overrideContents - optional function to override contents creation
+   * @returns the HTML
+   */
   getContents: (document, overrideContents) => {
     let result = ''
     result += "<?xml version='1.0' encoding='utf-8'?>[[EOL]]"
@@ -34,7 +39,12 @@ const markup = {
     return result
   },
 
-  // Provide the contents of the TOC file.
+  /**
+   * Provide the contents of the TOC file.
+   * Defers to `getContents` for the innards.
+   * @param {Object} document - the EPUB document
+   * @returns the TOC file content (with any replacements applied)
+   */
   getTOC: (document) => {
     let content = ''
     if (document.generateContentsCallback) {
@@ -46,7 +56,11 @@ const markup = {
     return replacements(document, replacements(document, content))
   },
 
-  // Provide the contents of the cover HTML enclosure.
+  /**
+   * Provide the contents of the cover HTML enclosure.
+   * @param {Object} document - the EPUB document
+   * @returns the HTML (with any replacements applied)
+   */
   getCover: (document) => {
     const coverFilename = path.basename(document.coverImage)
     let result = ''
@@ -69,10 +83,19 @@ const markup = {
     return replacements(document, replacements(document, result))
   },
 
-  // Provide the contents of the CSS file.
+  /**
+   * Provide the contents of the CSS file.
+   * @param {Object} document - the EPUB document
+   * @returns the CSS (with any replacements applied)
+   */
   getCSS: (document) => replacements(document, replacements(document, document.CSS)),
 
-  // Provide the contents of a single section's HTML.
+  /**
+   * Provide the contents of a single section's HTML.
+   * @param {Object} document - the EPUB document
+   * @param {Int} sectionNumber - the section to generate
+   * @returns the HTML (with any replacements applied)
+   */
   getSection: (document, sectionNumber) => {
     const section = document.sections[sectionNumber - 1]
     const { title } = section

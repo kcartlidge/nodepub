@@ -4,7 +4,7 @@
   "description": "Create valid EPUB (v2) ebooks with metadata, contents and cover image.",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha test/**/*-spec.js",
     "lint": "npm run lint-src && npm run lint-example && npm run lint-test",
     "lint-src": "npx standard --fix src",
     "lint-example": "npx standard --fix example",

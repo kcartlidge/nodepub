@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const nodepub = require('../src/index.js')
 
 // Metadata example.
@@ -122,7 +121,7 @@ epub.addSection('About the Author', about);
   }
 })();
 
-// Also write the structure both for debugging purposes and also to provide sample output in GitHub.
+// Also write the structure both for debugging purposes and to provide sample output in GitHub.
 (async () => {
   try {
     console.log('Generating a collection of EPUB constituent files.')

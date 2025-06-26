@@ -1,14 +1,20 @@
-/* eslint-disable no-plusplus */
 const path = require('path')
 const replacements = require('./replacements')
 const util = require('../utility.js')
 
 const structural = {
 
-  // Provide the contents of the mimetype file (which should not be compressed).
+  /**
+   * Provide the contents of the mimetype file (which should not be compressed).
+   * @returns the mimetype file contents
+   */
   getMimetype: () => 'application/epub+zip',
 
-  // Provide the contents of the container XML file.
+  /**
+   * Provide the contents of the container XML file.
+   * @param {Object} document - the EPUB document
+   * @returns the container XML
+   */
   getContainer: (document) => {
     let result = ''
     result += "<?xml version='1.0' encoding='UTF-8' ?>[[EOL]]"
@@ -20,7 +26,11 @@ const structural = {
     return replacements(document, replacements(document, result))
   },
 
-  // Provide the contents of the OPF (spine) file.
+  /**
+   * Provide the contents of the OPF (spine) file.
+   * @param {Object} document - the EPUB document
+   * @returns the OPF (spine) content
+   */
   getOPF: (document) => {
     const coverFilename = path.basename(document.coverImage)
     let i
@@ -127,7 +137,11 @@ const structural = {
     return replacements(document, replacements(document, result))
   },
 
-  // Provide the contents of the NCX file.
+  /**
+   * Provide the contents of the NCX file.
+   * @param {Object} document - the EPUB document
+   * @returns the NCX file contents
+   */
   getNCX: (document) => {
     let i
     let title

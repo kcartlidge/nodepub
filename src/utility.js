@@ -2,18 +2,24 @@ const path = require('path')
 const { resolve } = require('path')
 const fsPromises = require('fs').promises
 
-// Asynchronous forEach variant.
+/**
+ * Asynchronous forEach variant.
+ * @param {Array} arr - array to iterate over
+ * @param {Function} cb - function to call: fn(item, index, collection)
+ */
 const forEachAsync = async (arr, cb) => {
   for (let index = 0; index < arr.length; index += 1) {
-    // eslint-disable-next-line no-await-in-loop
     await cb(arr[index], index, arr)
   }
 }
 
-// Create a folder, throwing an error only if the error is not that
-// the folder already exists. Effectively creates if not found.
-const makeFolder = async (topPath) => {
-  await fsPromises.mkdir(topPath)
+/**
+ * Create a folder, throwing an error only if the error is not that
+ * the folder already exists. Effectively creates if not found.
+ * @param {String} folder - folder to create
+ */
+const makeFolder = async (folder) => {
+  await fsPromises.mkdir(folder)
     .catch((err) => {
       if (err && err.code !== 'EEXIST') {
         throw err
@@ -22,7 +28,11 @@ const makeFolder = async (topPath) => {
     })
 }
 
-// Get the image mimetype based on the file name.
+/**
+ * Get the image mimetype based on the file name.
+ * @param {String} filename - the filename to check (case-insensitive)
+ * @returns the mimetype as a string (eg `image/png`)
+ */
 const getImageType = (filename) => {
   const imageExt = path.extname(filename).toLowerCase()
   let imageType = ''

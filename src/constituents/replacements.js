@@ -1,12 +1,23 @@
 const moment = require('moment')
 
-// Replace a single tag.
+/**
+ * Replace a single tag (all occurrences).
+ * @param {String} original - text to replace the tag within
+ * @param {String} tag - the tag to look for
+ * @param {String} value - the value to replace it with
+ * @returns
+ */
 const tagReplace = (original, tag, value) => {
   const fullTag = `[[${tag}]]`
   return original.split(fullTag).join(value || '')
 }
 
-// Do all in-line replacements needed.
+/**
+ * Action all supported tag replacements in some text.
+ * @param {Object} document - the EPUB document (needed for the metadata values)
+ * @param {String} original - the text to apply all the replacements to
+ * @returns the text with the replacements actioned
+ */
 const replacements = (document, original) => {
   const modified = moment().format('YYYY-MM-DD')
   let result = original
