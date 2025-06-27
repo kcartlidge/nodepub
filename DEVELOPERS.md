@@ -13,14 +13,17 @@ npm run example
 
 ### Code quality
 
-In addition to the tests I use **ES Lint**.
+In addition to the tests I use **Standard JS**.
+
+The `package.json` file has entries for any globals (to avoid linting issues).
+Currently it has the *Mocha* keywords as that uses globals for `describe` etc.
 
 ``` javascript
 npm run lint
 ```
 
 This will highlight issues, and auto-fix what it can.
-Many editors (e.g. VS Code) have ES Lint extentions that can also be automatically run on paste/save.
+Many editors (e.g. VS Code) have Standard JS extentions that can also be automatically run on paste/save.
 
 ### Notes
 

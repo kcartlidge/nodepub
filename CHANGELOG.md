@@ -1,5 +1,12 @@
 # CHANGE LOG
 
+## 2025-06-24 - v3.1.0
+
+- Switched from eslint to standardjs
+  - Impacts Nodepub devs only, not package consumers
+  - Code changes are diff noise as Standard removes semicolons
+- Updated dependencies
+
 ## 2022-03-03 - v3.0.8
 
 - #23 indent breaks `pre` tag

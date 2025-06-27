@@ -1,6 +1,5 @@
 ![Mocha](https://img.shields.io/badge/mocha-passing-success)
 ![Wallaby.js](https://img.shields.io/badge/wallaby.js-configured-success.svg)
-![IDPF](https://img.shields.io/badge/idpf-valid-success)
 
 # Nodepub
 
@@ -25,6 +24,7 @@ Create valid EPUB 2 ebooks with metadata, contents, cover, and images.
     - [Folder of EPUB-Ready Files](#folder-of-epub-ready-files)
     - [Object with All Content](#object-with-all-content)
     - [Using in Non-Async Code](#using-in-non-async-code)
+- [Validating EPUBs](#validating-epubs)
 - [A Full Example](#a-full-example)
 - [Breaking changes over v2](#breaking-changes-over-v2)
 
@@ -33,7 +33,8 @@ Create valid EPUB 2 ebooks with metadata, contents, cover, and images.
 
 Nodepub is a **Node** module which can be used to create **EPUB 2** documents.
 
-- Files pass the [IDPF online validator](http://validator.idpf.org)
+- Files pass the *IDPF online validator*
+  - The IDPF tool is no longer online - see the [Validating EPUBs](#validating-epubs) section for an alternative
 - Files meet Sigil's preflight checks
 - Files open fine in iBooks, Adobe Digital Editions, and Calibre
 - Files open fine with the Kobo H20 ereader
@@ -303,6 +304,18 @@ await epub.writeEPUB(folder, filenameWithoutExtention);
   }
 })();
 ```
+
+## Validating EPUBs
+
+Previously files were validated by the IDPF online validator, but that page was taken down a while ago.
+As an alternative, **Pagina** offer a cross-platform EPUB validation tool.
+
+It's a desktop app and [they provide installation instructions here](https://pagina.gmbh/startseite/leistungen/publishing-softwareloesungen/epub-checker/).
+
+The instructions are in German initially, but the option is there to switch to English.
+In essence it reduces to installing OpenJDK then downloading and running their app.
+
+The Pagina app verifies using *EPUBCheck* so it gives industry-standard results.
 
 ## A Full Example
 
