@@ -46,6 +46,29 @@ describe('Handling EPUB contents', () => {
     assert(metadata.length === 0, 'Expected not to find a table of contents (toc)')
   })
 
+  describe('With a section having a filename override', () => {
+    let files = []
+
+    beforeEach(async () => {
+      epub = nodepub.document(validMetadata())
+      epub.addSection('Copyright', '<h1>Copyright Page</h1>', true, true)
+      epub.addSection('Chapter 1', lipsum)
+      epub.addSection('Chapter 2', lipsum)
+      epub.addSection('Chapter 3', lipsum, false, false, 'chapter-3')
+    })
+
+    it('should have the new filename for the section in the TOC', async () => {
+      files = await epub.getFilesForEPUB()
+
+      const originalFilename = 's' + epub.getSectionCount() + '.xhtml'
+      const tocContent = findFirstContent(files, (f) => f.name === 'toc.xhtml')
+      const autoFilenameInNCX = tocContent.indexOf(originalFilename) > -1
+      const manualFilenameInNCX = tocContent.indexOf('chapter-3.xhtml') > -1
+      expect(autoFilenameInNCX).to.equal(false, `Still has original filename (${originalFilename})`)
+      expect(manualFilenameInNCX).to.equal(true, 'Should have filename overridden')
+    })
+  })
+
   describe('With a section excluded from the contents', () => {
     let files = []
 
