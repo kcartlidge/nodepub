@@ -1,5 +1,15 @@
 # CHANGE LOG
 
+## 2025-06-27 - v3.2.0 to v3.2.1
+
+- Update details on how to validate EPUBs
+- Tidy tests and add JSDoc comments
+- Fix TOC to use overridden section filenames
+  - PR from pjvds (belated thanks)
+- Fix to only add source images once
+  - Rendering worked but EPUB result was larger
+- Extra tests for the above fixes
+
 ## 2025-06-24 - v3.1.0
 
 - Switched from eslint to standardjs

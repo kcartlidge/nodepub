@@ -42,4 +42,16 @@ describe('Create EPUB with a valid document', () => {
     const found = find(files, (f) => f.name === 'hat.png')
     assert(found.length > 0)
   })
+
+  it('should not contain duplicate image file assets', async () => {
+    const metadataWithImage = validMetadata()
+    metadataWithImage.images.push('test/hat.png')
+    metadataWithImage.images.push('test/hat.png')
+    epub = nodepub.document(metadataWithImage)
+
+    const files = await epub.getFilesForEPUB()
+
+    const found = find(files, (f) => f.name === 'hat.png')
+    assert(found.length === 1, `Should be only 1 instance of an image, but was ${found.length}`)
+  })
 })

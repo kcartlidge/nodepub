@@ -135,7 +135,8 @@ const document = (metadata, generateContentsCallback) => {
     asyncFiles.push({
       name: coverFilename, folder: 'OEBPF/images', compress: true, content: self.coverImage
     })
-    if (self.metadata.images) {
+    if (self.metadata.images && self.metadata.images.length > 0) {
+      self.metadata.images = [...new Set(self.metadata.images)]
       self.metadata.images.forEach((image) => {
         const imageFilename = path.basename(image)
         asyncFiles.push({
