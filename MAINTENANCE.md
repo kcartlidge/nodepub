@@ -1,5 +1,5 @@
 # Maintenance Canary
 
-- 2021-12-19
+- 2025-06-29
   - This repository is functionally complete but still maintained
 
