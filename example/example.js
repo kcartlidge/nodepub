@@ -17,7 +17,8 @@ const metadata = {
   language: 'en',
   description: 'A test book.',
   contents: 'Chapters',
-  embedCover: true,
+  addInternalCover: true,
+  appendSeriesToTitle: true,
   showContents: true,
   source: 'http://www.kcartlidge.com',
   images: ['test/hat.png']

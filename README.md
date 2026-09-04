@@ -100,7 +100,8 @@ var metadata = {
   published: '2000-12-31',
   language: 'en',
   description: 'A test book.',
-  embedCover: true,
+  addInternalCover: true,
+  appendSeriesToTitle: true,
   showContents: false,
   contents: 'Table of Contents',
   source: 'http://www.kcartlidge.com',
@@ -115,7 +116,8 @@ var metadata = {
 - `tags` also become subjects in the final EPUB
 - `published` is the data published - note the *year-month-day* format
 - `language` is the short *ISO* language name (`en`, `fr`, `de` etc)
-- `embedCover` (default is `true`) lets you suppress the in-book cover page
+- `addInternalCover` (default is `true`) lets you suppress the in-book cover page
+- `appendSeriesToTitle` (default is `true`) appends `(Series #n)` to the EPUB title
 - `showContents` (default is `true`) lets you suppress the contents page
 - `images` (an array) is where you refer to all images used inside the book - see [Including Images](#including-images) for details
 

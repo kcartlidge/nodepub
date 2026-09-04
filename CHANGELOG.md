@@ -1,9 +1,11 @@
 # CHANGE LOG
 
-## 2026-09-04 - v3.3.0
+## 2026-09-04 - v3.3.0 to v3.4.0
 
 - In-book cover page can be suppressed
-  - New `embedCover` metadata item
+  - New `addInternalCover` metadata item
+- Series suffix on the EPUB title can be suppressed
+  - New `appendSeriesToTitle` metadata item
 - Updated to latest dependencies
 - Switched to new Archiver v8 approach
 

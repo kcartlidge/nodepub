@@ -46,7 +46,33 @@ describe('Handling EPUB contents', () => {
     assert(metadata.length === 0, 'Expected not to find a table of contents (toc)')
   })
 
-  it('should have a cover page when embedCover is omitted', async () => {
+  it('should append series details to the title when appendSeriesToTitle is true', async () => {
+    const metadataWithSeriesTitle = validMetadata()
+    metadataWithSeriesTitle.appendSeriesToTitle = true
+    epub = nodepub.document(metadataWithSeriesTitle)
+    epub.addSection('Chapter 1', lipsum)
+
+    const files = await epub.getFilesForEPUB()
+    const opfContent = findFirstContent(files, (f) => f.name === 'ebook.opf')
+
+    expect(opfContent.indexOf('<dc:title>Test Document (My Series #1)</dc:title>') > -1).to.equal(true)
+  })
+
+  it('should omit the series suffix from the title when appendSeriesToTitle is false', async () => {
+    const metadataNoSeriesTitle = validMetadata()
+    metadataNoSeriesTitle.appendSeriesToTitle = false
+    epub = nodepub.document(metadataNoSeriesTitle)
+    epub.addSection('Chapter 1', lipsum)
+
+    const files = await epub.getFilesForEPUB()
+    const opfContent = findFirstContent(files, (f) => f.name === 'ebook.opf')
+
+    expect(opfContent.indexOf('<dc:title>Test Document</dc:title>') > -1).to.equal(true)
+    expect(opfContent.indexOf('<dc:title>Test Document (My Series #1)</dc:title>') > -1).to.equal(false)
+    expect(opfContent.indexOf("name='calibre:series'") > -1).to.equal(true)
+  })
+
+  it('should have a cover page when addInternalCover is omitted', async () => {
     epub = nodepub.document(validMetadata())
     epub.addSection('Chapter 1', lipsum)
 
@@ -56,9 +82,9 @@ describe('Handling EPUB contents', () => {
     assert(cover.length === 1, 'Expected an embedded cover page')
   })
 
-  it('should have a cover page when embedCover is true', async () => {
+  it('should have a cover page when addInternalCover is true', async () => {
     const metadataWithCover = validMetadata()
-    metadataWithCover.embedCover = true
+    metadataWithCover.addInternalCover = true
     epub = nodepub.document(metadataWithCover)
     epub.addSection('Chapter 1', lipsum)
 
@@ -72,9 +98,9 @@ describe('Handling EPUB contents', () => {
     expect(ncxContent.indexOf('cover.xhtml') > -1).to.equal(true)
   })
 
-  it('should omit the in-book cover page when embedCover is false', async () => {
+  it('should omit the in-book cover page when addInternalCover is false', async () => {
     const metadataNoCover = validMetadata()
-    metadataNoCover.embedCover = false
+    metadataNoCover.addInternalCover = false
     epub = nodepub.document(metadataNoCover)
     epub.addSection('Chapter 1', lipsum)
 

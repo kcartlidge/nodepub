@@ -39,11 +39,11 @@ const structural = {
     result += "<package xmlns='http://www.idpf.org/2007/opf' version='2.0' unique-identifier='BookId'>[[EOL]]"
     result += "  <metadata xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:opf='http://www.idpf.org/2007/opf'>[[EOL]]"
 
-    if (document.metadata.series && document.metadata.sequence) {
+    if (document.appendSeriesToTitle && document.metadata.series && document.metadata.sequence) {
       result += '    <dc:title>[[TITLE]] ([[SERIES]] #[[SEQUENCE]])</dc:title>[[EOL]]'
-    } else if (document.metadata.series) {
+    } else if (document.appendSeriesToTitle && document.metadata.series) {
       result += '    <dc:title>[[TITLE]] ([[SERIES]])</dc:title>[[EOL]]'
-    } else if (document.metadata.sequence) {
+    } else if (document.appendSeriesToTitle && document.metadata.sequence) {
       result += '    <dc:title>[[TITLE]] (#[[SEQUENCE]])</dc:title>[[EOL]]'
     } else {
       result += '    <dc:title>[[TITLE]]</dc:title>[[EOL]]'
@@ -80,7 +80,7 @@ const structural = {
     result += '  </metadata>[[EOL]]'
     result += '  <manifest>[[EOL]]'
     result += `    <item id='cover-image' media-type='${util.getImageType(coverFilename)}' href='images/${coverFilename}'/>[[EOL]]`
-    if (document.embedCover) {
+    if (document.addInternalCover) {
       result += "    <item id='cover' media-type='application/xhtml+xml' href='cover.xhtml'/>[[EOL]]"
     }
     result += "    <item id='navigation' media-type='application/x-dtbncx+xml' href='navigation.ncx'/>[[EOL]]"
@@ -109,7 +109,7 @@ const structural = {
     result += '  </manifest>[[EOL]]'
 
     result += "  <spine toc='navigation'>[[EOL]]"
-    if (document.embedCover) {
+    if (document.addInternalCover) {
       result += "    <itemref idref='cover' linear='yes' />[[EOL]]"
     }
 
@@ -164,7 +164,7 @@ const structural = {
     result += '<docTitle><text>[[TITLE]]</text></docTitle>[[EOL]]'
     result += '<docAuthor><text>[[AUTHOR]]</text></docAuthor>[[EOL]]'
     result += '<navMap>[[EOL]]'
-    if (document.embedCover) {
+    if (document.addInternalCover) {
       result += `  <navPoint id='cover' playOrder='${playOrder++}'>[[EOL]]`
       result += '    <navLabel><text>Cover</text></navLabel>[[EOL]]'
       result += "    <content src='cover.xhtml'/>[[EOL]]"

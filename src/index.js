@@ -21,7 +21,8 @@ const document = (metadata, generateContentsCallback) => {
   self.images = []
   self.metadata = metadata
   self.generateContentsCallback = generateContentsCallback
-  self.embedCover = true
+  self.addInternalCover = true
+  self.appendSeriesToTitle = true
   self.showContents = true
   self.filesForTOC = []
   self.coverImage = ''
@@ -36,8 +37,11 @@ const document = (metadata, generateContentsCallback) => {
       self.coverImage = prop
     }
   })
-  if (metadata.embedCover !== null && typeof (metadata.embedCover) !== 'undefined') {
-    self.embedCover = metadata.embedCover
+  if (metadata.addInternalCover !== null && typeof (metadata.addInternalCover) !== 'undefined') {
+    self.addInternalCover = metadata.addInternalCover
+  }
+  if (metadata.appendSeriesToTitle !== null && typeof (metadata.appendSeriesToTitle) !== 'undefined') {
+    self.appendSeriesToTitle = metadata.appendSeriesToTitle
   }
   if (metadata.showContents !== null && typeof (metadata.showContents) !== 'undefined') {
     self.showContents = metadata.showContents
@@ -112,7 +116,7 @@ const document = (metadata, generateContentsCallback) => {
     syncFiles.push({
       name: 'navigation.ncx', folder: 'OEBPF', compress: true, content: structuralFiles.getNCX(self)
     })
-    if (self.embedCover) {
+    if (self.addInternalCover) {
       syncFiles.push({
         name: 'cover.xhtml', folder: 'OEBPF', compress: true, content: markupFiles.getCover(self)
       })
