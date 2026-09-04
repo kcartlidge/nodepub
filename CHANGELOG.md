@@ -1,5 +1,12 @@
 # CHANGE LOG
 
+## 2026-09-04 - v3.3.0
+
+- In-book cover page can be suppressed
+  - New `embedCover` metadata item
+- Updated to latest dependencies
+- Switched to new Archiver v8 approach
+
 ## 2025-06-27 - v3.2.0 to v3.2.1
 
 - Update details on how to validate EPUBs

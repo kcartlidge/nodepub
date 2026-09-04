@@ -80,7 +80,9 @@ const structural = {
     result += '  </metadata>[[EOL]]'
     result += '  <manifest>[[EOL]]'
     result += `    <item id='cover-image' media-type='${util.getImageType(coverFilename)}' href='images/${coverFilename}'/>[[EOL]]`
-    result += "    <item id='cover' media-type='application/xhtml+xml' href='cover.xhtml'/>[[EOL]]"
+    if (document.embedCover) {
+      result += "    <item id='cover' media-type='application/xhtml+xml' href='cover.xhtml'/>[[EOL]]"
+    }
     result += "    <item id='navigation' media-type='application/x-dtbncx+xml' href='navigation.ncx'/>[[EOL]]"
 
     for (i = 1; i <= document.sections.length; i += 1) {
@@ -107,7 +109,9 @@ const structural = {
     result += '  </manifest>[[EOL]]'
 
     result += "  <spine toc='navigation'>[[EOL]]"
-    result += "    <itemref idref='cover' linear='yes' />[[EOL]]"
+    if (document.embedCover) {
+      result += "    <itemref idref='cover' linear='yes' />[[EOL]]"
+    }
 
     for (i = 1; i <= document.sections.length; i += 1) {
       if (document.sections[i - 1].isFrontMatter) {
@@ -160,10 +164,12 @@ const structural = {
     result += '<docTitle><text>[[TITLE]]</text></docTitle>[[EOL]]'
     result += '<docAuthor><text>[[AUTHOR]]</text></docAuthor>[[EOL]]'
     result += '<navMap>[[EOL]]'
-    result += `  <navPoint id='cover' playOrder='${playOrder++}'>[[EOL]]`
-    result += '    <navLabel><text>Cover</text></navLabel>[[EOL]]'
-    result += "    <content src='cover.xhtml'/>[[EOL]]"
-    result += '  </navPoint>[[EOL]]'
+    if (document.embedCover) {
+      result += `  <navPoint id='cover' playOrder='${playOrder++}'>[[EOL]]`
+      result += '    <navLabel><text>Cover</text></navLabel>[[EOL]]'
+      result += "    <content src='cover.xhtml'/>[[EOL]]"
+      result += '  </navPoint>[[EOL]]'
+    }
 
     for (i = 1; i <= document.sections.length; i += 1) {
       if (!(document.sections[i - 1].excludeFromContents)) {

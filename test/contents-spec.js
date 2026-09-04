@@ -46,6 +46,54 @@ describe('Handling EPUB contents', () => {
     assert(metadata.length === 0, 'Expected not to find a table of contents (toc)')
   })
 
+  it('should have a cover page when embedCover is omitted', async () => {
+    epub = nodepub.document(validMetadata())
+    epub.addSection('Chapter 1', lipsum)
+
+    const files = await epub.getFilesForEPUB()
+
+    const cover = find(files, (f) => f.name === 'cover.xhtml')
+    assert(cover.length === 1, 'Expected an embedded cover page')
+  })
+
+  it('should have a cover page when embedCover is true', async () => {
+    const metadataWithCover = validMetadata()
+    metadataWithCover.embedCover = true
+    epub = nodepub.document(metadataWithCover)
+    epub.addSection('Chapter 1', lipsum)
+
+    const files = await epub.getFilesForEPUB()
+    const opfContent = findFirstContent(files, (f) => f.name === 'ebook.opf')
+    const ncxContent = findFirstContent(files, (f) => f.name === 'navigation.ncx')
+
+    const cover = find(files, (f) => f.name === 'cover.xhtml')
+    assert(cover.length === 1, 'Expected an embedded cover page')
+    expect(opfContent.indexOf("idref='cover'") > -1).to.equal(true)
+    expect(ncxContent.indexOf('cover.xhtml') > -1).to.equal(true)
+  })
+
+  it('should omit the in-book cover page when embedCover is false', async () => {
+    const metadataNoCover = validMetadata()
+    metadataNoCover.embedCover = false
+    epub = nodepub.document(metadataNoCover)
+    epub.addSection('Chapter 1', lipsum)
+
+    const files = await epub.getFilesForEPUB()
+    const opfContent = findFirstContent(files, (f) => f.name === 'ebook.opf')
+    const ncxContent = findFirstContent(files, (f) => f.name === 'navigation.ncx')
+
+    const coverPage = find(files, (f) => f.name === 'cover.xhtml')
+    assert(coverPage.length === 0, 'Expected not to find an embedded cover page')
+
+    expect(opfContent.indexOf("name='cover'") > -1).to.equal(true)
+    expect(opfContent.indexOf("id='cover-image'") > -1).to.equal(true)
+    const coverImage = find(files, (f) => f.name === 'test-cover.png')
+    assert(coverImage.length === 1, 'Expected the cover image file to remain')
+
+    expect(opfContent.indexOf("idref='cover'") > -1).to.equal(false)
+    expect(ncxContent.indexOf('cover.xhtml') > -1).to.equal(false)
+  })
+
   describe('With a section having a filename override', () => {
     let files = []
 

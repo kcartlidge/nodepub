@@ -1,7 +1,7 @@
 const fs = require('fs')
 const fsPromises = require('fs').promises
 const path = require('path')
-const zip = require('archiver')
+const { ZipArchive } = require('archiver')
 const structuralFiles = require('./constituents/structural.js')
 const markupFiles = require('./constituents/markup.js')
 const util = require('./utility.js')
@@ -21,6 +21,7 @@ const document = (metadata, generateContentsCallback) => {
   self.images = []
   self.metadata = metadata
   self.generateContentsCallback = generateContentsCallback
+  self.embedCover = true
   self.showContents = true
   self.filesForTOC = []
   self.coverImage = ''
@@ -35,6 +36,9 @@ const document = (metadata, generateContentsCallback) => {
       self.coverImage = prop
     }
   })
+  if (metadata.embedCover !== null && typeof (metadata.embedCover) !== 'undefined') {
+    self.embedCover = metadata.embedCover
+  }
   if (metadata.showContents !== null && typeof (metadata.showContents) !== 'undefined') {
     self.showContents = metadata.showContents
   }
@@ -108,9 +112,11 @@ const document = (metadata, generateContentsCallback) => {
     syncFiles.push({
       name: 'navigation.ncx', folder: 'OEBPF', compress: true, content: structuralFiles.getNCX(self)
     })
-    syncFiles.push({
-      name: 'cover.xhtml', folder: 'OEBPF', compress: true, content: markupFiles.getCover(self)
-    })
+    if (self.embedCover) {
+      syncFiles.push({
+        name: 'cover.xhtml', folder: 'OEBPF', compress: true, content: markupFiles.getCover(self)
+      })
+    }
 
     // Optional files.
     syncFiles.push({
@@ -191,7 +197,7 @@ const document = (metadata, generateContentsCallback) => {
     // Start creating the zip.
     await util.makeFolder(folder)
     const output = fs.createWriteStream(`${folder}/${filename}.epub`)
-    const archive = zip('zip', { store: false })
+    const archive = new ZipArchive({ store: false })
     archive.on('error', (archiveErr) => {
       throw archiveErr
     })

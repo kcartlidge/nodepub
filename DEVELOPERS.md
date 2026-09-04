@@ -41,3 +41,14 @@ npm install -g npm-check-updates
 ncu -u
 npm i
 ```
+
+## Publishing to NPM
+
+Confirm you are logged in (`npm whoami`) or run `npm adduser` if not. The version in `package.json` must be new as npm will not overwrite an existing one.
+
+``` sh
+npm pack --dry-run
+npm publish
+```
+
+If 2FA is enabled, npm will prompt for an OTP. The package is [nodepub](https://www.npmjs.com/package/nodepub).
