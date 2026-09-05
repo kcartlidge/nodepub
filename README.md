@@ -120,6 +120,7 @@ var metadata = {
 - `addInternalCover` (default is `true`) lets you suppress the in-book cover page
 - `appendSeriesToTitle` (default is `true`) appends `(Series #n)` to the EPUB title
 - `showContents` (default is `true`) lets you suppress the contents page
+- `contents` (default is `Contents`) is the title used for the table of contents page
 - `images` (an array) is where you refer to all images used inside the book - see [Including Images](#including-images) for details
 
 ### Adding Contents

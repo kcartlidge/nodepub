@@ -1,6 +1,6 @@
 # CHANGE LOG
 
-## 2026-09-05 - v4.0.0
+## 2026-09-05 - v4.0.0 to v4.1.0
 
 - Switch internals from text processing to EJS templating
   - No change in the external API or desired behaviour
@@ -10,6 +10,7 @@
   - A custom HTML TOC grew with multiple renders of same document
 - Extra tests on the EPUB output file
   - Raw byte checks for signature and uncompressed mimetype file
+- Default contents-page title (`contents:`) is now `Contents`
 
 ## 2026-09-04 - v3.3.0 to v3.4.0
 

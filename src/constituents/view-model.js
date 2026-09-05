@@ -28,10 +28,11 @@ const FLAG_FIELDS = [
   'showContents'
 ]
 
-const missing = (value) => value == null || typeof value === 'undefined'
+const missing = (value) => value == null || typeof value === 'undefined' || value.toString().trim() === ''
 
 const defaultFor = (name) => {
   if (name === 'images') return []
+  if (name === 'contents') return 'Contents'
   return ''
 }
 

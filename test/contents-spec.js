@@ -34,6 +34,52 @@ describe('Handling EPUB contents', () => {
     assert(metadata.length === 1, 'Expected a table of contents (toc)')
   })
 
+  it('should default the contents title when contents metadata is missing', async () => {
+    const metadata = validMetadata()
+    delete metadata.contents
+    epub = nodepub.document(metadata)
+    epub.addSection('Chapter 1', lipsum)
+
+    const files = await epub.getFilesForEPUB()
+    const toc = findFirstContent(files, (f) => f.name === 'toc.xhtml')
+    const ncx = findFirstContent(files, (f) => f.name === 'navigation.ncx')
+
+    expect(toc).to.contain('<h1>Contents</h1>')
+    expect(ncx).to.contain('<navLabel><text>Contents</text></navLabel>')
+  })
+
+  it('should default the contents title when contents metadata is empty, whitespace, or null', async () => {
+    for (const contents of ['', '   ', null]) {
+      const metadata = validMetadata()
+      metadata.contents = contents
+      epub = nodepub.document(metadata)
+      epub.addSection('Chapter 1', lipsum)
+
+      const files = await epub.getFilesForEPUB()
+      const toc = findFirstContent(files, (f) => f.name === 'toc.xhtml')
+      const ncx = findFirstContent(files, (f) => f.name === 'navigation.ncx')
+
+      expect(toc).to.contain('<h1>Contents</h1>')
+      expect(ncx).to.contain('<navLabel><text>Contents</text></navLabel>')
+    }
+  })
+
+  it('should keep an explicit contents title', async () => {
+    const metadata = validMetadata()
+    metadata.contents = 'Chapters'
+    epub = nodepub.document(metadata)
+    epub.addSection('Chapter 1', lipsum)
+
+    const files = await epub.getFilesForEPUB()
+    const toc = findFirstContent(files, (f) => f.name === 'toc.xhtml')
+    const ncx = findFirstContent(files, (f) => f.name === 'navigation.ncx')
+
+    expect(toc).to.contain('<h1>Chapters</h1>')
+    expect(toc).to.not.contain('<h1>Contents</h1>')
+    expect(ncx).to.contain('<navLabel><text>Chapters</text></navLabel>')
+    expect(ncx).to.not.contain('<navLabel><text>Contents</text></navLabel>')
+  })
+
   it('should not have a `toc` when the contents page is skipped', async () => {
     const metadataNoContents = validMetadata()
     metadataNoContents.showContents = false
