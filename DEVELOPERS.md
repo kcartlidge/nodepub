@@ -28,7 +28,7 @@ Many editors (e.g. VS Code) have Standard JS extentions that can also be automat
 ### Notes
 
 * The tests mostly stub `fs`/`fsPromises` where used. However at one point they do actually write a final EPUB document. This means that (a) the test process needs write access to the test folder, and (b) an actual file is generated.
-* Whilst the *process* of generating EPUBs is tested, the *final EPUB* is not; I have manually tested it via the [IDPF Validator](http://validator.idpf.org/). The actual testing of an EPUB file is already sufficiently covered by the *epubcheck* tool which that site uses, and I have not added it as an integration test.
+* Whilst the *process* of generating EPUBs is tested, the *final EPUB* is not; I have manually tested it via ~~the [IDPF Validator](http://validator.idpf.org/). The actual testing of an EPUB file is already sufficiently covered by the *epubcheck* tool which that site uses, and I have not added it as an integration test.~~ the [Pagina EPUB-Checker app](https://pagina.gmbh/startseite/leistungen/publishing-softwareloesungen/epub-checker/) which uses *EPUBCheck v5.1.0*.
 * You may find it helpful to look at the `example/example.js` file.
 * For viewing generated metadata and content try Calibre, iBooks, or similar.
 

@@ -21,7 +21,6 @@ const tagReplace = (original, tag, value) => {
 const replacements = (document, original) => {
   const modified = moment().format('YYYY-MM-DD')
   let result = original
-  result = tagReplace(result, 'EOL', '\n')
   result = tagReplace(result, 'COVER', document.metadata.cover)
   result = tagReplace(result, 'ID', document.metadata.id)
   result = tagReplace(result, 'TITLE', document.metadata.title)

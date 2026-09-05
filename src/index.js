@@ -4,6 +4,9 @@ const path = require('path')
 const { ZipArchive } = require('archiver')
 const structuralFiles = require('./constituents/structural.js')
 const markupFiles = require('./constituents/markup.js')
+const replacements = require('./constituents/replacements.js')
+const { createViewModel } = require('./constituents/view-model.js')
+const { compileAll } = require('./constituents/templates.js')
 const util = require('./utility.js')
 
 /**
@@ -47,11 +50,22 @@ const document = (metadata, generateContentsCallback) => {
     self.showContents = metadata.showContents
   }
 
-  //
-  //
-  // If it is Front Matter then it will appear before the contents page.
-  // The overrideFilename is
-  //
+  // Compile all templates.
+  self.templates = compileAll()
+
+  // Register a callback to refresh the view model.
+  self.refreshView = (currentSection) => {
+    self.view = createViewModel(self)
+    if (typeof currentSection !== 'undefined') {
+      self.view.currentSection = currentSection
+    }
+  }
+  self.refreshView()
+  self.renderTextFile = (templateName) => {
+    const html = self.templates[templateName](self.view)
+    return replacements(self, replacements(self, html))
+  }
+
   /**
    * Add a new section entry (usually a chapter) with the given title and
    * (HTML) body content. Optionally excludes it from the contents page.
@@ -100,12 +114,14 @@ const document = (metadata, generateContentsCallback) => {
    * @returns an array of file definitions (name,folder, compress?,content)
    */
   self.getFilesForEPUB = async () => {
+    self.refreshView()
+
     const syncFiles = []
     const asyncFiles = []
 
     // Required files.
     syncFiles.push({
-      name: 'mimetype', folder: '', compress: false, content: structuralFiles.getMimetype()
+      name: 'mimetype', folder: '', compress: false, content: structuralFiles.getMimetype(self)
     })
     syncFiles.push({
       name: 'container.xml', folder: 'META-INF', compress: true, content: structuralFiles.getContainer(self)

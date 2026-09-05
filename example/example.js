@@ -117,15 +117,7 @@ epub.addSection('About the Author', about);
   try {
     console.log('Generating a stand-alone EPUB.')
     await epub.writeEPUB('example', 'example')
-  } catch (e) {
-    console.log('ERROR')
-    console.log(e)
-  }
-})();
-
-// Also write the structure both for debugging purposes and to provide sample output in GitHub.
-(async () => {
-  try {
+    // Also write the structure both for debugging and to provide sample output in GitHub.
     console.log('Generating a collection of EPUB constituent files.')
     await epub.writeFilesForEPUB('example/example-EPUB-files')
   } catch (e) {

@@ -7,3 +7,7 @@ charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
+
+# These templates must not end with a newline (output has none).
+[src/constituents/templates/{mimetype,css,container}.ejs]
+insert_final_newline = false

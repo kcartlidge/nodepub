@@ -26,6 +26,7 @@ Create valid EPUB 2 ebooks with metadata, contents, cover, and images.
     - [Using in Non-Async Code](#using-in-non-async-code)
 - [Validating EPUBs](#validating-epubs)
 - [A Full Example](#a-full-example)
+- [Breaking changes over v3](#breaking-changes-over-v3)
 - [Breaking changes over v2](#breaking-changes-over-v2)
 
 
@@ -330,6 +331,20 @@ npm run example
 ```
 
 This runs in [the `example` folder](./example) using the code in [`example/example.js`](./example/example.js) to generate a final EPUB. It will also create a subfolder containing the raw files used to produce that EPUB (omitted from source control).
+
+## Breaking changes over v3
+
+Technically there is no change in the API or the desired outputs.
+However there are a couple of reasons for the major version jump.
+
+- Switched the internal EPUB file generation from code generation to EJS templates
+  - The public API is unchanged and desired behaviour remains the same
+  - Version jumped regardless, as despite tests this retains a level of risk
+- Small bug fixes which may change your outputs, as in earlier versions:
+  - Empty lines were stripped *including* within pre/code blocks
+  - A custom HTML TOC grew with multiple renders of same document
+
+The switch to EJS templating for the internals creates cleaner, clearer code which is also easier to maintain and to reason about.
 
 ## Breaking changes over v2
 

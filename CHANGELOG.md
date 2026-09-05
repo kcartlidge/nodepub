@@ -1,5 +1,16 @@
 # CHANGE LOG
 
+## 2026-09-05 - v4.0.0
+
+- Switch internals from text processing to EJS templating
+  - No change in the external API or desired behaviour
+  - Major version bump as a precaution
+- Couple of minor bug fixes during switch to EJS as in prior versions:
+  - Empty lines were stripped *including* within pre/code blocks
+  - A custom HTML TOC grew with multiple renders of same document
+- Extra tests on the EPUB output file
+  - Raw byte checks for signature and uncompressed mimetype file
+
 ## 2026-09-04 - v3.3.0 to v3.4.0
 
 - In-book cover page can be suppressed
