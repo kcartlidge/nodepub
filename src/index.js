@@ -2,11 +2,27 @@ const fs = require('fs')
 const fsPromises = require('fs').promises
 const path = require('path')
 const { ZipArchive } = require('archiver')
-const publicationFiles = require('./constituents/v2/files.js')
 const replacements = require('./constituents/replacements.js')
 const { createViewModel } = require('./constituents/view-model.js')
 const { compileAll } = require('./constituents/templates.js')
 const util = require('./utility.js')
+
+const missing = (value) => value == null || typeof value === 'undefined' || value.toString().trim() === ''
+
+/**
+ * Resolve metadata.epubVersion to 2 or 3.
+ * Missing / blank defaults to 2. Anything else throws.
+ * @param {Object} metadata
+ * @returns {Number} 2 or 3
+ */
+const parseEpubVersion = (metadata) => {
+  const value = metadata.epubVersion
+  if (missing(value)) return 2
+  const asNumber = Number(value)
+  if (asNumber === 2) return 2
+  if (asNumber === 3) return 3
+  throw new Error('Invalid metadata: epubVersion')
+}
 
 /**
  * Construct a new document.
@@ -49,8 +65,10 @@ const document = (metadata, generateContentsCallback) => {
     self.showContents = metadata.showContents
   }
 
-  // Compile all templates.
-  self.templates = compileAll('v2')
+  self.epubVersion = parseEpubVersion(metadata)
+  const versionKey = self.epubVersion === 3 ? 'v3' : 'v2'
+  self.templates = compileAll(versionKey)
+  self.publicationFiles = require(`./constituents/${versionKey}/files.js`)
 
   // Register a callback to refresh the view model.
   self.refreshView = (currentSection) => {
@@ -115,7 +133,7 @@ const document = (metadata, generateContentsCallback) => {
   self.getFilesForEPUB = async () => {
     self.refreshView()
 
-    const syncFiles = publicationFiles.list(self)
+    const syncFiles = self.publicationFiles.list(self)
     const asyncFiles = []
 
     // Extra images - add filename into content property and prepare for async handling.

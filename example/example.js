@@ -91,35 +91,44 @@ const generateContentsPage = (links) => {
   return contents
 }
 
-// Set up the EPUB basics.
-const epub = nodepub.document(metadata, generateContentsPage)
-epub.addCSS(`body { font-family:Verdana,Arial,Sans-Serif; font-size:11pt; }
+// Set up one book, then generate it via both version paths.
+const css = `body { font-family:Verdana,Arial,Sans-Serif; font-size:11pt; }
 #title,#title h1,#title h2,#title h3 { text-align:center; }
 h1,h3,p { margin-bottom:1em; }
 h2 { margin-bottom:2em; }
 p { text-indent: 0; }
-p+p { text-indent: 0.75em; }`)
+p+p { text-indent: 0.75em; }`
 
-// Add some front matter.
-epub.addSection('Title Page', "<div id='title'><h1>[[TITLE]]</h1><h2>Book <strong>[[SEQUENCE]]</strong> of <em>[[SERIES]]</em></h2><h3>[[AUTHOR]]</h3><p> &nbsp;</p><p>&copy; [[COPYRIGHT]]</p></div>", true, true)
-epub.addSection('Copyright', copyright, false, true, 'copyright-page')
+const populate = (epub) => {
+  epub.addCSS(css)
+  epub.addSection('Title Page', "<div id='title'><h1>[[TITLE]]</h1><h2>Book <strong>[[SEQUENCE]]</strong> of <em>[[SERIES]]</em></h2><h3>[[AUTHOR]]</h3><p> &nbsp;</p><p>&copy; [[COPYRIGHT]]</p></div>", true, true)
+  epub.addSection('Copyright', copyright, false, true, 'copyright-page')
+  epub.addSection('Chapter 1', `<h1>One</h1>${lipsum}<p><a href='chapter2.xhtml'>A test internal link</a>.</p>`)
+  epub.addSection('Chapter 2', `<h1>Two</h1>${lipsum}`, false, false, 'chapter2')
+  epub.addSection('Chapter 2a', `<h1>Two (A)</h1><p><strong>This chapter does not appear in the contents.</strong></p>${lipsum}`, true)
+  epub.addSection('Chapter 3', `<h1>Three</h1><p>Here is a sample list.</p><ul><li>Sample list item one.</li><li>Sample list item two.</li><li>Sample list item three.</li></ul>${lipsum}`)
+  epub.addSection('More Books to Read', more)
+  epub.addSection('About the Author', about)
+  return epub
+}
 
-// Add some content.
-epub.addSection('Chapter 1', `<h1>One</h1>${lipsum}<p><a href='chapter2.xhtml'>A test internal link</a>.</p>`)
-epub.addSection('Chapter 2', `<h1>Two</h1>${lipsum}`, false, false, 'chapter2')
-epub.addSection('Chapter 2a', `<h1>Two (A)</h1><p><strong>This chapter does not appear in the contents.</strong></p>${lipsum}`, true)
-epub.addSection('Chapter 3', `<h1>Three</h1><p>Here is a sample list.</p><ul><li>Sample list item one.</li><li>Sample list item two.</li><li>Sample list item three.</li></ul>${lipsum}`)
-epub.addSection('More Books to Read', more)
-epub.addSection('About the Author', about);
+const epubV2 = populate(nodepub.document({ ...metadata, epubVersion: 2, images: [...metadata.images] }, generateContentsPage))
+const epubV3 = populate(nodepub.document({ ...metadata, epubVersion: 3, images: [...metadata.images] }, generateContentsPage));
 
-// Generate the result.
+// Generate both from the same book content.
 (async () => {
   try {
-    console.log('Generating a stand-alone EPUB.')
-    await epub.writeEPUB('example', 'example')
-    // Also write the structure both for debugging and to provide sample output in GitHub.
-    console.log('Generating a collection of EPUB constituent files.')
-    await epub.writeFilesForEPUB('example/example-EPUB-files')
+    console.log('Generating stand-alone EPUBs.')
+    await epubV2.writeEPUB('example', 'example-v2')
+    await epubV3.writeEPUB('example', 'example-v3')
+    console.log('  example/example-v2.epub')
+    console.log('  example/example-v3.epub')
+    console.log('Generating collections of EPUB constituent files.')
+    await epubV2.writeFilesForEPUB('example/example-v2-EPUB-files')
+    await epubV3.writeFilesForEPUB('example/example-v3-EPUB-files')
+    console.log('  example/example-v2-EPUB-files')
+    console.log('  example/example-v3-EPUB-files')
+    console.log()
   } catch (e) {
     console.log('ERROR')
     console.log(e)

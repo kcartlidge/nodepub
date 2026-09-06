@@ -5,11 +5,11 @@ const nodepub = require('../../src/index')
 
 const validMetadata = () => {
   const metadata = sharedValidMetadata()
-  metadata.epubVersion = 2
+  metadata.epubVersion = 3
   return metadata
 }
 
-describe('Create EPUB with a valid document (epubVersion 2)', () => {
+describe('Create EPUB with a valid document (epubVersion 3)', () => {
   let epub
 
   beforeEach(() => {

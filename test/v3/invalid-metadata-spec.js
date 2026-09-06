@@ -2,7 +2,7 @@ const { expect } = require('chai')
 
 const nodepub = require('../../src/index')
 
-describe('Create EPUB with invalid document metadata (epubVersion 2)', () => {
+describe('Create EPUB with invalid document metadata (epubVersion 3)', () => {
   it('should throw an exception if null', () => {
     expect(() => {
       nodepub.document()

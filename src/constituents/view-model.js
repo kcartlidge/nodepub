@@ -59,6 +59,8 @@ const createViewModel = (document) => {
     view[name] = document[name]
   })
 
+  view.epubVersion = document.epubVersion
+
   view.sections = document.sections
   view.css = document.CSS
   view.mimetype = 'application/epub+zip'

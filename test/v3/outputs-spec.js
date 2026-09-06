@@ -8,11 +8,11 @@ const nodepub = require('../../src/index')
 
 const validMetadata = () => {
   const metadata = sharedValidMetadata()
-  metadata.epubVersion = 2
+  metadata.epubVersion = 3
   return metadata
 }
 
-describe('Generating EPUB outputs (epubVersion 2)', () => {
+describe('Generating EPUB outputs (epubVersion 3)', () => {
   let epub
   let files = []
 
@@ -89,23 +89,23 @@ describe('Generating EPUB outputs (epubVersion 2)', () => {
     beforeEach(() => {
       try {
         // Clear the output of other runs
-        fs.unlinkSync('test/test-book-v2.epub')
+        fs.unlinkSync('test/test-book-v3.epub')
       } catch (e) {
         // Ignore error if it doesn't already exist
       }
     })
 
     it('the file should now exist in the filesystem', async () => {
-      await epub.writeEPUB('test', 'test-book-v2')
+      await epub.writeEPUB('test', 'test-book-v3')
 
-      const result = fs.statSync('test/test-book-v2.epub').isFile()
+      const result = fs.statSync('test/test-book-v3.epub').isFile()
       expect(result).to.equal(true)
     })
 
     it('should start with an uncompressed mimetype ZIP local-file header and payload', async () => {
-      await epub.writeEPUB('test', 'test-book-v2')
+      await epub.writeEPUB('test', 'test-book-v3')
 
-      const fd = fs.openSync('test/test-book-v2.epub', 'r')
+      const fd = fs.openSync('test/test-book-v3.epub', 'r')
       const prefix = Buffer.alloc(58)
       const bytesRead = fs.readSync(fd, prefix, 0, 58, 0)
       fs.closeSync(fd)

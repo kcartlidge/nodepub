@@ -38,7 +38,7 @@ const findFirstContent = (collection, condition, defaultValue = '') => {
  */
 const validMetadata = () => {
   return {
-    id: Date.now(),
+    id: '278-123456789',
     cover: 'test/test-cover.png',
     title: 'Test Document',
     series: 'My Series',
