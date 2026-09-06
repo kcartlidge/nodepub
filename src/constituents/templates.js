@@ -2,15 +2,15 @@ const fs = require('fs')
 const path = require('path')
 const ejs = require('ejs')
 
-const templatesDir = path.join(__dirname, 'templates')
-
 const loadLf = (filename) => fs.readFileSync(filename, 'utf8').replace(/\r\n/g, '\n')
 
 /**
- * Compile every `.ejs` file in the templates folder once for this document.
+ * Compile every `.ejs` file in the given version's templates folder once for this document.
+ * @param {String} [version='v2'] - template set folder name under `templates/`
  * @returns {Object} map of basename (without .ejs) to compiled render functions
  */
-const compileAll = () => {
+const compileAll = (version = 'v2') => {
+  const templatesDir = path.join(__dirname, 'templates', version)
   ejs.fileLoader = loadLf
   const compiled = {}
   if (!fs.existsSync(templatesDir)) {

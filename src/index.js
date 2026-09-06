@@ -2,8 +2,7 @@ const fs = require('fs')
 const fsPromises = require('fs').promises
 const path = require('path')
 const { ZipArchive } = require('archiver')
-const structuralFiles = require('./constituents/structural.js')
-const markupFiles = require('./constituents/markup.js')
+const publicationFiles = require('./constituents/v2/files.js')
 const replacements = require('./constituents/replacements.js')
 const { createViewModel } = require('./constituents/view-model.js')
 const { compileAll } = require('./constituents/templates.js')
@@ -51,7 +50,7 @@ const document = (metadata, generateContentsCallback) => {
   }
 
   // Compile all templates.
-  self.templates = compileAll()
+  self.templates = compileAll('v2')
 
   // Register a callback to refresh the view model.
   self.refreshView = (currentSection) => {
@@ -116,45 +115,8 @@ const document = (metadata, generateContentsCallback) => {
   self.getFilesForEPUB = async () => {
     self.refreshView()
 
-    const syncFiles = []
+    const syncFiles = publicationFiles.list(self)
     const asyncFiles = []
-
-    // Required files.
-    syncFiles.push({
-      name: 'mimetype', folder: '', compress: false, content: structuralFiles.getMimetype(self)
-    })
-    syncFiles.push({
-      name: 'container.xml', folder: 'META-INF', compress: true, content: structuralFiles.getContainer(self)
-    })
-    syncFiles.push({
-      name: 'ebook.opf', folder: 'OEBPF', compress: true, content: structuralFiles.getOPF(self)
-    })
-    syncFiles.push({
-      name: 'navigation.ncx', folder: 'OEBPF', compress: true, content: structuralFiles.getNCX(self)
-    })
-    if (self.addInternalCover) {
-      syncFiles.push({
-        name: 'cover.xhtml', folder: 'OEBPF', compress: true, content: markupFiles.getCover(self)
-      })
-    }
-
-    // Optional files.
-    syncFiles.push({
-      name: 'ebook.css', folder: 'OEBPF/css', compress: true, content: markupFiles.getCSS(self)
-    })
-    for (let i = 1; i <= self.sections.length; i += 1) {
-      const fname = self.sections[i - 1].filename
-      syncFiles.push({
-        name: `${fname}`, folder: 'OEBPF/content', compress: true, content: markupFiles.getSection(self, i)
-      })
-    }
-
-    // Table of contents markup.
-    if (self.showContents) {
-      syncFiles.push({
-        name: 'toc.xhtml', folder: 'OEBPF/content', compress: true, content: markupFiles.getTOC(self)
-      })
-    }
 
     // Extra images - add filename into content property and prepare for async handling.
     const coverFilename = path.basename(self.coverImage)

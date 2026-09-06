@@ -1,7 +1,7 @@
 const { expect, assert } = require('chai')
-const { lipsum, find, validMetadata } = require('./shared')
+const { lipsum, find, validMetadata } = require('../shared')
 
-const nodepub = require('../src/index')
+const nodepub = require('../../src/index')
 
 describe('Create EPUB with a valid document', () => {
   let epub

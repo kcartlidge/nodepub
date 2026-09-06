@@ -2,9 +2,9 @@ const fs = require('fs')
 const fsPromises = require('fs').promises
 const { expect, assert } = require('chai')
 const sinon = require('sinon')
-const { lipsum, find, validMetadata } = require('./shared')
+const { lipsum, find, validMetadata } = require('../shared')
 
-const nodepub = require('../src/index')
+const nodepub = require('../../src/index')
 
 describe('Generating EPUB outputs', () => {
   let epub
