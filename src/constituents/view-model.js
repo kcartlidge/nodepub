@@ -72,6 +72,7 @@ const createViewModel = (document) => {
   }
   view.currentSection = null
   view.overrideContents = null
+  view.missing = missing
 
   view.imageName = (filename) => path.basename(filename || '')
   view.imageType = (filename) => util.getImageType(filename)

@@ -126,6 +126,27 @@ describe('Handling EPUB contents (epubVersion 3)', () => {
     expect(opfContent.indexOf("name='calibre:series'") > -1).to.equal(true)
   })
 
+  it('should omit empty optional package metadata', async () => {
+    const metadataEmptyOptionals = validMetadata()
+    metadataEmptyOptionals.publisher = '  '
+    metadataEmptyOptionals.description = ''
+    metadataEmptyOptionals.source = null
+    metadataEmptyOptionals.published = undefined
+    metadataEmptyOptionals.copyright = ''
+    epub = nodepub.document(metadataEmptyOptionals)
+    epub.addSection('Chapter 1', lipsum)
+
+    const files = await epub.getFilesForEPUB()
+    const opfContent = findFirstContent(files, (f) => f.name === 'ebook.opf')
+
+    expect(opfContent.indexOf('<dc:publisher>') > -1).to.equal(false)
+    expect(opfContent.indexOf('<dc:description>') > -1).to.equal(false)
+    expect(opfContent.indexOf('<dc:source>') > -1).to.equal(false)
+    expect(opfContent.indexOf('<dc:date>') > -1).to.equal(false)
+    expect(opfContent.indexOf('<dc:rights>') > -1).to.equal(false)
+    expect(opfContent.indexOf('<dc:title>') > -1).to.equal(true)
+  })
+
   it('should transform named entities when transformNamedEntities is omitted', async () => {
     epub = nodepub.document(validMetadata())
     epub.addSection('Chapter 1', '<p>&copy;&nbsp;Sample.</p>')

@@ -13,23 +13,33 @@
     <dc:identifier id='BookId'><%- id %></dc:identifier>
     <dc:language><%- language %></dc:language>
     <dc:creator id='creator'><%- author %></dc:creator>
-<% if (fileAs) { -%>
+<% if (!missing(fileAs)) { -%>
     <meta refines='#creator' property='file-as'><%- fileAs %></meta>
 <% } -%>
     <meta refines='#creator' property='role' scheme='marc:relators'>aut</meta>
+<% if (!missing(publisher)) { -%>
     <dc:publisher><%- publisher %></dc:publisher>
+<% } -%>
+<% if (!missing(description)) { -%>
     <dc:description><%- description %></dc:description>
+<% } -%>
+<% if (!missing(source)) { -%>
     <dc:source><%- source %></dc:source>
+<% } -%>
+<% if (!missing(published)) { -%>
     <dc:date><%- published %></dc:date>
+<% } -%>
     <meta property='dcterms:modified'><%- modifiedIso %></meta>
+<% if (!missing(copyright)) { -%>
     <dc:rights><%- copyright %></dc:rights>
-<% if (genre) { -%>
+<% } -%>
+<% if (!missing(genre)) { -%>
     <dc:subject><%- genre %></dc:subject>
 <% } -%>
-<% if (tags) { tags.split(',').forEach((tag) => { -%>
+<% if (!missing(tags)) { tags.split(',').forEach((tag) => { if (!missing(tag)) { -%>
     <dc:subject><%- tag %></dc:subject>
-<% }) } -%>
-<% if (series && sequence) { -%>
+<% } }) } -%>
+<% if (!missing(series) && !missing(sequence)) { -%>
     <meta property='belongs-to-collection' id='series-id'><%- series %></meta>
     <meta refines='#series-id' property='collection-type'>series</meta>
     <meta refines='#series-id' property='group-position'><%- sequence %></meta>

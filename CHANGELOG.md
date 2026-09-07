@@ -1,6 +1,6 @@
 # CHANGE LOG
 
-## 2026-09-07 - v5.0.0
+## 2026-09-07 - v5.0.0 to v5.1.0
 
 - **EPUB 3** support alongside existing EPUB 2
   - *Passes EPUBCheck v5.1.0*
@@ -8,6 +8,7 @@
   - Default is EPUB 2 to maintain existing behaviour
   - EPUB 3 packaging, navigation, and HTML-profile content
   - No support for optional EPUB 3 extra features (scripting, media overlays etc)
+- EPUB 3 omits empty optional package metadata elements
 
 ## 2026-09-05 - v4.0.0 to v4.1.0
 
