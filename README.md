@@ -34,7 +34,7 @@ Create valid EPUB 2 or EPUB 3 ebooks with metadata, contents, cover, and images.
 
 Nodepub is a **Node** module which can be used to create **EPUB 2** (default) or **EPUB 3** documents.
 
-EPUB 3 output is a valid EPUB 3 document, not an full implementation of all EPUB 3 features.
+EPUB 3 output is a valid EPUB 3 document, not a full implementation of all EPUB 3 features.
 
 - Files pass *EPUBCheck v5.1.0*
   - See the [Validating EPUBs](#validating-epubs) section
@@ -125,17 +125,17 @@ var metadata = {
 - `addInternalCover` (default is `true`) lets you suppress the in-book cover page
 - `appendSeriesToTitle` (default is `true`) appends `(Series #n)` to the EPUB title
 - `transformNamedEntities` (default is `true`, EPUB 3 only) rewrites common named HTML entities to numeric character references
-  - EPUB 3 allows a small subset, and any others break compatibility
+  - EPUB 3 only allows a small subset; this option enables some more
   - Switchable as you may want to handle these yourself, for example if you are using code blocks
 - `showContents` (default is `true`) lets you suppress the contents page
 - `contents` (default is `Contents`) is the title used for the table of contents page
 - `images` (an array) is where you refer to all images used inside the book - see [Including Images](#including-images) for details
 
-When `transformNamedEntities` is on for EPUB 3 the ones that are automatically transformed can be seen in the `[named-entities.js](src/constituents/v3/named-entities.js)` file.
+When `transformNamedEntities` is on for EPUB 3 the ones that are automatically transformed can be seen in the [named-entities.js](src/constituents/v3/named-entities.js) file.
 
 ### Adding Contents
 
-> EPUB 3 is more strict on having XML content than EPUB 2, and reader devices *may* also be more strict with EPUB 3 books. Nodepub wraps what it is given in suitable XML tags but the content will still be invalid if what is passed to it isn't actually XML.  As with EPUB 2, not all reader devices or software will care.
+> EPUB 3 is more strict on having XHTML content than EPUB 2, and reader devices *may* also be more strict when opening EPUB 3 books. Nodepub wraps the section content it's given within suitable XHTML tags, but that content will still be invalid if what is passed in isn't actually XHTML.  As with EPUB 2, not all reader devices or software will care.
 >
 > As a minimum tags should be well-formed and closed or self-closed as appropriate (eg `<p>...</p>`, `<br />`, or `<img ... />`). Optional HTML5 end tags will fail EPUBCheck.
 
