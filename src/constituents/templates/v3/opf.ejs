@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<package xmlns='http://www.idpf.org/2007/opf' version='2.0' unique-identifier='BookId'>
-  <metadata xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:opf='http://www.idpf.org/2007/opf'>
+<package xmlns='http://www.idpf.org/2007/opf' version='3.0' unique-identifier='BookId' xml:lang='<%- language %>'>
+  <metadata xmlns:dc='http://purl.org/dc/elements/1.1/'>
 <% if (appendSeriesToTitle && series && sequence) { -%>
     <dc:title><%- title %> (<%- series %> #<%- sequence %>)</dc:title>
 <% } else if (appendSeriesToTitle && series) { -%>
@@ -10,15 +10,18 @@
 <% } else { -%>
     <dc:title><%- title %></dc:title>
 <% } -%>
-    <dc:identifier id='BookId' opf:scheme='URI'><%- id %></dc:identifier>
+    <dc:identifier id='BookId'><%- id %></dc:identifier>
     <dc:language><%- language %></dc:language>
-    <dc:creator opf:role='aut' opf:file-as='<%- fileAs %>'><%- author %></dc:creator>
+    <dc:creator id='creator'><%- author %></dc:creator>
+<% if (fileAs) { -%>
+    <meta refines='#creator' property='file-as'><%- fileAs %></meta>
+<% } -%>
+    <meta refines='#creator' property='role' scheme='marc:relators'>aut</meta>
     <dc:publisher><%- publisher %></dc:publisher>
     <dc:description><%- description %></dc:description>
-    <dc:coverage></dc:coverage>
     <dc:source><%- source %></dc:source>
-    <dc:date opf:event='publication'><%- published %></dc:date>
-    <dc:date opf:event='modification'><%- modified %></dc:date>
+    <dc:date><%- published %></dc:date>
+    <meta property='dcterms:modified'><%- modifiedIso %></meta>
     <dc:rights><%- copyright %></dc:rights>
 <% if (genre) { -%>
     <dc:subject><%- genre %></dc:subject>
@@ -27,17 +30,20 @@
     <dc:subject><%- tag %></dc:subject>
 <% }) } -%>
 <% if (series && sequence) { -%>
+    <meta property='belongs-to-collection' id='series-id'><%- series %></meta>
+    <meta refines='#series-id' property='collection-type'>series</meta>
+    <meta refines='#series-id' property='group-position'><%- sequence %></meta>
     <meta name='calibre:series' content='<%- series %>'/>
     <meta name='calibre:series_index' content='<%- sequence %>'/>
 <% } -%>
     <meta name='cover' content='cover-image'/>
   </metadata>
   <manifest>
-    <item id='cover-image' media-type='<%- imageType(imageName(cover)) %>' href='images/<%- imageName(cover) %>'/>
+    <item id='cover-image' media-type='<%- imageType(imageName(cover)) %>' href='images/<%- imageName(cover) %>' properties='cover-image'/>
 <% if (addInternalCover) { -%>
     <item id='cover' media-type='application/xhtml+xml' href='cover.xhtml'/>
 <% } -%>
-    <item id='navigation' media-type='application/x-dtbncx+xml' href='navigation.ncx'/>
+    <item id='nav' media-type='application/xhtml+xml' href='nav.xhtml' properties='nav'/>
 <% sections.forEach((section, i) => { -%>
     <item id='s<%- i + 1 %>' media-type='application/xhtml+xml' href='content/<%- section.filename %>'/>
 <% }) -%>
@@ -49,7 +55,7 @@
     <item id='img<%- i %>' media-type='<%- type %>' href='images/<%- imageName(image) %>'/>
 <% } }) -%>
   </manifest>
-  <spine toc='navigation'>
+  <spine>
 <% if (addInternalCover) { -%>
     <itemref idref='cover' linear='yes' />
 <% } -%>
@@ -63,9 +69,4 @@
     <itemref idref='s<%- i + 1 %>' />
 <% } }) -%>
   </spine>
-<% if (showContents) { -%>
-  <guide>
-    <reference type='toc' title='Contents' href='content/toc.xhtml'></reference>
-  </guide>
-<% } -%>
 </package>

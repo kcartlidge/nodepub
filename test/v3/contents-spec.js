@@ -48,10 +48,10 @@ describe('Handling EPUB contents (epubVersion 3)', () => {
 
     const files = await epub.getFilesForEPUB()
     const toc = findFirstContent(files, (f) => f.name === 'toc.xhtml')
-    const ncx = findFirstContent(files, (f) => f.name === 'navigation.ncx')
+    const nav = findFirstContent(files, (f) => f.name === 'nav.xhtml')
 
     expect(toc).to.contain('<h1>Contents</h1>')
-    expect(ncx).to.contain('<navLabel><text>Contents</text></navLabel>')
+    expect(nav).to.contain('<h1>Contents</h1>')
   })
 
   it('should default the contents title when contents metadata is empty, whitespace, or null', async () => {
@@ -63,10 +63,10 @@ describe('Handling EPUB contents (epubVersion 3)', () => {
 
       const files = await epub.getFilesForEPUB()
       const toc = findFirstContent(files, (f) => f.name === 'toc.xhtml')
-      const ncx = findFirstContent(files, (f) => f.name === 'navigation.ncx')
+      const nav = findFirstContent(files, (f) => f.name === 'nav.xhtml')
 
       expect(toc).to.contain('<h1>Contents</h1>')
-      expect(ncx).to.contain('<navLabel><text>Contents</text></navLabel>')
+      expect(nav).to.contain('<h1>Contents</h1>')
     }
   })
 
@@ -78,12 +78,12 @@ describe('Handling EPUB contents (epubVersion 3)', () => {
 
     const files = await epub.getFilesForEPUB()
     const toc = findFirstContent(files, (f) => f.name === 'toc.xhtml')
-    const ncx = findFirstContent(files, (f) => f.name === 'navigation.ncx')
+    const nav = findFirstContent(files, (f) => f.name === 'nav.xhtml')
 
     expect(toc).to.contain('<h1>Chapters</h1>')
     expect(toc).to.not.contain('<h1>Contents</h1>')
-    expect(ncx).to.contain('<navLabel><text>Chapters</text></navLabel>')
-    expect(ncx).to.not.contain('<navLabel><text>Contents</text></navLabel>')
+    expect(nav).to.contain('<h1>Chapters</h1>')
+    expect(nav).to.not.contain('<h1>Contents</h1>')
   })
 
   it('should not have a `toc` when the contents page is skipped', async () => {
@@ -96,6 +96,8 @@ describe('Handling EPUB contents (epubVersion 3)', () => {
 
     const metadata = find(files, (f) => f.name === 'toc.xhtml')
     assert(metadata.length === 0, 'Expected not to find a table of contents (toc)')
+    const nav = find(files, (f) => f.name === 'nav.xhtml')
+    assert(nav.length === 1, 'Expected a nav document')
   })
 
   it('should append series details to the title when appendSeriesToTitle is true', async () => {
@@ -124,6 +126,43 @@ describe('Handling EPUB contents (epubVersion 3)', () => {
     expect(opfContent.indexOf("name='calibre:series'") > -1).to.equal(true)
   })
 
+  it('should transform named entities when transformNamedEntities is omitted', async () => {
+    epub = nodepub.document(validMetadata())
+    epub.addSection('Chapter 1', '<p>&copy;&nbsp;Sample.</p>')
+
+    const files = await epub.getFilesForEPUB()
+    const section = findFirstContent(files, (f) => f.name === 's1.xhtml')
+
+    expect(section.indexOf('&#169;') > -1).to.equal(true)
+    expect(section.indexOf('&#160;') > -1).to.equal(true)
+  })
+
+  it('should transform named entities when transformNamedEntities is true', async () => {
+    const metadataWithTransform = validMetadata()
+    metadataWithTransform.transformNamedEntities = true
+    epub = nodepub.document(metadataWithTransform)
+    epub.addSection('Chapter 1', '<p>&copy;&nbsp;Sample.</p>')
+
+    const files = await epub.getFilesForEPUB()
+    const section = findFirstContent(files, (f) => f.name === 's1.xhtml')
+
+    expect(section.indexOf('&#169;') > -1).to.equal(true)
+    expect(section.indexOf('&#160;') > -1).to.equal(true)
+  })
+
+  it('should leave named entities unchanged when transformNamedEntities is false', async () => {
+    const metadataNoTransform = validMetadata()
+    metadataNoTransform.transformNamedEntities = false
+    epub = nodepub.document(metadataNoTransform)
+    epub.addSection('Chapter 1', '<p>&copy;&nbsp;Sample.</p>')
+
+    const files = await epub.getFilesForEPUB()
+    const section = findFirstContent(files, (f) => f.name === 's1.xhtml')
+
+    expect(section.indexOf('&copy;') > -1).to.equal(true)
+    expect(section.indexOf('&nbsp;') > -1).to.equal(true)
+  })
+
   it('should have a cover page when addInternalCover is omitted', async () => {
     epub = nodepub.document(validMetadata())
     epub.addSection('Chapter 1', lipsum)
@@ -142,7 +181,7 @@ describe('Handling EPUB contents (epubVersion 3)', () => {
 
     const files = await epub.getFilesForEPUB()
     const opfContent = findFirstContent(files, (f) => f.name === 'ebook.opf')
-    const ncxContent = findFirstContent(files, (f) => f.name === 'navigation.ncx')
+    const ncxContent = findFirstContent(files, (f) => f.name === 'nav.xhtml')
 
     const cover = find(files, (f) => f.name === 'cover.xhtml')
     assert(cover.length === 1, 'Expected an embedded cover page')
@@ -158,7 +197,7 @@ describe('Handling EPUB contents (epubVersion 3)', () => {
 
     const files = await epub.getFilesForEPUB()
     const opfContent = findFirstContent(files, (f) => f.name === 'ebook.opf')
-    const ncxContent = findFirstContent(files, (f) => f.name === 'navigation.ncx')
+    const ncxContent = findFirstContent(files, (f) => f.name === 'nav.xhtml')
 
     const coverPage = find(files, (f) => f.name === 'cover.xhtml')
     assert(coverPage.length === 0, 'Expected not to find an embedded cover page')
@@ -211,9 +250,9 @@ describe('Handling EPUB contents (epubVersion 3)', () => {
       expect(files.length).to.equal(12)
     })
 
-    it('should NOT show the section in the NCX contents metadata', async () => {
-      const ncxContent = findFirstContent(files, (f) => f.name === 'navigation.ncx', '>Copyright<')
-      const copyrightPageInNCX = ncxContent.indexOf('>Copyright<') > -1
+    it('should NOT show the section in the nav contents metadata', async () => {
+      const ncxContent = findFirstContent(files, (f) => f.name === 'nav.xhtml', '>Copyright</a>')
+      const copyrightPageInNCX = ncxContent.indexOf('>Copyright</a>') > -1
 
       expect(copyrightPageInNCX).to.equal(false)
     })

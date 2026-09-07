@@ -19,6 +19,7 @@ const metadata = {
   contents: 'Chapters',
   addInternalCover: true,
   appendSeriesToTitle: true,
+  transformNamedEntities: true,
   showContents: true,
   source: 'http://www.kcartlidge.com',
   images: ['test/hat.png']

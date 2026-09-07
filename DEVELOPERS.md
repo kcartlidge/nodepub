@@ -34,7 +34,7 @@ Many editors (e.g. VS Code) have Standard JS extentions that can also be automat
 
 ## Automatic upgrading of dependencies to the latest
 
-(Remember to run the tests and to check the generated books using (at least) the IDPF validator before committing.)
+(Remember to run the tests and to check the generated books with EPUBCheck — for example via the [Pagina EPUB-Checker app](https://pagina.gmbh/startseite/leistungen/publishing-softwareloesungen/epub-checker/) or the [official EPUBCheck CLI](https://www.w3.org/publishing/epubcheck/) — before committing.)
 
 ``` sh
 npm install -g npm-check-updates

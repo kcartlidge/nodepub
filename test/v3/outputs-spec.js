@@ -18,7 +18,7 @@ describe('Generating EPUB outputs (epubVersion 3)', () => {
 
   beforeEach(async () => {
     epub = nodepub.document(validMetadata())
-    epub.addSection('Chapter 1', lipsum)
+    epub.addSection('Chapter 1', `${lipsum}<p>&copy;&nbsp;Sample.</p>`)
     epub.addSection('Chapter 2', lipsum)
     epub.addSection('Chapter 3', lipsum, false, false, 'chapter-3')
     files = await epub.getFilesForEPUB()
@@ -56,6 +56,28 @@ describe('Generating EPUB outputs (epubVersion 3)', () => {
     it('should have the correct filename when a section overrides it', () => {
       const metadata = find(files, (f) => f.name === 'chapter-3.xhtml')
       assert(metadata.length === 1, 'Expected a renamed section')
+    })
+
+    it('should have a nav document and no NCX', () => {
+      const nav = find(files, (f) => f.name === 'nav.xhtml')
+      const ncx = find(files, (f) => f.name === 'navigation.ncx')
+      assert(nav.length === 1, 'Expected a nav document')
+      assert(ncx.length === 0, 'Expected no NCX')
+    })
+
+    it('should have an EPUB 3 package document', () => {
+      const opfContent = files.find((f) => f.name === 'ebook.opf').content
+      expect(opfContent).to.contain("version='3.0'")
+      expect(opfContent).to.contain("property='dcterms:modified'")
+      expect(opfContent).to.contain("properties='nav'")
+      expect(opfContent).to.contain("properties='cover-image'")
+    })
+
+    it('should use the HTML profile for content documents', () => {
+      const section = files.find((f) => f.name === 's1.xhtml').content
+      expect(section).to.not.contain('XHTML 1.1')
+      expect(section).to.contain("xml:lang='en'")
+      expect(section).to.contain("lang='en'")
     })
   })
 

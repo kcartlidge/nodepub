@@ -25,6 +25,7 @@ const METADATA_FIELDS = [
 const FLAG_FIELDS = [
   'addInternalCover',
   'appendSeriesToTitle',
+  'transformNamedEntities',
   'showContents'
 ]
 
@@ -65,6 +66,10 @@ const createViewModel = (document) => {
   view.css = document.CSS
   view.mimetype = 'application/epub+zip'
   view.modified = moment().format('YYYY-MM-DD')
+  view.modifiedIso = `${moment.utc().format('YYYY-MM-DDTHH:mm:ss')}Z`
+  if (document.epubVersion === 3 && missing(view.language)) {
+    view.language = 'en'
+  }
   view.currentSection = null
   view.overrideContents = null
 

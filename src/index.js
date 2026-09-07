@@ -33,7 +33,7 @@ const parseEpubVersion = (metadata) => {
  * @returns an EPUB model
  */
 const document = (metadata, generateContentsCallback) => {
-  const self = this
+  const self = {}
   self.CSS = ''
   self.sections = []
   self.images = []
@@ -41,6 +41,7 @@ const document = (metadata, generateContentsCallback) => {
   self.generateContentsCallback = generateContentsCallback
   self.addInternalCover = true
   self.appendSeriesToTitle = true
+  self.transformNamedEntities = true
   self.showContents = true
   self.filesForTOC = []
   self.coverImage = ''
@@ -61,6 +62,9 @@ const document = (metadata, generateContentsCallback) => {
   if (metadata.appendSeriesToTitle !== null && typeof (metadata.appendSeriesToTitle) !== 'undefined') {
     self.appendSeriesToTitle = metadata.appendSeriesToTitle
   }
+  if (metadata.transformNamedEntities !== null && typeof (metadata.transformNamedEntities) !== 'undefined') {
+    self.transformNamedEntities = metadata.transformNamedEntities
+  }
   if (metadata.showContents !== null && typeof (metadata.showContents) !== 'undefined') {
     self.showContents = metadata.showContents
   }
@@ -69,6 +73,9 @@ const document = (metadata, generateContentsCallback) => {
   const versionKey = self.epubVersion === 3 ? 'v3' : 'v2'
   self.templates = compileAll(versionKey)
   self.publicationFiles = require(`./constituents/${versionKey}/files.js`)
+  const expandNamedEntities = versionKey === 'v3'
+    ? require('./constituents/v3/named-entities.js')
+    : null
 
   // Register a callback to refresh the view model.
   self.refreshView = (currentSection) => {
@@ -80,7 +87,11 @@ const document = (metadata, generateContentsCallback) => {
   self.refreshView()
   self.renderTextFile = (templateName) => {
     const html = self.templates[templateName](self.view)
-    return replacements(self, replacements(self, html))
+    let result = replacements(self, replacements(self, html))
+    if (expandNamedEntities && self.transformNamedEntities && templateName !== 'css' && templateName !== 'mimetype') {
+      result = expandNamedEntities(result)
+    }
+    return result
   }
 
   /**

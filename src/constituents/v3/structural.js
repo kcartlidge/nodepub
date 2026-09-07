@@ -22,13 +22,13 @@ const structural = {
   getOPF: (document) => document.renderTextFile('opf'),
 
   /**
-   * Provide the contents of the NCX file.
+   * Provide the contents of the nav document.
    * @param {Object} document - the EPUB document
-   * @returns the NCX file contents
+   * @returns the nav file contents
    */
-  getNCX: (document) => {
+  getNav: (document) => {
     document.filesForTOC = document.view.tocFiles()
-    return document.renderTextFile('ncx')
+    return document.renderTextFile('nav')
   }
 
 }

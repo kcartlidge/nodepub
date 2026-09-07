@@ -2,7 +2,7 @@ const structural = require('./structural.js')
 const markup = require('./markup.js')
 
 /**
- * Ordered list of EPUB 2 publication files (text/XML only; images are added later).
+ * Ordered list of EPUB 3 publication files (text/XML only; images are added later).
  * The mimetype entry MUST remain first and uncompressed.
  * @param {Object} document - the EPUB document
  * @returns {Array<{name: String, folder: String, compress: Boolean, content: String}>}
@@ -20,7 +20,7 @@ const list = (document) => {
     name: 'ebook.opf', folder: 'OEBPF', compress: true, content: structural.getOPF(document)
   })
   files.push({
-    name: 'navigation.ncx', folder: 'OEBPF', compress: true, content: structural.getNCX(document)
+    name: 'nav.xhtml', folder: 'OEBPF', compress: true, content: structural.getNav(document)
   })
   if (document.addInternalCover) {
     files.push({
